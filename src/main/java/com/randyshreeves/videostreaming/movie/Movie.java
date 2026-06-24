@@ -1,4 +1,4 @@
-package movie;
+package com.randyshreeves.videostreaming.movie;
 
 import jakarta.persistence.*;
 
@@ -16,7 +16,7 @@ public class Movie {
 
     @Column(nullable = false)
     private int releaseYear;
-    
+
     private int runtimeMinutes;
 
     @Column(nullable = false)
