@@ -13,8 +13,8 @@ public class MovieService {
         this.movieRepository = movieRepository;
     }
 
-    public void createMovie(Movie movie) {
-        movieRepository.save(movie);
+    public Movie createMovie(Movie movie) {
+        return movieRepository.save(movie);
     }
 
     public List<Movie> getAllMovies() {
@@ -25,14 +25,14 @@ public class MovieService {
         return movieRepository.findById(id).orElseThrow();
     }
 
-    public void updateMovie(Long id, Movie movie) {
+    public Movie updateMovie(Long id, Movie movie) {
         Movie existingMovie = movieRepository.findById(id).orElseThrow();
         existingMovie.setTitle(movie.getTitle());
         existingMovie.setDescription(movie.getDescription());
         existingMovie.setReleaseYear(movie.getReleaseYear());
         existingMovie.setRuntimeMinutes(movie.getRuntimeMinutes());
         existingMovie.setStorageLocation(movie.getStorageLocation());
-        movieRepository.save(existingMovie);
+        return movieRepository.save(existingMovie);
     }
 
     public void deleteMovie(Long id) {
