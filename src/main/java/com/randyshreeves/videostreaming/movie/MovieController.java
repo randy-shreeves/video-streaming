@@ -3,6 +3,7 @@ package com.randyshreeves.videostreaming.movie;
 
 import com.randyshreeves.videostreaming.movie.dto.MovieRequest;
 import com.randyshreeves.videostreaming.movie.dto.MovieResponse;
+import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
@@ -29,12 +30,12 @@ public class MovieController {
     }
 
     @PostMapping
-    public MovieResponse createMovie(@RequestBody MovieRequest movieRequest) {
+    public MovieResponse createMovie(@Valid @RequestBody MovieRequest movieRequest) {
         return movieService.createMovie(movieRequest);
     }
 
     @PutMapping("/{id}")
-    public MovieResponse updateMovie(@PathVariable Long id, @RequestBody MovieRequest movieRequest) {
+    public MovieResponse updateMovie(@PathVariable Long id, @Valid @RequestBody MovieRequest movieRequest) {
         return movieService.updateMovie(id, movieRequest);
     }
 

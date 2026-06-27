@@ -1,11 +1,26 @@
 package com.randyshreeves.videostreaming.movie.dto;
 
+import jakarta.validation.constraints.*;
+
 public class MovieRequest {
 
+    @NotBlank(message = "Title cannot be blank.")
+    @Size(max = 255, message = "Title cannot be greater than 255 characters.")
     private String title;
+
+    @Size(max = 1000, message = "Description cannot be greater than 1000 characters.")
     private String description;
-    private int releaseYear;
-    private int runtimeMinutes;
+
+    @NotNull(message = "Release year is required.")
+    @Min(value = 1888, message = "Release year must be after 1887.")
+    private Integer releaseYear;
+
+    @NotNull(message = "Runtime is required.")
+    @Positive(message = "Runtime must be greater than 0.")
+    private Integer runtimeMinutes;
+
+    @NotBlank(message = "Storage location cannot be blank.")
+    @Size(max = 255, message = "Storage location cannot be greater than 255 characters.")
     private String storageLocation;
 
     public MovieRequest() {}
