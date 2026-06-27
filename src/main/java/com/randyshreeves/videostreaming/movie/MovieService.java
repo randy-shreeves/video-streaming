@@ -1,7 +1,10 @@
 package com.randyshreeves.videostreaming.movie;
 
+import com.randyshreeves.videostreaming.movie.dto.MovieRequest;
+import com.randyshreeves.videostreaming.movie.dto.MovieResponse;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -13,29 +16,57 @@ public class MovieService {
         this.movieRepository = movieRepository;
     }
 
-    public Movie createMovie(Movie movie) {
-        return movieRepository.save(movie);
+    public MovieResponse createMovie(MovieRequest movieRequest) {
+        Movie movie = toMovie(movieRequest);
+        Movie savedMovie = movieRepository.save(movie);
+        return toMovieResponse(savedMovie);
     }
 
-    public List<Movie> getAllMovies() {
-        return movieRepository.findAll();
+    public List<MovieResponse> getAllMovies() {
+        List<MovieResponse> movieResponseList = new ArrayList<>();
+        for (Movie movie : movieRepository.findAll()) {
+            movieResponseList.add(toMovieResponse(movie));
+        }
+        return movieResponseList;
     }
 
-    public Movie getMovie(Long id) {
-        return movieRepository.findById(id).orElseThrow();
+    public MovieResponse getMovie(Long id) {
+        Movie movie = movieRepository.findById(id).orElseThrow();
+        return toMovieResponse(movie);
     }
 
-    public Movie updateMovie(Long id, Movie movie) {
+    public MovieResponse updateMovie(Long id, MovieRequest movieRequest) {
         Movie existingMovie = movieRepository.findById(id).orElseThrow();
-        existingMovie.setTitle(movie.getTitle());
-        existingMovie.setDescription(movie.getDescription());
-        existingMovie.setReleaseYear(movie.getReleaseYear());
-        existingMovie.setRuntimeMinutes(movie.getRuntimeMinutes());
-        existingMovie.setStorageLocation(movie.getStorageLocation());
-        return movieRepository.save(existingMovie);
+        existingMovie.setTitle(movieRequest.getTitle());
+        existingMovie.setDescription(movieRequest.getDescription());
+        existingMovie.setReleaseYear(movieRequest.getReleaseYear());
+        existingMovie.setRuntimeMinutes(movieRequest.getRuntimeMinutes());
+        existingMovie.setStorageLocation(movieRequest.getStorageLocation());
+        Movie savedMovie = movieRepository.save(existingMovie);
+        return toMovieResponse(savedMovie);
     }
 
     public void deleteMovie(Long id) {
         movieRepository.deleteById(id);
+    }
+
+    private MovieResponse toMovieResponse(Movie movie) {
+        return new MovieResponse(
+                movie.getId(),
+                movie.getTitle(),
+                movie.getDescription(),
+                movie.getReleaseYear(),
+                movie.getRuntimeMinutes()
+        );
+    }
+
+    private Movie toMovie(MovieRequest movieRequest) {
+        return new Movie(
+          movieRequest.getTitle(),
+          movieRequest.getDescription(),
+          movieRequest.getReleaseYear(),
+          movieRequest.getRuntimeMinutes(),
+          movieRequest.getStorageLocation()
+        );
     }
 }

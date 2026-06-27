@@ -1,8 +1,11 @@
 package com.randyshreeves.videostreaming.movie;
 
 
+import com.randyshreeves.videostreaming.movie.dto.MovieRequest;
+import com.randyshreeves.videostreaming.movie.dto.MovieResponse;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -16,23 +19,23 @@ public class MovieController {
     }
 
     @GetMapping
-    public List<Movie> getAllMovies() {
+    public List<MovieResponse> getAllMovies() {
         return movieService.getAllMovies();
     }
 
     @GetMapping("/{id}")
-    public Movie getMovie(@PathVariable Long id) {
+    public MovieResponse getMovie(@PathVariable Long id) {
         return movieService.getMovie(id);
     }
 
     @PostMapping
-    public void createMovie(@RequestBody Movie movie) {
-        movieService.createMovie(movie);
+    public MovieResponse createMovie(@RequestBody MovieRequest movieRequest) {
+        return movieService.createMovie(movieRequest);
     }
 
     @PutMapping("/{id}")
-    public void updateMovie(@PathVariable Long id, @RequestBody Movie movie) {
-        movieService.updateMovie(id, movie);
+    public MovieResponse updateMovie(@PathVariable Long id, @RequestBody MovieRequest movieRequest) {
+        return movieService.updateMovie(id, movieRequest);
     }
 
     @DeleteMapping("/{id}")
