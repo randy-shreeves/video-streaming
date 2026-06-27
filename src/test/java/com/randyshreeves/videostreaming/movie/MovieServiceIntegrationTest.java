@@ -1,5 +1,7 @@
 package com.randyshreeves.videostreaming.movie;
 
+import com.randyshreeves.videostreaming.movie.dto.MovieRequest;
+import com.randyshreeves.videostreaming.movie.dto.MovieResponse;
 import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,56 +24,60 @@ public class MovieServiceIntegrationTest {
 
     @Test
     void shouldCreateMovieSuccessfully() {
-        Movie movie = createTestMovie();
-        Movie savedMovie = movieService.createMovie(movie);
-        assertNotNull(savedMovie.getId());
-        Movie retrievedMovie = movieRepository.findById(savedMovie.getId()).orElseThrow();
-        assertEquals(movie.getTitle(), retrievedMovie.getTitle());
-        assertEquals(movie.getDescription(), retrievedMovie.getDescription());
-        assertEquals(movie.getReleaseYear(), retrievedMovie.getReleaseYear());
-        assertEquals(movie.getRuntimeMinutes(), retrievedMovie.getRuntimeMinutes());
-        assertEquals(movie.getStorageLocation(), retrievedMovie.getStorageLocation());
+        MovieRequest movieRequest = createTestMovieRequest();
+        MovieResponse savedMovieResponse = movieService.createMovie(movieRequest);
+        assertNotNull(savedMovieResponse.getId());
+        Movie retrievedMovie = movieRepository.findById(savedMovieResponse.getId()).orElseThrow();
+        assertEquals(movieRequest.getTitle(), retrievedMovie.getTitle());
+        assertEquals(movieRequest.getDescription(), retrievedMovie.getDescription());
+        assertEquals(movieRequest.getReleaseYear(), retrievedMovie.getReleaseYear());
+        assertEquals(movieRequest.getRuntimeMinutes(), retrievedMovie.getRuntimeMinutes());
+        assertEquals(movieRequest.getStorageLocation(), retrievedMovie.getStorageLocation());
     }
 
     @Test
     void shouldRetrieveMovieById() {
-        Movie movie = createTestMovie();
-        Movie savedMovie = movieService.createMovie(movie);
-        assertNotNull(savedMovie.getId());
-        Movie retrievedMovie = movieService.getMovie(savedMovie.getId());
-        assertEquals(retrievedMovie, savedMovie);
+        MovieRequest movieRequest = createTestMovieRequest();
+        MovieResponse savedMovieResponse = movieService.createMovie(movieRequest);
+        assertNotNull(savedMovieResponse.getId());
+        MovieResponse retrievedMovieResponse = movieService.getMovie(savedMovieResponse.getId());
+        assertEquals(savedMovieResponse.getId(), retrievedMovieResponse.getId());
+        assertEquals(savedMovieResponse.getTitle(), retrievedMovieResponse.getTitle());
+        assertEquals(savedMovieResponse.getDescription(), retrievedMovieResponse.getDescription());
+        assertEquals(savedMovieResponse.getReleaseYear(), retrievedMovieResponse.getReleaseYear());
+        assertEquals(savedMovieResponse.getRuntimeMinutes(), retrievedMovieResponse.getRuntimeMinutes());
     }
 
     @Test
     void shouldUpdateMovieSuccessfully() {
-        Movie movie = createTestMovie();
-        Movie savedMovie = movieService.createMovie(movie);
-        Movie updateRequest = new Movie(
+        MovieRequest movieRequest = createTestMovieRequest();
+        MovieResponse savedMovieResponse = movieService.createMovie(movieRequest);
+        MovieRequest updateRequest = new MovieRequest(
                 "Updated Test Movie Title",
-                savedMovie.getDescription(),
-                savedMovie.getReleaseYear(),
-                savedMovie.getRuntimeMinutes(),
-                savedMovie.getStorageLocation()
+                "Updated Test Movie Description",
+                9999,
+                999,
+                "Updated Test Storage Location"
         );
-        Movie updatedMovie = movieService.updateMovie(savedMovie.getId(), updateRequest);
-        Movie retrievedMovie = movieRepository.findById(updatedMovie.getId()).orElseThrow();
+        MovieResponse updatedMovieResponse = movieService.updateMovie(savedMovieResponse.getId(), updateRequest);
+        Movie retrievedMovie = movieRepository.findById(updatedMovieResponse.getId()).orElseThrow();
         assertEquals("Updated Test Movie Title", retrievedMovie.getTitle());
-        assertEquals(movie.getDescription(), retrievedMovie.getDescription());
-        assertEquals(movie.getReleaseYear(), retrievedMovie.getReleaseYear());
-        assertEquals(movie.getRuntimeMinutes(), retrievedMovie.getRuntimeMinutes());
-        assertEquals(movie.getStorageLocation(), retrievedMovie.getStorageLocation());
+        assertEquals("Updated Test Movie Description", retrievedMovie.getDescription());
+        assertEquals(9999, retrievedMovie.getReleaseYear());
+        assertEquals(999, retrievedMovie.getRuntimeMinutes());
+        assertEquals("Updated Test Storage Location", retrievedMovie.getStorageLocation());
     }
 
     @Test
     void shouldDeleteMovieSuccessfully() {
-        Movie movie = createTestMovie();
-        Movie savedMovie = movieService.createMovie(movie);
-        movieService.deleteMovie(savedMovie.getId());
-        assertTrue(movieRepository.findById(savedMovie.getId()).isEmpty());
+        MovieRequest movieRequest = createTestMovieRequest();
+        MovieResponse savedMovieResponse = movieService.createMovie(movieRequest);
+        movieService.deleteMovie(savedMovieResponse.getId());
+        assertTrue(movieRepository.findById(savedMovieResponse.getId()).isEmpty());
     }
 
-    private Movie createTestMovie() {
-        return new Movie(
+    private MovieRequest createTestMovieRequest() {
+        return new MovieRequest(
                 "Test Movie Title",
                 "Test Movie Description",
                 2009,
