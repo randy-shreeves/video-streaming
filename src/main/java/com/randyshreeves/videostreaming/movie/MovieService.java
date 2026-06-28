@@ -1,5 +1,6 @@
 package com.randyshreeves.videostreaming.movie;
 
+import com.randyshreeves.videostreaming.exception.MovieNotFoundException;
 import com.randyshreeves.videostreaming.movie.dto.MovieRequest;
 import com.randyshreeves.videostreaming.movie.dto.MovieResponse;
 import org.springframework.stereotype.Service;
@@ -31,12 +32,12 @@ public class MovieService {
     }
 
     public MovieResponse getMovie(Long id) {
-        Movie movie = movieRepository.findById(id).orElseThrow();
+        Movie movie = movieRepository.findById(id).orElseThrow(() -> new MovieNotFoundException(id));
         return toMovieResponse(movie);
     }
 
     public MovieResponse updateMovie(Long id, MovieRequest movieRequest) {
-        Movie existingMovie = movieRepository.findById(id).orElseThrow();
+        Movie existingMovie = movieRepository.findById(id).orElseThrow(() -> new MovieNotFoundException(id));
         existingMovie.setTitle(movieRequest.getTitle());
         existingMovie.setDescription(movieRequest.getDescription());
         existingMovie.setReleaseYear(movieRequest.getReleaseYear());
@@ -47,7 +48,8 @@ public class MovieService {
     }
 
     public void deleteMovie(Long id) {
-        movieRepository.deleteById(id);
+        Movie movie = movieRepository.findById(id).orElseThrow(() -> new MovieNotFoundException(id));
+        movieRepository.delete(movie);
     }
 
     private MovieResponse toMovieResponse(Movie movie) {
