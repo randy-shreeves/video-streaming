@@ -4,10 +4,10 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class VideostreamingApplication {
+public class VideoStreamingApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(VideostreamingApplication.class, args);
+		SpringApplication.run(VideoStreamingApplication.class, args);
 	}
 
 }
