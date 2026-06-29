@@ -3,6 +3,7 @@ package com.randyshreeves.videostreaming.movie;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.randyshreeves.videostreaming.exception.MovieNotFoundException;
 import com.randyshreeves.videostreaming.movie.dto.MovieRequest;
+import com.randyshreeves.videostreaming.movie.dto.MovieResponse;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -10,9 +11,14 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -27,6 +33,79 @@ public class MovieControllerTest {
 
     @MockitoBean
     private MovieService movieService;
+
+    @Test
+    void shouldReturnAllMoviesSuccessfully() throws Exception {
+        MovieResponse movieResponse1 = createTestMovieResponse();
+        MovieResponse movieResponse2 = new MovieResponse(
+                2L,
+                "Another Test Movie",
+                "TestMovieDescription",
+                2009,
+                90
+        );
+        List<MovieResponse> movieResponseList = new ArrayList<>();
+        movieResponseList.add(movieResponse1);
+        movieResponseList.add(movieResponse2);
+        when(movieService.getAllMovies()).thenReturn(movieResponseList);
+        mockMvc.perform(get("/movies"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.length()").value(2))
+                .andExpect(jsonPath("$[0].id").value(1))
+                .andExpect(jsonPath("$[0].title").value("Test Movie Title"))
+                .andExpect(jsonPath("$[1].id").value(2))
+                .andExpect(jsonPath("$[1].title").value("Another Test Movie"));
+        verify(movieService).getAllMovies();
+    }
+
+    @Test
+    void shouldReturnOneMovieSuccessfully() throws Exception {
+        MovieResponse movieResponse = createTestMovieResponse();
+        Long movieId = movieResponse.getId();
+        when(movieService.getMovie(movieId)).thenReturn(movieResponse);
+        mockMvc.perform(get("/movies/{id}", movieId))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id").value(1L))
+                .andExpect(jsonPath("$.title").value("Test Movie Title"));
+        verify(movieService).getMovie(movieId);
+    }
+
+    @Test
+    void shouldCreateMovieSuccessfully() throws Exception {
+        MovieRequest movieRequest = createTestMovieRequest();
+        MovieResponse movieResponse = createTestMovieResponse();
+        when(movieService.createMovie(any(MovieRequest.class))).thenReturn(movieResponse);
+        mockMvc.perform(post("/movies")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(movieRequest)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id").value(1L))
+                .andExpect(jsonPath("$.title").value("Test Movie Title"));
+        verify(movieService).createMovie(any(MovieRequest.class));
+    }
+
+    @Test
+    void shouldUpdateMovieSuccessfully() throws Exception {
+        MovieRequest movieRequest = createTestMovieRequest();
+        MovieResponse movieResponse = createTestMovieResponse();
+        Long movieId = movieResponse.getId();
+        when(movieService.updateMovie(eq(movieId), any(MovieRequest.class))).thenReturn(movieResponse);
+        mockMvc.perform(put("/movies/{id}", movieId)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(movieRequest)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id").value(1L))
+                .andExpect(jsonPath("$.title").value("Test Movie Title"));
+        verify(movieService).updateMovie(eq(movieId), any(MovieRequest.class));
+    }
+
+    @Test
+    void shouldDeleteMovieSuccessfully() throws Exception {
+        Long movieId = 1L;
+        mockMvc.perform(delete("/movies/{id}", movieId))
+                .andExpect(status().isOk());
+        verify(movieService).deleteMovie(movieId);
+    }
 
     @Test
     void shouldReturnBadRequestWhenTitleIsBlank() throws Exception {
@@ -157,6 +236,16 @@ public class MovieControllerTest {
                 2009,
                 90,
                 "Test Movie Storage Location"
+        );
+    }
+
+    private MovieResponse createTestMovieResponse() {
+        return new MovieResponse(
+                1L,
+                "Test Movie Title",
+                "TestMovieDescription",
+                2009,
+                90
         );
     }
 }
