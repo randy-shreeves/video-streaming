@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { Link } from "react-router-dom";
 import { getMovies } from "../api/movieApi";
 import type { Movie } from "../types/Movie";
 
@@ -22,7 +23,9 @@ function MovieListPage() {
 
       {movies.map(movie => (
         <p key={movie.id}>
-          {movie.title}
+          <Link to={`/movies/${movie.id}`}>
+            {movie.title}
+          </Link>
         </p>
       ))}
     </>
