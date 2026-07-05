@@ -32,11 +32,12 @@ function MovieDetailPage() {
 
     return (
         <>
-            <h1>Video Streaming</h1>
-            <h2>{movie.title}</h2>
-            <p>({movie.releaseYear})</p>
+            <h1>{movie.title} ({movie.releaseYear})</h1>
             <p>{movie.description}</p>
-            <p>Runtime: {movie.runtimeMinutes} minutes</p>
+            <p>
+                {Math.floor(movie.runtimeMinutes / 60)}h{" "}
+                {movie.runtimeMinutes % 60}m
+            </p>
         </>
     );
 }
