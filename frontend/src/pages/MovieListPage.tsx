@@ -5,6 +5,8 @@ import type { Movie } from "../types/Movie";
 
 function MovieListPage() {
   const [movies, setMovies] = useState<Movie[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   useEffect(() => {
     async function loadMovies() {
       try {
@@ -12,10 +14,33 @@ function MovieListPage() {
         setMovies(movieList);
       } catch (error) {
         console.error(error);
+        setError("Unable to load the movie catalog.");
+      }
+      finally {
+        setLoading(false);
       }
     }
     loadMovies();
   }, []);
+
+  if (loading) {
+    return (
+        <>
+            <h1>Video Streaming</h1>
+            <p>Loading movies...</p>
+        </>
+    );
+  }
+
+  if (error) {
+    return (
+      <>
+        <h1>Video Streaming</h1>
+        <p>{error}</p>
+      </>
+
+    );
+  }
 
   return (
     <>

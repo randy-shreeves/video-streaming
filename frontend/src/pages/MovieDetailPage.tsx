@@ -6,6 +6,8 @@ import type { Movie } from "../types/Movie";
 
 function MovieDetailPage() {
     const [movie, setMovie] = useState<Movie | null>(null);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState<string | null>(null);
     const { id } = useParams();
 
     if (!id) {
@@ -19,6 +21,10 @@ function MovieDetailPage() {
                 setMovie(movie);
             } catch (error) {
                 console.error(error);
+                setError("Unable to load movie.");
+            }
+            finally {
+                setLoading(false);
             }
         }
         if(id) {
@@ -26,8 +32,16 @@ function MovieDetailPage() {
         }
     }, [id]);
 
+    if (loading) {
+        return <p>Loading movie...</p>;
+    }
+
+    if (error) {
+        return <p>{error}</p>;
+    }
+
     if (!movie) {
-        return <p>Loading...</p>;
+        return <p>Movie not found.</p>;
     }
 
     return (
