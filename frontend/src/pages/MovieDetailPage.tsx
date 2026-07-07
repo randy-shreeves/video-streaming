@@ -1,4 +1,4 @@
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import { useEffect, useState } from 'react';
 import { getMovie } from "../api/movieApi";
 import type { Movie } from "../types/Movie";
@@ -9,6 +9,7 @@ function MovieDetailPage() {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
     const { id } = useParams();
+    const navigate = useNavigate();
 
     if (!id) {
         return <p>Movie not found.</p>;
@@ -46,6 +47,9 @@ function MovieDetailPage() {
 
     return (
         <>
+            <button onClick={() => navigate("/movies")}>
+                Return to Movie Catalog
+            </button>
             <h1>{movie.title} ({movie.releaseYear})</h1>
             <p>{movie.description}</p>
             <p>
