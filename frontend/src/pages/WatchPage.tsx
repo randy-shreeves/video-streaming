@@ -8,7 +8,7 @@ function WatchPage() {
             <video controls style={{
                 width: "100%",
                 maxWidth: "900px",
-                height: "500px",
+                aspectRatio: "16 / 9",
                 objectFit: "contain"
             }}>
                 <source src={videoUrl} type="video/mp4" />
