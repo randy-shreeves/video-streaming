@@ -3,8 +3,14 @@ package com.randyshreeves.videostreaming.movie;
 import com.randyshreeves.videostreaming.exception.MovieNotFoundException;
 import com.randyshreeves.videostreaming.movie.dto.MovieRequest;
 import com.randyshreeves.videostreaming.movie.dto.MovieResponse;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.UrlResource;
 
+import java.net.MalformedURLException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -12,6 +18,9 @@ import java.util.List;
 public class MovieService {
 
     private final MovieRepository movieRepository;
+
+    @Value("${media.root}")
+    private String mediaRoot;
 
     public MovieService(MovieRepository movieRepository) {
         this.movieRepository = movieRepository;
@@ -34,6 +43,16 @@ public class MovieService {
     public MovieResponse getMovie(Long id) {
         Movie movie = movieRepository.findById(id).orElseThrow(() -> new MovieNotFoundException(id));
         return toMovieResponse(movie);
+    }
+
+    public Resource getMovieStream(Long id) throws MalformedURLException {
+        Movie movie = movieRepository.findById(id).orElseThrow(() -> new MovieNotFoundException(id));
+        Path path = Paths.get(mediaRoot, movie.getStorageLocation());
+        Resource resource = new UrlResource(path.toUri());
+        if (!resource.exists()) {
+            throw new RuntimeException("Video file not found.");
+        }
+        return resource;
     }
 
     public MovieResponse updateMovie(Long id, MovieRequest movieRequest) {

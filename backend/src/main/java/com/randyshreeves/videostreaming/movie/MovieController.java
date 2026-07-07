@@ -1,12 +1,16 @@
 package com.randyshreeves.videostreaming.movie;
 
-
 import com.randyshreeves.videostreaming.movie.dto.MovieRequest;
 import com.randyshreeves.videostreaming.movie.dto.MovieResponse;
-import jakarta.validation.Valid;
-import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
+import jakarta.validation.Valid;
+
+import org.springframework.web.bind.annotation.*;
+import org.springframework.core.io.Resource;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+
+import java.net.MalformedURLException;
 import java.util.List;
 
 @RestController
@@ -27,6 +31,14 @@ public class MovieController {
     @GetMapping("/{id}")
     public MovieResponse getMovie(@PathVariable Long id) {
         return movieService.getMovie(id);
+    }
+
+    @GetMapping("/{id}/stream")
+    public ResponseEntity<Resource> streamMovie(@PathVariable Long id) throws MalformedURLException {
+        Resource resource = movieService.getMovieStream(id);
+        return ResponseEntity.ok()
+                .contentType(MediaType.parseMediaType("video/mp4"))
+                .body(resource);
     }
 
     @PostMapping
