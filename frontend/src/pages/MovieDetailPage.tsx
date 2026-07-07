@@ -56,6 +56,9 @@ function MovieDetailPage() {
                 {Math.floor(movie.runtimeMinutes / 60)}h{" "}
                 {movie.runtimeMinutes % 60}m
             </p>
+            <button onClick={() => navigate(`/movies/${id}/watch`)}>
+                Watch Movie
+            </button>
         </>
     );
 }
