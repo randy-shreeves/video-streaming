@@ -147,7 +147,8 @@ public class MovieControllerTest {
                       "title": "Test Movie",
                       "description": "Description",
                       "runtimeMinutes": 90,
-                      "storageLocation": "movies/test.mp4"
+                      "storageLocation": "movies/test.mp4",
+                      "posterLocation": "movies/posters/test.jpg"
                     }
                     """;
         mockMvc.perform(post("/movies")
@@ -175,7 +176,8 @@ public class MovieControllerTest {
                       "title": "Test Movie",
                       "description": "Description",
                       "releaseYear": 2009,
-                      "storageLocation": "movies/test.mp4"
+                      "storageLocation": "movies/test.mp4",
+                      "posterLocation": "movies/posters/test.jpg"
                     }
                     """;
         mockMvc.perform(post("/movies")
@@ -210,10 +212,7 @@ public class MovieControllerTest {
     @Test
     void shouldReturnBadRequestWhenStorageLocationIsTooLong() throws Exception {
         MovieRequest movieRequest = createTestMovieRequest();
-        movieRequest.setStorageLocation("StorageLocationTooLongStorageLocationTooLongStorageLocationTooLong" +
-                "StorageLocationTooLongStorageLocationTooLongStorageLocationTooLongStorageLocationTooLong" +
-                "StorageLocationTooLongStorageLocationTooLongStorageLocationTooLongStorageLocationTooLong" +
-                "StorageLocationTooLongStorageLocationTooLongStorageLocationTooLongStorageLocationTooLong");
+        movieRequest.setStorageLocation("A".repeat(256));
         mockMvc.perform(post("/movies")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(movieRequest)))
@@ -235,7 +234,8 @@ public class MovieControllerTest {
                 "Test Movie Description",
                 2009,
                 90,
-                "Test Movie Storage Location"
+                "Test Movie Storage Location",
+                "Test Poster Storage Location"
         );
     }
 

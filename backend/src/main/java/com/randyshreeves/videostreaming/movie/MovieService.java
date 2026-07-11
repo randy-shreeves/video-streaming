@@ -62,6 +62,7 @@ public class MovieService {
         existingMovie.setReleaseYear(movieRequest.getReleaseYear());
         existingMovie.setRuntimeMinutes(movieRequest.getRuntimeMinutes());
         existingMovie.setStorageLocation(movieRequest.getStorageLocation());
+        existingMovie.setPosterLocation(movieRequest.getPosterLocation());
         Movie savedMovie = movieRepository.save(existingMovie);
         return toMovieResponse(savedMovie);
     }
@@ -87,7 +88,8 @@ public class MovieService {
           movieRequest.getDescription(),
           movieRequest.getReleaseYear(),
           movieRequest.getRuntimeMinutes(),
-          movieRequest.getStorageLocation()
+          movieRequest.getStorageLocation(),
+          movieRequest.getPosterLocation()
         );
     }
 }

@@ -22,14 +22,22 @@ public class Movie {
     @Column(nullable = false)
     private String storageLocation;
 
+    private String posterLocation;
+
     public Movie(){}
 
-    public Movie(String title, String description, int releaseYear, int runtimeMinutes, String storageLocation) {
+    public Movie(String title,
+                 String description,
+                 int releaseYear,
+                 int runtimeMinutes,
+                 String storageLocation,
+                 String posterLocation) {
         this.title = title;
         this.description = description;
         this.releaseYear = releaseYear;
         this.runtimeMinutes = runtimeMinutes;
         this.storageLocation = storageLocation;
+        this.posterLocation = posterLocation;
     }
 
     public Long getId() {return id;}
@@ -53,4 +61,12 @@ public class Movie {
     public String getStorageLocation() {return storageLocation;}
 
     public void setStorageLocation(String storageLocation) {this.storageLocation = storageLocation;}
+
+    public String getPosterLocation() {
+        return posterLocation;
+    }
+
+    public void setPosterLocation (String posterLocation) {
+        this.posterLocation = posterLocation;
+    }
 }

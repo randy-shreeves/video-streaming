@@ -33,6 +33,7 @@ public class MovieServiceIntegrationTest {
         assertEquals(movieRequest.getReleaseYear(), retrievedMovie.getReleaseYear());
         assertEquals(movieRequest.getRuntimeMinutes(), retrievedMovie.getRuntimeMinutes());
         assertEquals(movieRequest.getStorageLocation(), retrievedMovie.getStorageLocation());
+        assertEquals(movieRequest.getPosterLocation(), retrievedMovie.getPosterLocation());
     }
 
     @Test
@@ -57,7 +58,8 @@ public class MovieServiceIntegrationTest {
                 "Updated Test Movie Description",
                 9999,
                 999,
-                "Updated Test Storage Location"
+                "Updated Test Storage Location",
+                "Updated Test Poster Location"
         );
         MovieResponse updatedMovieResponse = movieService.updateMovie(savedMovieResponse.getId(), updateRequest);
         Movie retrievedMovie = movieRepository.findById(updatedMovieResponse.getId()).orElseThrow();
@@ -66,6 +68,7 @@ public class MovieServiceIntegrationTest {
         assertEquals(9999, retrievedMovie.getReleaseYear());
         assertEquals(999, retrievedMovie.getRuntimeMinutes());
         assertEquals("Updated Test Storage Location", retrievedMovie.getStorageLocation());
+        assertEquals("Updated Test Poster Location", retrievedMovie.getPosterLocation());
     }
 
     @Test
@@ -82,7 +85,8 @@ public class MovieServiceIntegrationTest {
                 "Test Movie Description",
                 2009,
                 90,
-                "Test Movie Storage Location"
+                "Test Movie Storage Location",
+                "Test Poster Location"
         );
     }
 }
