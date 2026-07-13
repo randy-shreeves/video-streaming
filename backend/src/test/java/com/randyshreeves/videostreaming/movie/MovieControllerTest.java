@@ -7,6 +7,8 @@ import com.randyshreeves.videostreaming.movie.dto.MovieResponse;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.core.io.ByteArrayResource;
+import org.springframework.core.io.Resource;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
@@ -19,8 +21,7 @@ import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest(MovieController.class)
 public class MovieControllerTest {
@@ -226,6 +227,28 @@ public class MovieControllerTest {
         mockMvc.perform(get("/movies/999"))
                 .andExpect(status().isNotFound())
                 .andExpect(jsonPath("$.message").value("Movie with ID: 999 was not found."));
+    }
+
+    @Test
+    void shouldReturnMovieStreamSuccessfully() throws Exception {
+        Long movieId = 1L;
+        Resource resource = new ByteArrayResource("test".getBytes());
+        when(movieService.getMovieStream(movieId)).thenReturn(resource);
+        mockMvc.perform(get("/movies/{id}/stream", movieId))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType("video/mp4"));
+        verify(movieService).getMovieStream(movieId);
+    }
+
+    @Test
+    void shouldReturnMoviePosterSuccessfully() throws Exception {
+        Long movieId = 1L;
+        Resource resource = new ByteArrayResource("test".getBytes());
+        when(movieService.getMoviePoster(movieId)).thenReturn(resource);
+        mockMvc.perform(get("/movies/{id}/poster", movieId))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.IMAGE_JPEG));
+        verify(movieService).getMoviePoster(movieId);
     }
 
     private MovieRequest createTestMovieRequest() {
