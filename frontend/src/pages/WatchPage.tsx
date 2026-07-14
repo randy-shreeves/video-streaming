@@ -1,10 +1,14 @@
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 
 function WatchPage() {
     const { id } = useParams();
     const videoUrl = `http://localhost:8080/movies/${id}/stream`;
+    const navigate = useNavigate();
     return (
         <>
+            <button onClick={() => navigate(`/movies/${id}`)}>
+                Return to Movie Details
+            </button>
             <video controls style={{
                 width: "100%",
                 maxWidth: "900px",
