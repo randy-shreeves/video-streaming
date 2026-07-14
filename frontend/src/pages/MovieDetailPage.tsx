@@ -1,4 +1,4 @@
-import { useParams, useNavigate } from "react-router-dom";
+import { Link, useParams, useNavigate } from "react-router-dom";
 import { useEffect, useState } from 'react';
 import { getMovie } from "../api/movieApi";
 import type { Movie } from "../types/Movie";
@@ -50,15 +50,24 @@ function MovieDetailPage() {
             <button onClick={() => navigate("/movies")}>
                 Return to Movie Catalog
             </button>
+            <div className="poster-container">
+                <Link to={`/movies/${movie.id}/watch`}>
+                    <img 
+                        className="movie-poster"
+                        src={`http://localhost:8080/movies/${movie.id}/poster`} 
+                        alt={`${movie.title} poster`}
+                    />
+                    <div className="play-overlay">
+                        ▶
+                    </div>
+                </Link>
+            </div>
             <h1>{movie.title} ({movie.releaseYear})</h1>
             <p>{movie.description}</p>
             <p>
                 {Math.floor(movie.runtimeMinutes / 60)}h{" "}
                 {movie.runtimeMinutes % 60}m
             </p>
-            <button onClick={() => navigate(`/movies/${id}/watch`)}>
-                Watch Movie
-            </button>
         </>
     );
 }
