@@ -1,7 +1,8 @@
 import { useEffect, useState } from 'react';
-import { Link } from "react-router-dom";
 import { getMovies } from "../api/movieApi";
 import type { Movie } from "../types/Movie";
+import MovieCard from "../components/MovieCard";
+import "./MovieListPage.css";
 
 function MovieListPage() {
   const [movies, setMovies] = useState<Movie[]>([]);
@@ -46,13 +47,14 @@ function MovieListPage() {
     <>
       <h1>Video Streaming</h1>
 
-      {movies.map(movie => (
-        <p key={movie.id}>
-          <Link to={`/movies/${movie.id}`}>
-            {movie.title}
-          </Link>
-        </p>
-      ))}
+      <div className="movie-grid">
+        {movies.map(movie => (
+          <MovieCard
+            key={movie.id}
+            movie={movie}
+          />
+        ))}
+      </div>
     </>
   );
 }
