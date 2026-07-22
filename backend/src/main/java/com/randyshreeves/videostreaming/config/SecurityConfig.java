@@ -3,6 +3,7 @@ package com.randyshreeves.videostreaming.config;
 import com.randyshreeves.videostreaming.auth.JwtAuthenticationFilter;
 import com.randyshreeves.videostreaming.user.CustomUserDetailsService;
 import io.jsonwebtoken.Jwt;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -46,6 +47,18 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.PUT, "/movies/*").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.DELETE, "/movies/*").hasRole("ADMIN")
                         .anyRequest().authenticated()
+                )
+                .exceptionHandling(exception -> exception
+                        .authenticationEntryPoint(
+                                (request, response, authException) -> {
+                                    response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                                    response.flushBuffer();
+                                })
+                        .accessDeniedHandler(
+                                (request, response, accessDeniedException) -> {
+                                        response.setStatus(HttpServletResponse.SC_FORBIDDEN);
+                                        response.flushBuffer();
+                        })
                 )
                 .sessionManagement(session -> session
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
