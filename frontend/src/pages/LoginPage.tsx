@@ -1,4 +1,5 @@
 import "./LoginPage.css";
+import { login } from "../api/authApi";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import type { SyntheticEvent } from "react";
@@ -11,22 +12,7 @@ function LoginPage() {
     const handleLogin = async (event: SyntheticEvent<HTMLFormElement>) => {
         event.preventDefault();
         try {
-            const response = await fetch("http://localhost:8080/auth/login", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify({
-                    username,
-                    password
-                })
-            });
-
-            if (!response.ok) {
-                throw new Error("Invalid username or password.");
-            }
-
-            const data = await response.json();
+            const data = await login(username, password);
             localStorage.setItem("token", data.token);
             navigate("/movies");
 
