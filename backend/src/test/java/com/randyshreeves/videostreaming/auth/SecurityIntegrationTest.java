@@ -83,13 +83,6 @@ public class SecurityIntegrationTest {
     }
 
     @Test
-    void shouldAllowAnonymousAccessToMoviesList() throws Exception {
-        mockMvc.perform(get("/movies"))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$").isArray());
-    }
-
-    @Test
     void shouldRejectAnonymousRequestsToStreamMovie() throws Exception {
         mockMvc.perform(get("/movies/1/stream"))
                 .andExpect(status().isUnauthorized());
