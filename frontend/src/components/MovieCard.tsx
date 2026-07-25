@@ -1,12 +1,26 @@
 import type { Movie } from "../types/Movie";
 import { Link } from "react-router-dom";
 import "./MovieCard.css";
+import { getMoviePoster } from "../api/movieApi";
+import { useEffect, useState } from "react";
 
 type MovieCardProps = {
     movie: Movie;
 };
 
 function MovieCard({ movie }: MovieCardProps) {
+    const [posterUrl, setPosterUrl] = useState<string | null>(null);
+
+    useEffect(() => {
+        getMoviePoster(movie.id)
+            .then(url => {
+                setPosterUrl(url);
+            })
+            .catch(error => {
+                console.error(error);
+            });
+    }, [movie.id]);
+
     return (
         <Link 
             className="movie-card"
@@ -14,7 +28,7 @@ function MovieCard({ movie }: MovieCardProps) {
         >
             <img
                 className="movie-poster"
-                src={`http://localhost:8080/movies/${movie.id}/poster`}
+                src={posterUrl ?? undefined}
                 alt={`${movie.title} poster`}
             />
             <p>{movie.title} ({movie.releaseYear})</p>
