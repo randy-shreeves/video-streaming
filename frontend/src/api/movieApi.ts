@@ -29,3 +29,12 @@ export async function getMoviePoster(id: number) {
     const blob = await response.blob();
     return URL.createObjectURL(blob);
 }
+
+export async function getMovieStream(id: number) {
+    const response = await apiFetch(`${BASE_URL}/${id}/stream`)
+    if (!response.ok) {
+        throw new Error("Failed to load movie stream.");
+    }
+    const blob = await response.blob();
+    return URL.createObjectURL(blob);
+}
