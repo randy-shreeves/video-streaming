@@ -1,6 +1,6 @@
 import { Link, useParams, useNavigate } from "react-router-dom";
 import { useEffect, useState } from 'react';
-import { getMovie } from "../api/movieApi";
+import { getMovie, getMoviePoster } from "../api/movieApi";
 import type { Movie } from "../types/Movie";
 
 
@@ -8,6 +8,7 @@ function MovieDetailPage() {
     const [movie, setMovie] = useState<Movie | null>(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
+    const [posterUrl, setPosterUrl] = useState<string | null>(null);
     const { id } = useParams();
     const navigate = useNavigate();
 
@@ -19,7 +20,9 @@ function MovieDetailPage() {
         async function loadMovie() {
             try {
                 const movie: Movie = await getMovie(Number(id));
+                const posterUrl = await getMoviePoster(movie.id);
                 setMovie(movie);
+                setPosterUrl(posterUrl);
             } catch (error) {
                 console.error(error);
                 setError("Unable to load movie.");
@@ -54,7 +57,7 @@ function MovieDetailPage() {
                 <Link to={`/movies/${movie.id}/watch`}>
                     <img 
                         className="movie-poster"
-                        src={`http://localhost:8080/movies/${movie.id}/poster`} 
+                        src={posterUrl ?? undefined} 
                         alt={`${movie.title} poster`}
                     />
                     <div className="play-overlay">
