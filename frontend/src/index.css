@@ -31,3 +31,9 @@ video {
     max-width: 100%;
     display: block;
 }
+
+.logout-button {
+    position: fixed;
+    top: 10px;
+    right: 10px;
+}

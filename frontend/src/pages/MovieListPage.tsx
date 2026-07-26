@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { getMovies } from "../api/movieApi";
 import type { Movie } from "../types/Movie";
 import MovieCard from "../components/MovieCard";
+import LogoutButton from "../components/LogoutButton";
 import "./MovieListPage.css";
 
 function MovieListPage() {
@@ -46,6 +47,8 @@ function MovieListPage() {
   return (
     <>
       <h1>Video Streaming</h1>
+
+      <LogoutButton />
 
       <div className="movie-grid">
         {movies.map(movie => (

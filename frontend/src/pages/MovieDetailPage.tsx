@@ -2,6 +2,7 @@ import { Link, useParams, useNavigate } from "react-router-dom";
 import { useEffect, useState } from 'react';
 import { getMovie, getMoviePoster } from "../api/movieApi";
 import type { Movie } from "../types/Movie";
+import LogoutButton from "../components/LogoutButton";
 
 
 function MovieDetailPage() {
@@ -50,6 +51,7 @@ function MovieDetailPage() {
 
     return (
         <>
+            <LogoutButton />
             <button onClick={() => navigate("/movies")}>
                 Return to Movie Catalog
             </button>
