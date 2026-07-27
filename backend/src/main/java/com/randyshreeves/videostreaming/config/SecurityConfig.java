@@ -39,7 +39,7 @@ public class SecurityConfig {
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
-                        .requestMatchers(HttpMethod.POST, "/auth/login").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/auth/*").permitAll()
                         .requestMatchers(HttpMethod.GET, "/movies").authenticated()
                         .requestMatchers(HttpMethod.GET, "/movies/*").authenticated()
                         .requestMatchers(HttpMethod.GET, "/movies/*/poster").authenticated()

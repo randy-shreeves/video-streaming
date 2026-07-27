@@ -2,6 +2,10 @@ package com.randyshreeves.videostreaming.auth;
 
 import com.randyshreeves.videostreaming.auth.dto.LoginRequest;
 import com.randyshreeves.videostreaming.auth.dto.LoginResponse;
+import com.randyshreeves.videostreaming.auth.dto.NewUserRegistrationRequest;
+import com.randyshreeves.videostreaming.user.UserService;
+import jakarta.validation.Valid;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -9,13 +13,21 @@ import org.springframework.web.bind.annotation.*;
 public class AuthController {
 
     private final AuthService authService;
+    private final UserService userService;
 
-    public AuthController(AuthService authService) {
+    public AuthController(AuthService authService, UserService userService) {
         this.authService = authService;
+        this.userService = userService;
     }
 
     @PostMapping("/login")
+    @ResponseStatus(HttpStatus.CREATED)
     public LoginResponse login(@RequestBody LoginRequest loginRequest) {
         return authService.login(loginRequest);
+    }
+
+    @PostMapping("/register")
+    public void registerUser(@Valid @RequestBody NewUserRegistrationRequest request) {
+        userService.registerUser(request);
     }
 }
