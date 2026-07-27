@@ -3,6 +3,7 @@ package com.randyshreeves.videostreaming.auth;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.randyshreeves.videostreaming.auth.dto.LoginRequest;
 import com.randyshreeves.videostreaming.auth.dto.LoginResponse;
+import com.randyshreeves.videostreaming.auth.dto.NewUserRegistrationRequest;
 import com.randyshreeves.videostreaming.movie.Movie;
 import com.randyshreeves.videostreaming.movie.MovieRepository;
 import com.randyshreeves.videostreaming.user.*;
@@ -54,8 +55,10 @@ public class SecurityIntegrationTest {
 
     @BeforeEach
     void setUp() {
-        userService.registerUser(regularUserUsername, regularUserPassword);
-        userService.registerUser(adminUserUsername, adminUserPassword);
+        NewUserRegistrationRequest regularUserRequest = new NewUserRegistrationRequest(regularUserUsername, regularUserPassword);
+        NewUserRegistrationRequest adminUserRequest = new NewUserRegistrationRequest(adminUserUsername, adminUserPassword);
+        userService.registerUser(regularUserRequest);
+        userService.registerUser(adminUserRequest);
         User adminUser = userRepository.findByUsername(adminUserUsername).orElseThrow();
         adminUser.setRole(Role.ROLE_ADMIN);
         userRepository.save(adminUser);
