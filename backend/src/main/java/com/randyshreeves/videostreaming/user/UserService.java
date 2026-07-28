@@ -1,6 +1,7 @@
 package com.randyshreeves.videostreaming.user;
 
 import com.randyshreeves.videostreaming.auth.dto.NewUserRegistrationRequest;
+import com.randyshreeves.videostreaming.exception.UsernameAlreadyExistsException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -19,7 +20,7 @@ public class UserService {
         String username = request.getUsername();
         String password = request.getPassword();
         if (userRepository.findByUsername(username).isPresent()) {
-            throw new RuntimeException("Username already exists.");
+            throw new UsernameAlreadyExistsException("Username already exists.");
         }
         String hashedPassword = passwordEncoder.encode(password);
         User user = new User(username, hashedPassword, Role.ROLE_USER);

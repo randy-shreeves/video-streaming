@@ -88,6 +88,15 @@ public class SecurityIntegrationTest {
     }
 
     @Test
+    void shouldReturnDuplicateUsernameException() throws Exception {
+        NewUserRegistrationRequest request = new NewUserRegistrationRequest(regularUserUsername, regularUserPassword);
+        mockMvc.perform(post("/auth/register")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isConflict());
+    }
+
+    @Test
     void shouldLoginWithValidCredentials() throws Exception {
         LoginRequest request = new LoginRequest(regularUserUsername, regularUserPassword);
         mockMvc.perform(post("/auth/login")

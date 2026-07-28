@@ -21,4 +21,10 @@ public class GlobalExceptionHandler {
     public ErrorResponse handleValidation(MethodArgumentNotValidException ex) {
         return new ErrorResponse(ex.getBindingResult().getFieldError().getDefaultMessage());
     }
+
+    @ExceptionHandler(UsernameAlreadyExistsException.class)
+    @ResponseStatus(HttpStatus.CONFLICT)
+    public ErrorResponse handleDuplicateUsername(UsernameAlreadyExistsException ex) {
+        return new ErrorResponse(ex.getMessage());
+    }
 }
