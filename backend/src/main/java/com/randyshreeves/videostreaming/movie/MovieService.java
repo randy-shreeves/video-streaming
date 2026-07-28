@@ -1,5 +1,6 @@
 package com.randyshreeves.videostreaming.movie;
 
+import com.randyshreeves.videostreaming.exception.MediaFileNotFoundException;
 import com.randyshreeves.videostreaming.exception.MovieNotFoundException;
 import com.randyshreeves.videostreaming.movie.dto.MovieRequest;
 import com.randyshreeves.videostreaming.movie.dto.MovieResponse;
@@ -50,7 +51,7 @@ public class MovieService {
         Path path = Paths.get(mediaRoot, movie.getStorageLocation());
         Resource resource = new UrlResource(path.toUri());
         if (!resource.exists()) {
-            throw new RuntimeException("Video file not found.");
+            throw new MediaFileNotFoundException("Video file not found.");
         }
         return resource;
     }
@@ -60,7 +61,7 @@ public class MovieService {
         Path path = Paths.get(mediaRoot, movie.getPosterLocation());
         Resource resource = new UrlResource(path.toUri());
         if (!resource.exists()) {
-            throw new RuntimeException("Movie poster not found.");
+            throw new MediaFileNotFoundException("Movie poster not found.");
         }
         return resource;
     }

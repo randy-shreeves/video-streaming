@@ -27,4 +27,10 @@ public class GlobalExceptionHandler {
     public ErrorResponse handleDuplicateUsername(UsernameAlreadyExistsException ex) {
         return new ErrorResponse(ex.getMessage());
     }
+
+    @ExceptionHandler(MediaFileNotFoundException.class)
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    public ErrorResponse handleMediaFileNotFound(MediaFileNotFoundException ex) {
+        return new ErrorResponse(ex.getMessage());
+    }
 }

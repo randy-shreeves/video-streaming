@@ -1,5 +1,6 @@
 package com.randyshreeves.videostreaming.movie;
 
+import com.randyshreeves.videostreaming.exception.MediaFileNotFoundException;
 import com.randyshreeves.videostreaming.exception.MovieNotFoundException;
 import com.randyshreeves.videostreaming.movie.dto.MovieRequest;
 import com.randyshreeves.videostreaming.movie.dto.MovieResponse;
@@ -120,7 +121,7 @@ public class MovieServiceIntegrationTest {
         MovieRequest request = createTestMovieRequest();
         request.setPosterLocation("missing_poster_file.jpg");
         MovieResponse savedMovie = movieService.createMovie(request);
-        RuntimeException exception = assertThrows(RuntimeException.class, () -> movieService.getMoviePoster(savedMovie.getId()));
+        RuntimeException exception = assertThrows(MediaFileNotFoundException.class, () -> movieService.getMoviePoster(savedMovie.getId()));
         assertEquals("Movie poster not found.", exception.getMessage());
     }
 
