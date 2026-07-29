@@ -4,12 +4,15 @@ import MovieListPage from "./pages/MovieListPage";
 import MovieDetailPage from "./pages/MovieDetailPage";
 import WatchPage from "./pages/WatchPage";
 import ProtectedRoute from "./components/ProtectedRoute";
+import RegistrationPage from "./pages/RegistrationPage";
 
 function App() {
   return (
     <Routes>
 
       <Route path="/" element={<LoginPage />}/>
+
+      <Route path="/register" element={<RegistrationPage />}/>
 
       <Route 
         path="/movies" 

@@ -19,3 +19,24 @@ export async function login(username: string, password: string): Promise<LoginRe
 
     return response.json();
 }
+
+export async function register(username: string, password: string, reenteredPassword: string) {
+    if (password !== reenteredPassword) {
+        throw new Error("Passwords do not match.");
+    }
+
+    const response = await apiFetch("/auth/register", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+            username,
+            password
+        })
+    });
+
+    if (!response.ok) {
+        throw new Error("Registration failed.");
+    }
+}

@@ -37,3 +37,14 @@ video {
     top: 10px;
     right: 10px;
 }
+
+.back-button {
+    position: fixed;
+    top: 10px;
+    left: 10px;
+}
+
+.button-row {
+    display: flex;
+    gap: 8px;
+}
