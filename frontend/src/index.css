@@ -48,3 +48,7 @@ video {
     display: flex;
     gap: 8px;
 }
+
+.error {
+    color: red;
+}

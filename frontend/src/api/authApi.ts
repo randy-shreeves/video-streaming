@@ -37,6 +37,7 @@ export async function register(username: string, password: string, reenteredPass
     });
 
     if (!response.ok) {
-        throw new Error("Registration failed.");
+        const error = await response.json();
+        throw new Error(error.message);
     }
 }

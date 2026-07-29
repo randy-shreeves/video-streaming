@@ -8,6 +8,7 @@ function RegistrationPage() {
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
     const [reenteredPassword, setReenteredPassword] = useState("");
+    const [errorMessage, setErrorMessage] = useState("");
     const navigate = useNavigate();
 
     const handleRegistration = async (event: SyntheticEvent<HTMLFormElement>) => {
@@ -17,16 +18,22 @@ function RegistrationPage() {
             navigate("/");
 
         } catch (error) {
-            console.error("Registration failed: ", error);
+            if (error instanceof Error) {
+                setErrorMessage(error.message);
+            }
         }
     };
 
     return (
         <div className="login-container">
             <h1>Video Streaming</h1>
+
             <button className="back-button" onClick={() => navigate("/")}>
                 Return to Login Page
             </button>
+
+            {errorMessage && <p className="error">{errorMessage}</p>}
+
             <form onSubmit={handleRegistration}>
                 <div>
                     <label htmlFor="username">Username</label>
