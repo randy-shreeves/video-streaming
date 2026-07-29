@@ -1,12 +1,17 @@
 package com.randyshreeves.videostreaming.auth.dto;
 
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 
 public class NewUserRegistrationRequest {
 
     @NotBlank(message = "Username is required.")
     @Size(min = 3, max = 30, message = "Username must be 3-30 characters.")
+    @Pattern(
+            regexp = "^[A-Za-z][A-Za-z0-9_]*$",
+            message = "Username must start with a letter and only contain letters, numbers, and underscores."
+    )
     private String username;
 
     @NotBlank(message = "Password is required.")

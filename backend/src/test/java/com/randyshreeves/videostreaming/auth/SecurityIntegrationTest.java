@@ -97,6 +97,16 @@ public class SecurityIntegrationTest {
     }
 
     @Test
+    void shouldReturnBadRequestIfRegisterUsernameThatDoesntMatchRegex() throws Exception {
+        String invalidUsername = "_invalidUsername";
+        NewUserRegistrationRequest request = new NewUserRegistrationRequest(invalidUsername, regularUserPassword);
+        mockMvc.perform(post("/auth/register")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
     void shouldLoginWithValidCredentials() throws Exception {
         LoginRequest request = new LoginRequest(regularUserUsername, regularUserPassword);
         mockMvc.perform(post("/auth/login")
