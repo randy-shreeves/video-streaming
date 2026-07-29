@@ -1,7 +1,8 @@
 package com.randyshreeves.videostreaming.exception;
 
-import com.randyshreeves.videostreaming.dto.ErrorResponse;
+import com.randyshreeves.videostreaming.exception.dto.ErrorResponse;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -32,5 +33,11 @@ public class GlobalExceptionHandler {
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public ErrorResponse handleMediaFileNotFound(MediaFileNotFoundException ex) {
         return new ErrorResponse(ex.getMessage());
+    }
+
+    @ExceptionHandler(AuthenticationException.class)
+    @ResponseStatus(HttpStatus.UNAUTHORIZED)
+    public ErrorResponse handleAuthentication(AuthenticationException ex) {
+        return new ErrorResponse("Invalid username or password.");
     }
 }

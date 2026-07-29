@@ -7,6 +7,7 @@ import type { SyntheticEvent } from "react";
 function LoginPage() {
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
+    const [errorMessage, setErrorMessage] = useState("");
     const navigate = useNavigate();
 
     const handleLogin = async (event: SyntheticEvent<HTMLFormElement>) => {
@@ -17,13 +18,18 @@ function LoginPage() {
             navigate("/movies");
 
         } catch (error) {
-            console.error("Login failed: ", error);
+            if (error instanceof Error) {
+                setErrorMessage(error.message);
+            }
         }
     };
 
     return (
         <div className="login-container">
             <h1>Video Streaming</h1>
+
+            {errorMessage && <p className="error">{errorMessage}</p>}
+
             <form onSubmit={handleLogin}>
                 <div>
                     <label htmlFor="username">Username</label>

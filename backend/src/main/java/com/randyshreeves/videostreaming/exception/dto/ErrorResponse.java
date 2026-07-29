@@ -1,4 +1,4 @@
-package com.randyshreeves.videostreaming.dto;
+package com.randyshreeves.videostreaming.exception.dto;
 
 public class ErrorResponse {
 

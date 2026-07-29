@@ -14,7 +14,8 @@ export async function login(username: string, password: string): Promise<LoginRe
     });
 
     if (!response.ok) {
-        throw new Error("Invalid username or password.");
+        const error = await response.json();
+        throw new Error(error.message);
     }
 
     return response.json();
