@@ -12,6 +12,8 @@ import org.springframework.core.io.Resource;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.TestPropertySource;
 
+import java.util.List;
+
 import static org.junit.jupiter.api.Assertions.*;
 import static org.junit.jupiter.api.AssertionsKt.assertNotNull;
 
@@ -52,6 +54,17 @@ public class MovieServiceIntegrationTest {
         assertEquals(savedMovieResponse.getDescription(), retrievedMovieResponse.getDescription());
         assertEquals(savedMovieResponse.getReleaseYear(), retrievedMovieResponse.getReleaseYear());
         assertEquals(savedMovieResponse.getRuntimeMinutes(), retrievedMovieResponse.getRuntimeMinutes());
+    }
+
+    @Test
+        void shouldReturnAllMoviesSuccessfully() {
+        MovieRequest movieRequest = createTestMovieRequest();
+        movieService.createMovie(movieRequest);
+        List<MovieResponse> movieResponseList = movieService.getAllMovies();
+        assertFalse(movieResponseList.isEmpty());
+        MovieResponse movieResponse = movieResponseList.get(0);
+        assertEquals(movieResponse.getTitle(), movieRequest.getTitle());
+        assertEquals(1, movieResponseList.size());
     }
 
     @Test
