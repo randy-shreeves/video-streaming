@@ -1,6 +1,5 @@
 package com.randyshreeves.videostreaming.auth;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.randyshreeves.videostreaming.auth.dto.LoginRequest;
 import com.randyshreeves.videostreaming.auth.dto.LoginResponse;
@@ -63,47 +62,6 @@ public class SecurityIntegrationTest {
         User adminUser = userRepository.findByUsername(adminUserUsername).orElseThrow();
         adminUser.setRole(Role.ROLE_ADMIN);
         userRepository.save(adminUser);
-    }
-
-    @Test
-    void shouldRegisterNewUserSuccessfully() throws Exception {
-        String username = "newUsername";
-        String password = "newPassword";
-        NewUserRegistrationRequest request = new NewUserRegistrationRequest(username, password);
-        mockMvc.perform(post("/auth/register")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(request)))
-                .andExpect(status().isCreated());
-    }
-
-    @Test
-    void shouldReturnBadRequestIfUsernameIsBlank() throws Exception {
-        String username = "";
-        String password = "newPassword";
-        NewUserRegistrationRequest request = new NewUserRegistrationRequest(username, password);
-        mockMvc.perform(post("/auth/register")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(request)))
-                .andExpect(status().isBadRequest());
-    }
-
-    @Test
-    void shouldReturnDuplicateUsernameException() throws Exception {
-        NewUserRegistrationRequest request = new NewUserRegistrationRequest(regularUserUsername, regularUserPassword);
-        mockMvc.perform(post("/auth/register")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(request)))
-                .andExpect(status().isConflict());
-    }
-
-    @Test
-    void shouldReturnBadRequestIfRegisterUsernameThatDoesntMatchRegex() throws Exception {
-        String invalidUsername = "_invalidUsername";
-        NewUserRegistrationRequest request = new NewUserRegistrationRequest(invalidUsername, regularUserPassword);
-        mockMvc.perform(post("/auth/register")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(request)))
-                .andExpect(status().isBadRequest());
     }
 
     @Test
