@@ -21,8 +21,7 @@ import java.util.List;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -114,7 +113,7 @@ public class MovieControllerTest {
     void shouldDeleteMovieSuccessfully() throws Exception {
         Long movieId = 1L;
         mockMvc.perform(delete("/movies/{id}", movieId))
-                .andExpect(status().isOk());
+                .andExpect(status().isNoContent());
         verify(movieService).deleteMovie(movieId);
     }
 
@@ -235,6 +234,25 @@ public class MovieControllerTest {
     void shouldReturnNotFoundExceptionWhenMovieDoesNotExist() throws Exception {
         when(movieService.getMovie(999L)).thenThrow(new MovieNotFoundException(999L));
         mockMvc.perform(get("/movies/999"))
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("$.message").value("Movie with ID: 999 was not found."));
+    }
+
+    @Test
+    void shouldReturnNotFoundExceptionWhenDeletingNonexistentMovie() throws Exception {
+        doThrow(new MovieNotFoundException(999L)).when(movieService).deleteMovie(999L);
+        mockMvc.perform(delete("/movies/999"))
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("$.message").value("Movie with ID: 999 was not found."));
+    }
+
+    @Test
+    void shouldReturnNotFoundExceptionWhenUpdatingNonexistentMovie() throws Exception {
+        MovieRequest movieRequest = createTestMovieRequest();
+        when(movieService.updateMovie(eq(999L), any(MovieRequest.class))).thenThrow(new MovieNotFoundException(999L));
+        mockMvc.perform(put("/movies/999")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(movieRequest)))
                 .andExpect(status().isNotFound())
                 .andExpect(jsonPath("$.message").value("Movie with ID: 999 was not found."));
     }

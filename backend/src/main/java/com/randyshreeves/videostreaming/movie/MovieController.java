@@ -5,6 +5,7 @@ import com.randyshreeves.videostreaming.movie.dto.MovieResponse;
 
 import jakarta.validation.Valid;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.core.io.Resource;
 import org.springframework.http.MediaType;
@@ -59,6 +60,7 @@ public class MovieController {
         return movieService.updateMovie(id, movieRequest);
     }
 
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     @DeleteMapping("/{id}")
     public void deleteMovie(@PathVariable Long id) {
         movieService.deleteMovie(id);

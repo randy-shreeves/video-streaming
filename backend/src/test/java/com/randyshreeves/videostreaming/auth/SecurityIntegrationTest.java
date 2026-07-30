@@ -133,7 +133,7 @@ public class SecurityIntegrationTest {
         Long movieId = movie.getId();
         mockMvc.perform(delete("/movies/{id}", movieId)
                 .header("Authorization", "Bearer " + jwt))
-                .andExpect(status().isOk());
+                .andExpect(status().isNoContent());
         assertTrue(movieRepository.findById(movieId).isEmpty());
     }
 
