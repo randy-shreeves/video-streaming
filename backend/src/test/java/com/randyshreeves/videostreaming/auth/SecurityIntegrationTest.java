@@ -11,19 +11,24 @@ import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.annotation.Import;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @SpringBootTest
+@Import(JwtTestConfiguration.class)
 @AutoConfigureMockMvc
 @TestPropertySource(properties = {"media.root=src/test/resources/media"})
 @ActiveProfiles("test")
@@ -44,6 +49,9 @@ public class SecurityIntegrationTest {
 
     @Autowired
     ObjectMapper objectMapper;
+
+    @Autowired
+    JwtTestHelper jwtTestHelper;
 
     private final String adminUserUsername = "adminUser";
 
@@ -105,16 +113,32 @@ public class SecurityIntegrationTest {
         movie = movieRepository.save(movie);
         Long movieId = movie.getId();
         mockMvc.perform(get("/movies/{id}/stream", movieId)
-                .header("Authorization", "Bearer " + jwt))
+                .header(HttpHeaders.AUTHORIZATION, "Bearer " + jwt))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType("video/mp4"));
+    }
+
+    @Test
+    void shouldRejectExpiredJwt() throws Exception {
+        String expiredJwt = jwtTestHelper.generateExpiredToken(regularUserUsername);
+        mockMvc.perform(get("/movies/1/stream")
+                .header(HttpHeaders.AUTHORIZATION, "Bearer " + expiredJwt))
+                .andExpect(status().isUnauthorized());
+    }
+
+    @Test
+    void shouldRejectJwtWithInvalidSignature() throws Exception {
+        String invalidJwt = jwtTestHelper.generateTokenWithInvalidSignature(regularUserUsername);
+        mockMvc.perform(get("/movies/1/stream")
+                .header(HttpHeaders.AUTHORIZATION, "Bearer " + invalidJwt))
+                .andExpect(status().isUnauthorized());
     }
 
     @Test
     void shouldForbidNonAdminUserFromDeletingMovie() throws Exception {
         String jwt = loginAndGetToken(regularUserUsername, regularUserPassword);
         mockMvc.perform(delete("/movies/1")
-                .header("Authorization", "Bearer " + jwt))
+                .header(HttpHeaders.AUTHORIZATION, "Bearer " + jwt))
                 .andExpect(status().isForbidden());
     }
 
@@ -132,9 +156,39 @@ public class SecurityIntegrationTest {
         movie = movieRepository.save(movie);
         Long movieId = movie.getId();
         mockMvc.perform(delete("/movies/{id}", movieId)
-                .header("Authorization", "Bearer " + jwt))
+                .header(HttpHeaders.AUTHORIZATION, "Bearer " + jwt))
                 .andExpect(status().isNoContent());
         assertTrue(movieRepository.findById(movieId).isEmpty());
+    }
+
+    @Test
+    void shouldAllowAdminUserToUpdateMovieSuccessfully() throws Exception {
+        String jwt = loginAndGetToken(adminUserUsername, adminUserPassword);
+        Movie movie = new Movie(
+                "Test Title",
+                "Test Description",
+                2001,
+                90,
+                "test_movie.mp4",
+                "test_poster.jpg"
+        );
+        movie = movieRepository.save(movie);
+        Long movieId = movie.getId();
+        Movie upadtedMovieRequest = new Movie(
+                "Updated Test Title",
+                "Test Description",
+                2001,
+                90,
+                "test_movie.mp4",
+                "test_poster.jpg"
+        );
+        mockMvc.perform(put("/movies/{id}", movieId)
+                .header(HttpHeaders.AUTHORIZATION, "Bearer " + jwt)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(upadtedMovieRequest)))
+                .andExpect(status().isOk());
+        Movie retrievedMovie = movieRepository.findById(movieId).orElseThrow();
+        assertEquals("Updated Test Title", retrievedMovie.getTitle());
     }
 
     private String loginAndGetToken(String username, String password) throws Exception {
