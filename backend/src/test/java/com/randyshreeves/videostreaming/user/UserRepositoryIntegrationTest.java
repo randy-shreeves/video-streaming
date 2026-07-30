@@ -21,22 +21,14 @@ public class UserRepositoryIntegrationTest {
 
     @Test
     void shouldSaveUserSuccessfully() {
-        User user = new User(
-                "testuser",
-                "hashedpassword",
-                Role.ROLE_USER
-        );
+        User user = new User("testuser", "hashedpassword", Role.ROLE_USER);
         User savedUser = userRepository.save(user);
         assertNotNull(savedUser.getId());
     }
 
     @Test
     void shouldFindByUsername() {
-        User user = new User(
-            "testuser",
-            "hashedpassword",
-            Role.ROLE_USER
-        );
+        User user = new User("testuser", "hashedpassword", Role.ROLE_USER);
         userRepository.save(user);
         Optional<User> foundUser = userRepository.findByUsername("testuser");
         assertTrue(foundUser.isPresent());
@@ -45,17 +37,21 @@ public class UserRepositoryIntegrationTest {
 
     @Test
     void shouldNotAllowDuplicateUsername() {
-        User firstUser = new User(
-                "duplicate",
-                "password",
-                Role.ROLE_USER
-        );
-        User secondUser = new User(
-                "duplicate",
-                "differentpassword",
-                Role.ROLE_USER
-        );
+        User firstUser = new User("duplicate", "password", Role.ROLE_USER);
+        User secondUser = new User("duplicate", "differentpassword", Role.ROLE_USER);
         userRepository.save(firstUser);
         assertThrows(DataIntegrityViolationException.class, () -> userRepository.saveAndFlush(secondUser));
+    }
+
+    @Test
+    void shouldNotSaveUserWithoutUsername() {
+        User user = new User(null, "hashedpassword", Role.ROLE_USER);
+        assertThrows(DataIntegrityViolationException.class, () -> userRepository.saveAndFlush(user));
+    }
+
+    @Test
+    void shouldNotSaveUserWithoutPassword() {
+        User user = new User("testUser", null, Role.ROLE_USER);
+        assertThrows(DataIntegrityViolationException.class, () -> userRepository.saveAndFlush(user));
     }
 }
