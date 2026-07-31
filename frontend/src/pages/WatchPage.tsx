@@ -14,12 +14,16 @@ function WatchPage() {
     
     useEffect(() => {
         let objectUrl: string | null = null;
+        const controller = new AbortController();
         
         async function loadVideo() {
             try {
-                objectUrl = await getMovieStream(Number(id));
+                objectUrl = await getMovieStream(Number(id), controller.signal);
                 setVideoUrl(objectUrl);
             } catch (error) {
+                if (error instanceof DOMException && error.name === "AbortError") {
+                    return;
+                }
                 console.error(error);
             }
         }
@@ -27,6 +31,7 @@ function WatchPage() {
         loadVideo();
 
         return () => {
+            controller.abort();
             if (objectUrl) {
                 URL.revokeObjectURL(objectUrl);
             }

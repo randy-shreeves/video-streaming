@@ -13,12 +13,16 @@ function MovieCard({ movie }: MovieCardProps) {
 
     useEffect(() => {
         let objectUrl: string | null = null;
+        const controller = new AbortController();
 
         async function loadMoviePoster() {
             try {
-                objectUrl = await getMoviePoster(movie.id);
+                objectUrl = await getMoviePoster(movie.id, controller.signal);
                 setPosterUrl(objectUrl);
             } catch (error) {
+                if (error instanceof DOMException && error.name === "AbortError") {
+                    return;
+                }
                 console.error(error);
             }
         }
@@ -26,6 +30,7 @@ function MovieCard({ movie }: MovieCardProps) {
         loadMoviePoster();
 
         return () => {
+            controller.abort();
             if(objectUrl) {
                 URL.revokeObjectURL(objectUrl);
             }

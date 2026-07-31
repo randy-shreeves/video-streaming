@@ -19,13 +19,18 @@ function MovieDetailPage() {
 
     useEffect(() => {
         let objectUrl: string | null = null;
+        const controller = new AbortController();
+
         async function loadMovie() {
             try {
-                const movie: Movie = await getMovie(Number(id));
+                const movie: Movie = await getMovie(Number(id), controller.signal);
                 objectUrl = await getMoviePoster(movie.id);
                 setMovie(movie);
                 setPosterUrl(objectUrl);
             } catch (error) {
+                if (error instanceof DOMException && error.name === "AbortError") {
+                    return;
+                }
                 console.error(error);
                 setError("Unable to load movie.");
             }
@@ -37,11 +42,11 @@ function MovieDetailPage() {
         loadMovie();
 
         return () => {
+            controller.abort();
             if(objectUrl) {
                 URL.revokeObjectURL(objectUrl);
             }
         };
-
     }, [id]);
 
     if (loading) {

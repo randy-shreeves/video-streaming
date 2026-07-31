@@ -3,8 +3,8 @@ import { apiFetch } from "./apiClient";
 
 const BASE_URL = "/movies";
 
-export async function getMovies(): Promise<Movie[]> {
-    const response = await apiFetch(BASE_URL);
+export async function getMovies(signal?: AbortSignal): Promise<Movie[]> {
+    const response = await apiFetch(BASE_URL, { signal });
     if (!response.ok) {
         throw new Error("Failed to fetch movies.");
     }
@@ -12,8 +12,8 @@ export async function getMovies(): Promise<Movie[]> {
     return movies;
 }
 
-export async function getMovie(id: number): Promise<Movie> {
-    const response = await apiFetch(`${BASE_URL}/${id}`);
+export async function getMovie(id: number, signal?: AbortSignal): Promise<Movie> {
+    const response = await apiFetch(`${BASE_URL}/${id}`, { signal });
     if (!response.ok) {
         throw new Error("Failed to fetch movie.");
     }
@@ -21,8 +21,8 @@ export async function getMovie(id: number): Promise<Movie> {
     return movie;
 }
 
-export async function getMoviePoster(id: number) {
-    const response = await apiFetch(`${BASE_URL}/${id}/poster`);
+export async function getMoviePoster(id: number, signal?: AbortSignal) {
+    const response = await apiFetch(`${BASE_URL}/${id}/poster`, { signal });
     if (!response.ok) {
         throw new Error("Failed to load poster.");
     }
@@ -30,8 +30,8 @@ export async function getMoviePoster(id: number) {
     return URL.createObjectURL(blob);
 }
 
-export async function getMovieStream(id: number) {
-    const response = await apiFetch(`${BASE_URL}/${id}/stream`)
+export async function getMovieStream(id: number, signal?: AbortSignal) {
+    const response = await apiFetch(`${BASE_URL}/${id}/stream`, { signal })
     if (!response.ok) {
         throw new Error("Failed to load movie stream.");
     }
