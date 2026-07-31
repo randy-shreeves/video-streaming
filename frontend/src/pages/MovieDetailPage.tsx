@@ -18,12 +18,13 @@ function MovieDetailPage() {
     }
 
     useEffect(() => {
+        let objectUrl: string | null = null;
         async function loadMovie() {
             try {
                 const movie: Movie = await getMovie(Number(id));
-                const posterUrl = await getMoviePoster(movie.id);
+                objectUrl = await getMoviePoster(movie.id);
                 setMovie(movie);
-                setPosterUrl(posterUrl);
+                setPosterUrl(objectUrl);
             } catch (error) {
                 console.error(error);
                 setError("Unable to load movie.");
@@ -32,9 +33,15 @@ function MovieDetailPage() {
                 setLoading(false);
             }
         }
-        if(id) {
-            loadMovie();
-        }
+
+        loadMovie();
+
+        return () => {
+            if(objectUrl) {
+                URL.revokeObjectURL(objectUrl);
+            }
+        };
+
     }, [id]);
 
     if (loading) {

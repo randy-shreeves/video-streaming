@@ -13,13 +13,24 @@ function WatchPage() {
     }
     
     useEffect(() => {
-        getMovieStream(Number(id))
-            .then(url => {
-                setVideoUrl(url);
-            })
-            .catch(error => {
+        let objectUrl: string | null = null;
+        
+        async function loadVideo() {
+            try {
+                objectUrl = await getMovieStream(Number(id));
+                setVideoUrl(objectUrl);
+            } catch (error) {
                 console.error(error);
-            });
+            }
+        }
+
+        loadVideo();
+
+        return () => {
+            if (objectUrl) {
+                URL.revokeObjectURL(objectUrl);
+            }
+        };
     }, [id]);
 
     return (

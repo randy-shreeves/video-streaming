@@ -12,13 +12,24 @@ function MovieCard({ movie }: MovieCardProps) {
     const [posterUrl, setPosterUrl] = useState<string | null>(null);
 
     useEffect(() => {
-        getMoviePoster(movie.id)
-            .then(url => {
-                setPosterUrl(url);
-            })
-            .catch(error => {
+        let objectUrl: string | null = null;
+
+        async function loadMoviePoster() {
+            try {
+                objectUrl = await getMoviePoster(movie.id);
+                setPosterUrl(objectUrl);
+            } catch (error) {
                 console.error(error);
-            });
+            }
+        }
+
+        loadMoviePoster();
+
+        return () => {
+            if(objectUrl) {
+                URL.revokeObjectURL(objectUrl);
+            }
+        };
     }, [movie.id]);
 
     return (
