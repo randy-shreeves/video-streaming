@@ -34,7 +34,8 @@ export async function getMoviePoster(id: number, signal?: AbortSignal) {
 export async function getMovieStream(id: number, signal?: AbortSignal) {
     const response = await apiFetch(`${BASE_URL}/${id}/stream`, { signal })
     if (!response.ok) {
-        throw new Error("Failed to load movie stream.");
+        const error = await response.json();
+        throw new Error(error.message);
     }
     const blob = await response.blob();
     return URL.createObjectURL(blob);

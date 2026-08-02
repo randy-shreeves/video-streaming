@@ -4,27 +4,36 @@ import { getMovieStream } from "../api/movieApi";
 import LogoutButton from "../components/LogoutButton";
 
 function WatchPage() {
+    const [videoUrl, setVideoUrl] = useState<string | null>(null);
+    const [error, setError] = useState<string | null>(null);
+    const [loading, setLoading] = useState(true);
     const { id } = useParams();
     const navigate = useNavigate();
-    const [videoUrl, setVideoUrl] = useState<string | null>(null);
+    const movieId = Number(id);
 
-    if (!id) {
+    if (Number.isNaN(movieId)) {
         return <p>Movie not found.</p>;
     }
-    
+
     useEffect(() => {
         let objectUrl: string | null = null;
         const controller = new AbortController();
         
         async function loadVideo() {
             try {
-                objectUrl = await getMovieStream(Number(id), controller.signal);
+                objectUrl = await getMovieStream(movieId, controller.signal);
                 setVideoUrl(objectUrl);
             } catch (error) {
                 if (error instanceof DOMException && error.name === "AbortError") {
                     return;
+                } else if(error instanceof Error) {
+                    setError(error.message);
+                } else {
+                    setError("Unable to load movie.");
                 }
                 console.error(error);
+            } finally {
+                setLoading(false);
             }
         }
 
@@ -36,7 +45,15 @@ function WatchPage() {
                 URL.revokeObjectURL(objectUrl);
             }
         };
-    }, [id]);
+    }, [movieId]);
+
+    if (loading) {
+        return <p>Loading movie...</p>;
+    }
+
+    if (error) {
+        return <p>{error}</p>; 
+    }
 
     return (
         <>
