@@ -18,6 +18,7 @@ function WatchPage() {
     useEffect(() => {
         let objectUrl: string | null = null;
         const controller = new AbortController();
+        let aborted = false;
         
         async function loadVideo() {
             try {
@@ -25,6 +26,7 @@ function WatchPage() {
                 setVideoUrl(objectUrl);
             } catch (error) {
                 if (error instanceof DOMException && error.name === "AbortError") {
+                    aborted = true;
                     return;
                 } else if(error instanceof Error) {
                     setError(error.message);
@@ -33,7 +35,9 @@ function WatchPage() {
                 }
                 console.error(error);
             } finally {
-                setLoading(false);
+                if (!aborted) {
+                    setLoading(false);
+                }
             }
         }
 

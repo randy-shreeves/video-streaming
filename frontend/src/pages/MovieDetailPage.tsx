@@ -21,6 +21,7 @@ function MovieDetailPage() {
     useEffect(() => {
         let objectUrl: string | null = null;
         const controller = new AbortController();
+        let aborted = false;
 
         async function loadMovie() {
             try {
@@ -30,12 +31,19 @@ function MovieDetailPage() {
                 setPosterUrl(objectUrl);
             } catch (error) {
                 if (error instanceof DOMException && error.name === "AbortError") {
+                    aborted = true;
                     return;
+                } else if(error instanceof Error) {
+                    setError(error.message);
+                } else {
+                    setError("Unable to load movie.");
                 }
                 console.error(error);
             }
             finally {
-                setLoading(false);
+                if (!aborted) {
+                    setLoading(false);
+                }
             }
         }
 
