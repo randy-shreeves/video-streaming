@@ -235,7 +235,7 @@ public class MovieControllerTest {
         when(movieService.getMovie(999L)).thenThrow(new MovieNotFoundException(999L));
         mockMvc.perform(get("/movies/999"))
                 .andExpect(status().isNotFound())
-                .andExpect(jsonPath("$.message").value("Movie with ID: 999 was not found."));
+                .andExpect(jsonPath("$.message").value("Movie not found."));
     }
 
     @Test
@@ -243,7 +243,7 @@ public class MovieControllerTest {
         doThrow(new MovieNotFoundException(999L)).when(movieService).deleteMovie(999L);
         mockMvc.perform(delete("/movies/999"))
                 .andExpect(status().isNotFound())
-                .andExpect(jsonPath("$.message").value("Movie with ID: 999 was not found."));
+                .andExpect(jsonPath("$.message").value("Movie not found."));
     }
 
     @Test
@@ -254,7 +254,7 @@ public class MovieControllerTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(movieRequest)))
                 .andExpect(status().isNotFound())
-                .andExpect(jsonPath("$.message").value("Movie with ID: 999 was not found."));
+                .andExpect(jsonPath("$.message").value("Movie not found."));
     }
 
     @Test

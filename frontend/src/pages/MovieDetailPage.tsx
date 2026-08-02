@@ -12,8 +12,9 @@ function MovieDetailPage() {
     const [posterUrl, setPosterUrl] = useState<string | null>(null);
     const { id } = useParams();
     const navigate = useNavigate();
+    const movieId = Number(id);
 
-    if (!id) {
+    if (Number.isNaN(movieId)) {
         return <p>Movie not found.</p>;
     }
 
@@ -32,7 +33,6 @@ function MovieDetailPage() {
                     return;
                 }
                 console.error(error);
-                setError("Unable to load movie.");
             }
             finally {
                 setLoading(false);
