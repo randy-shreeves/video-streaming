@@ -1,0 +1,29 @@
+.movie-form {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    max-width: 600px;
+}
+
+.form-field {
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+}
+
+.movie-form input,
+.movie-form textarea {
+    padding: 0.5rem;
+    font: inherit;
+    box-sizing: border-box;
+}
+
+.movie-form textarea {
+    min-height: 100px;
+    resize: vertical;
+}
+
+.movie-form button {
+    align-self: flex-start;
+    padding: 0.5rem 1rem;
+}

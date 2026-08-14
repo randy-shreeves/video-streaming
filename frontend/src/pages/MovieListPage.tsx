@@ -3,7 +3,7 @@ import { getMovies } from "../api/movieApi";
 import type { Movie } from "../types/Movie";
 import MovieCard from "../components/MovieCard";
 import LogoutButton from "../components/LogoutButton";
-import "./MovieListPage.css";
+import "./css/MovieListPage.css";
 
 function MovieListPage() {
   const [movies, setMovies] = useState<Movie[]>([]);

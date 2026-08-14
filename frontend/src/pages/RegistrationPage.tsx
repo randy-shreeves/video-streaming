@@ -1,4 +1,4 @@
-import "./LoginPage.css";
+import "./css/LoginPage.css";
 import { register } from "../api/authApi";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
