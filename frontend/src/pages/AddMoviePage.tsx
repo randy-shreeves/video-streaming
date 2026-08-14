@@ -41,14 +41,14 @@ function AddMoviePage() {
 
     return (
         <>
-            
-
             {error && <p>{error}</p>}
 
-            <LogoutButton />
-            <button onClick={() => navigate("/admin/movies")}>
-                Return to Admin Movie Catalog
-            </button>
+            <div className="page-navigation">
+                <button onClick={() => navigate("/admin/movies")}>
+                    Return to Admin Movie Catalog
+                </button>
+                <LogoutButton />
+            </div>
 
             <h1>Add Movie</h1>
 

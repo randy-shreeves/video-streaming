@@ -61,10 +61,12 @@ function WatchPage() {
 
     return (
         <>
-            <LogoutButton />
-            <button onClick={() => navigate(`/movies/${id}`)}>
-                Return to Movie Details
-            </button>
+            <div className="page-navigation">
+                <button onClick={() => navigate(`/movies/${id}`)}>
+                    Return to Movie Details
+                </button>
+                <LogoutButton />
+            </div>
             {videoUrl && (
                 <video controls style={{
                     width: "100%",

@@ -71,10 +71,12 @@ function MovieDetailPage() {
 
     return (
         <>
-            <LogoutButton />
-            <button onClick={() => navigate("/movies")}>
-                Return to Movie Catalog
-            </button>
+            <div className="page-navigation">
+                <button onClick={() => navigate("/movies")}>
+                    Return to Movie Catalog
+                </button>
+                <LogoutButton />
+            </div>
             <div className="poster-container">
                 <Link to={`/movies/${movie.id}/watch`}>
                     <img 

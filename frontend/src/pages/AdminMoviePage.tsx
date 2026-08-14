@@ -58,13 +58,16 @@ function AdminMoviePage() {
 
     return (
         <>
-            <h1>Media Management</h1>
+            <div className="page-navigation">
+                <h1>Media Management</h1>
+                <LogoutButton />
+            </div>
             
             <button onClick={() => navigate("/admin/movies/new")}>
                 Add Movie
             </button>
 
-            <LogoutButton />
+            
 
             <div className="movie-grid">
                 {movies.map(movie => (

@@ -57,9 +57,10 @@ function MovieListPage() {
 
   return (
     <>
-      <h1>Video Streaming</h1>
-
-      <LogoutButton />
+      <div className="page-navigation">
+        <h1>Video Streaming</h1>
+        <LogoutButton />
+      </div>
 
       <div className="movie-grid">
         {movies.map(movie => (
