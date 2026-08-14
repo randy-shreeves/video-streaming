@@ -35,7 +35,7 @@ public class MovieService {
 
     public List<MovieResponse> getAllMovies() {
         List<MovieResponse> movieResponseList = new ArrayList<>();
-        for (Movie movie : movieRepository.findAll()) {
+        for (Movie movie : movieRepository.findAllByOrderByIdAsc()) {
             movieResponseList.add(toMovieResponse(movie));
         }
         return movieResponseList;
