@@ -1,4 +1,5 @@
 import type { Movie } from "../types/Movie";
+import type { MovieRequest } from "../types/MovieRequest";
 import { apiFetch } from "./apiClient";
 
 const BASE_URL = "/movies";
@@ -39,4 +40,19 @@ export async function getMovieStream(id: number, signal?: AbortSignal) {
     }
     const blob = await response.blob();
     return URL.createObjectURL(blob);
+}
+
+export async function createMovie(movieRequest: MovieRequest, signal?: AbortSignal): Promise<Movie> {
+    const response = await apiFetch("/movies", {
+        method: "POST",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify(movieRequest)
+    });
+
+    if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.message);
+    }
+
+    return response.json();
 }
