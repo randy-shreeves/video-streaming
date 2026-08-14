@@ -4,6 +4,7 @@ import type { MovieRequest } from "../types/MovieRequest";
 import "./css/AddMoviePage.css";
 import { createMovie } from "../api/movieApi";
 import type { SyntheticEvent } from "react";
+import LogoutButton from '../components/LogoutButton';
 
 function AddMoviePage() {
     const navigate = useNavigate();
@@ -40,9 +41,16 @@ function AddMoviePage() {
 
     return (
         <>
-            <h1>Add Movie</h1>
+            
 
             {error && <p>{error}</p>}
+
+            <LogoutButton />
+            <button onClick={() => navigate("/admin/movies")}>
+                Return to Admin Movie Catalog
+            </button>
+
+            <h1>Add Movie</h1>
 
             <form className="movie-form" onSubmit={handleSubmit}>
                 <div className="form-field">
