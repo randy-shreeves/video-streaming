@@ -1,12 +1,13 @@
 import { Routes, Route } from "react-router-dom";
 import ProtectedRoute from "./components/ProtectedRoute";
 import LoginPage from "./pages/LoginPage";
+import RegistrationPage from "./pages/RegistrationPage";
 import MovieListPage from "./pages/MovieListPage";
 import MovieDetailPage from "./pages/MovieDetailPage";
 import WatchPage from "./pages/WatchPage";
-import RegistrationPage from "./pages/RegistrationPage";
 import AdminMoviePage from "./pages/AdminMoviePage";
 import AddMoviePage from "./pages/AddMoviePage";
+import EditMoviePage from "./pages/EditMoviePage";
 
 function App() {
   return (
@@ -36,11 +37,11 @@ function App() {
 
       <Route 
         path="/movies/:id/watch" 
-          element={
-            <ProtectedRoute>
-              <WatchPage />
-            </ProtectedRoute>
-          } 
+        element={
+          <ProtectedRoute>
+            <WatchPage />
+          </ProtectedRoute>
+        } 
       />
 
       <Route
@@ -58,6 +59,15 @@ function App() {
             <ProtectedRoute requiredRole="ROLE_ADMIN">
                 <AddMoviePage />
             </ProtectedRoute>
+        }
+      />
+
+      <Route
+        path="admin/movies/:id/edit"
+        element={
+          <ProtectedRoute requiredRole="ROLE_ADMIN">
+            <EditMoviePage />
+          </ProtectedRoute>
         }
       />
       

@@ -2,6 +2,7 @@ import type { Movie } from "../types/Movie";
 import "./MovieCard.css";
 import { getMoviePoster } from "../api/movieApi";
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 type MovieCardProps = {
     movie: Movie;
@@ -9,6 +10,7 @@ type MovieCardProps = {
 
 function AdminMovieCard({ movie }: MovieCardProps) {
     const [posterUrl, setPosterUrl] = useState<string | null>(null);
+    const navigate = useNavigate();
 
     useEffect(() => {
         let objectUrl: string | null = null;
@@ -44,7 +46,7 @@ function AdminMovieCard({ movie }: MovieCardProps) {
                 alt={`${movie.title} poster`}
             />
             <p>{movie.title} ({movie.releaseYear})</p>
-            <button>Edit</button>
+            <button onClick={() => navigate(`/admin/movies/${movie.id}/edit`)}>Edit</button>
             <button>Delete</button>
         </div>
 
