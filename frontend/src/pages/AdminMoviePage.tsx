@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { getMovies } from "../api/movieApi";
 import type { Movie } from "../types/Movie";
 import LogoutButton from "../components/LogoutButton";
-import MovieCard from "../components/MovieCard";
+import AdminMovieCard from "../components/AdminMovieCard";
 
 function AdminMoviePage() {
   const navigate = useNavigate();
@@ -40,7 +40,7 @@ function AdminMoviePage() {
   if (loading) {
     return (
         <>
-            <h1>Video Streaming</h1>
+            <h1>Media Management</h1>
             <p>Loading movies...</p>
         </>
     );
@@ -49,7 +49,7 @@ function AdminMoviePage() {
   if (error) {
     return (
       <>
-        <h1>Video Streaming</h1>
+        <h1>Media Management</h1>
         <p>{error}</p>
       </>
 
@@ -58,7 +58,7 @@ function AdminMoviePage() {
 
     return (
         <>
-            <h1>Movie Management</h1>
+            <h1>Media Management</h1>
             
             <button onClick={() => navigate("/admin/movies/new")}>
                 Add Movie
@@ -68,7 +68,7 @@ function AdminMoviePage() {
 
             <div className="movie-grid">
                 {movies.map(movie => (
-                <MovieCard
+                <AdminMovieCard
                     key={movie.id}
                     movie={movie}
                 />
