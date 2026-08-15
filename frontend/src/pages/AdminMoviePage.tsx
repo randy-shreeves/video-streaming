@@ -80,6 +80,7 @@ function AdminMoviePage() {
         <>
             <div className="page-navigation">
                 <h1>Media Management</h1>
+                <button onClick={() => navigate("/movies")}>Movie Catalog</button>
                 <LogoutButton />
             </div>
             
