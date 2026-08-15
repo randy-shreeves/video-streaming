@@ -1,6 +1,6 @@
 import type { Movie } from "../types/Movie";
 import { Link } from "react-router-dom";
-import "./MovieCard.css";
+import "./css/MovieCard.css";
 import { getMoviePoster } from "../api/movieApi";
 import { useEffect, useState } from "react";
 

@@ -1,5 +1,5 @@
 import type { Movie } from "../types/Movie";
-import "./MovieCard.css";
+import "./css/MovieCard.css";
 import { getMoviePoster } from "../api/movieApi";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
