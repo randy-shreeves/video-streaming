@@ -1,14 +1,13 @@
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { getMovieStream } from "../api/movieApi";
-import LogoutButton from "../components/LogoutButton";
+import Navbar from "../components/Navbar";
 
 function WatchPage() {
     const [videoUrl, setVideoUrl] = useState<string | null>(null);
     const [error, setError] = useState<string | null>(null);
     const [loading, setLoading] = useState(true);
     const { id } = useParams();
-    const navigate = useNavigate();
     const movieId = Number(id);
 
     if (Number.isNaN(movieId)) {
@@ -61,12 +60,11 @@ function WatchPage() {
 
     return (
         <>
-            <div className="page-navigation">
-                <button onClick={() => navigate(`/movies/${id}`)}>
-                    Return to Movie Details
-                </button>
-                <LogoutButton />
-            </div>
+            <Navbar
+                backPath={`/movies/${movieId}`}
+                backLabel="Movie Details"
+            />
+
             {videoUrl && (
                 <video controls style={{
                     width: "100%",

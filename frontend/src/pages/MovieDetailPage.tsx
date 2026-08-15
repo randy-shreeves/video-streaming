@@ -1,9 +1,8 @@
-import { Link, useParams, useNavigate } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import { useEffect, useState } from 'react';
 import { getMovie, getMoviePoster } from "../api/movieApi";
 import type { Movie } from "../types/Movie";
-import LogoutButton from "../components/LogoutButton";
-
+import Navbar from "../components/Navbar";
 
 function MovieDetailPage() {
     const [movie, setMovie] = useState<Movie | null>(null);
@@ -11,7 +10,6 @@ function MovieDetailPage() {
     const [error, setError] = useState<string | null>(null);
     const [posterUrl, setPosterUrl] = useState<string | null>(null);
     const { id } = useParams();
-    const navigate = useNavigate();
     const movieId = Number(id);
 
     if (Number.isNaN(movieId)) {
@@ -71,12 +69,10 @@ function MovieDetailPage() {
 
     return (
         <>
-            <div className="page-navigation">
-                <button onClick={() => navigate("/movies")}>
-                    Return to Movie Catalog
-                </button>
-                <LogoutButton />
-            </div>
+            <Navbar
+                backPath="/movies"
+                backLabel="Movie Catalog"
+            />
             <div className="poster-container">
                 <Link to={`/movies/${movie.id}/watch`}>
                     <img 

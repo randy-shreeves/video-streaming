@@ -2,8 +2,8 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { deleteMovie, getMovies } from "../api/movieApi";
 import type { Movie } from "../types/Movie";
-import LogoutButton from "../components/LogoutButton";
 import AdminMovieCard from "../components/AdminMovieCard";
+import Navbar from "../components/Navbar";
 
 function AdminMoviePage() {
   const navigate = useNavigate();
@@ -78,14 +78,13 @@ function AdminMoviePage() {
 
     return (
         <>
-            <div className="page-navigation">
-                <h1>Media Management</h1>
-                <button onClick={() => navigate("/movies")}>Movie Catalog</button>
-                <LogoutButton />
-            </div>
-            
+            <Navbar 
+              backPath="/movies"
+              backLabel="Movie Catalog"
+            />
+            <h1>Media Management</h1>
             <button onClick={() => navigate("/admin/movies/new")}>
-                Add Movie
+                Add New Movie
             </button>
 
             

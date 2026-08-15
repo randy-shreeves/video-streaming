@@ -4,7 +4,7 @@ import type { MovieRequest } from "../types/MovieRequest";
 import "./css/AddMoviePage.css";
 import { createMovie } from "../api/movieApi";
 import type { SyntheticEvent } from "react";
-import LogoutButton from '../components/LogoutButton';
+import Navbar from "../components/Navbar";
 
 function AddMoviePage() {
     const navigate = useNavigate();
@@ -43,12 +43,10 @@ function AddMoviePage() {
         <>
             {error && <p>{error}</p>}
 
-            <div className="page-navigation">
-                <button onClick={() => navigate("/admin/movies")}>
-                    Return to Admin Movie Catalog
-                </button>
-                <LogoutButton />
-            </div>
+            <Navbar
+                backPath="/admin/movies"
+                backLabel="Media Management"
+            />
 
             <h1>Add Movie</h1>
 
