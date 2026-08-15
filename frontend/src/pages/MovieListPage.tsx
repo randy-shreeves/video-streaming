@@ -1,5 +1,4 @@
 import { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { getMovies } from "../api/movieApi";
 import type { Movie } from "../types/Movie";
 import MovieCard from "../components/MovieCard";
@@ -7,7 +6,6 @@ import "./css/MovieListPage.css";
 import Navbar from "../components/Navbar";
 
 function MovieListPage() {
-  const navigate = useNavigate();
   const [movies, setMovies] = useState<Movie[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -41,7 +39,7 @@ function MovieListPage() {
   if (loading) {
     return (
         <>
-            <h1>Video Streaming</h1>
+            <h1>Movie Catalog</h1>
             <p>Loading movies...</p>
         </>
     );
@@ -50,7 +48,7 @@ function MovieListPage() {
   if (error) {
     return (
       <>
-        <h1>Video Streaming</h1>
+        <h1>Movie Catalog</h1>
         <p>{error}</p>
       </>
 
@@ -60,7 +58,7 @@ function MovieListPage() {
   return (
     <>
       <Navbar />
-      <h1>Video Streaming</h1>
+      <h1>Movie Catalog</h1>
       <div className="movie-grid">
         {movies.map(movie => (
           <MovieCard
