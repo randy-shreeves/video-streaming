@@ -73,3 +73,14 @@ export async function updateMovie(id: number, movieRequest: MovieRequest): Promi
 
     return response.json();
 }
+
+export async function deleteMovie(id: number): Promise<void> {
+    const response = await apiFetch(`/movies/${id}`, {
+        method: "DELETE"
+    });
+
+    if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.message);
+    }
+}

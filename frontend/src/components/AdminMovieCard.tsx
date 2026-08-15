@@ -6,9 +6,11 @@ import { useNavigate } from "react-router-dom";
 
 type MovieCardProps = {
     movie: Movie;
+    onDelete: (movie: Movie) => void;
+    deleting: boolean;
 };
 
-function AdminMovieCard({ movie }: MovieCardProps) {
+function AdminMovieCard({ movie, onDelete, deleting }: MovieCardProps) {
     const [posterUrl, setPosterUrl] = useState<string | null>(null);
     const navigate = useNavigate();
 
@@ -47,7 +49,12 @@ function AdminMovieCard({ movie }: MovieCardProps) {
             />
             <p>{movie.title} ({movie.releaseYear})</p>
             <button onClick={() => navigate(`/admin/movies/${movie.id}/edit`)}>Edit</button>
-            <button>Delete</button>
+            <button 
+                onClick={() => onDelete(movie)}
+                disabled={deleting}
+            >
+                    {deleting ? "Deleting..." : "Delete"}
+            </button>
         </div>
 
     );
