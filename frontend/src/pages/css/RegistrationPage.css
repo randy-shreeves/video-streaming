@@ -1,17 +1,4 @@
-.login-container {
+.registration-container {
     width: 300px;
     margin: 50px auto;
-}
-
-form {
-    display: flex;
-    flex-direction: column;
-}
-
-label {
-    display: block;
-}
-
-button {
-    margin-top: 8px;
 }

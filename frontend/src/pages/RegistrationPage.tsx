@@ -1,4 +1,4 @@
-import "./css/LoginPage.css";
+import "./css/RegistrationPage.css";
 import { register } from "../api/authApi";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
@@ -25,49 +25,53 @@ function RegistrationPage() {
     };
 
     return (
-        <div className="login-container">
-            <h1>Video Streaming</h1>
+        <>
+            <div className="page-navigation">
+                <button onClick={() => navigate("/")}>
+                    Return to Login Page
+                </button>
+            </div>
+            
+            <div className="registration-container">
+                <h1>Video Streaming</h1>
 
-            <button className="back-button" onClick={() => navigate("/")}>
-                Return to Login Page
-            </button>
+                {errorMessage && <p className="error">{errorMessage}</p>}
 
-            {errorMessage && <p className="error">{errorMessage}</p>}
+                <form onSubmit={handleRegistration}>
+                    <div>
+                        <label htmlFor="username">Username</label>
+                        <input
+                            id="username"
+                            type="text"
+                            value={username}
+                            onChange={(event) => setUsername(event.target.value)}
+                        />
+                    </div>
 
-            <form onSubmit={handleRegistration}>
-                <div>
-                    <label htmlFor="username">Username</label>
-                    <input
-                        id="username"
-                        type="text"
-                        value={username}
-                        onChange={(event) => setUsername(event.target.value)}
-                    />
-                </div>
+                    <div>
+                        <label htmlFor="password">Password</label>
+                        <input
+                            id="password"
+                            type="password"
+                            value={password}
+                            onChange={(event) => setPassword(event.target.value)}
+                        />
+                    </div>
 
-                <div>
-                    <label htmlFor="password">Password</label>
-                    <input
-                        id="password"
-                        type="password"
-                        value={password}
-                        onChange={(event) => setPassword(event.target.value)}
-                    />
-                </div>
+                    <div>
+                        <label htmlFor="reenteredPassword">Re-enter Password</label>
+                        <input
+                            id="reenteredPassword"
+                            type="password"
+                            value={reenteredPassword}
+                            onChange={(event) => setReenteredPassword(event.target.value)}
+                        />
+                    </div>
 
-                <div>
-                    <label htmlFor="reenteredPassword">Re-enter Password</label>
-                    <input
-                        id="reenteredPassword"
-                        type="password"
-                        value={reenteredPassword}
-                        onChange={(event) => setReenteredPassword(event.target.value)}
-                    />
-                </div>
-
-                <button type="submit">Register</button>
-            </form>
-        </div>
+                    <button type="submit">Register</button>
+                </form>
+            </div>
+        </>
     );
 }
 
