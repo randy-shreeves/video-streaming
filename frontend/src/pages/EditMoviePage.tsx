@@ -16,6 +16,8 @@ function EditMoviePage() {
     const navigate = useNavigate();
     const { id } = useParams();
     const movieId = Number(id);
+    const [submitting, setSubmitting] = useState(false);
+    const [error, setError] = useState<string | null>(null);
     const [formData, setFormData] = useState<MovieRequest>({
             title: "",
             description: "",
@@ -61,6 +63,8 @@ function EditMoviePage() {
 
     const handleSubmit = async (event: SyntheticEvent<HTMLFormElement>) => {
         event.preventDefault();
+        setSubmitting(true);
+        setError(null);
 
         try {
             const movie = await updateMovie(movieId, formData);
@@ -68,12 +72,21 @@ function EditMoviePage() {
             navigate("/admin/movies");
         } catch (error) {
             console.error(error);
+            if (error instanceof Error) {
+                setError(error.message);
+            } else {
+                setError("Unable to edit movie.");
+            }
+        } finally {
+            setSubmitting(false);
         }
     }
 
     return (
         <>
-        <div className="page-navigation">
+            {error && <p>{error}</p>}
+
+            <div className="page-navigation">
                 <button onClick={() => navigate("/admin/movies")}>
                     Return to Admin Movie Catalog
                 </button>
@@ -165,7 +178,9 @@ function EditMoviePage() {
                     />
                 </div>
 
-                <button type="submit" >Edit Movie</button>
+                <button type="submit" disabled={submitting}>
+                    {submitting ? "Updating..." : "Edit Movie"}
+                </button>
             </form>
         </>
     )
