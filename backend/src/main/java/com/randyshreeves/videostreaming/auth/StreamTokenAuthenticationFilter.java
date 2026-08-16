@@ -1,6 +1,7 @@
 package com.randyshreeves.videostreaming.auth;
 
 import com.randyshreeves.videostreaming.movie.StreamTokenService;
+import io.jsonwebtoken.JwtException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -33,23 +34,20 @@ public class StreamTokenAuthenticationFilter extends OncePerRequestFilter {
             String token = request.getParameter("token");
             String movieIdString = requestUri.replaceAll(".*/movies/(\\d+)/stream", "$1");
             Long movieId = Long.valueOf(movieIdString);
-            boolean valid = streamTokenService.isTokenValid(token, movieId);
-
-            if (!valid) {
-                response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-                return;
+            try {
+                if (streamTokenService.isTokenValid(token, movieId)) {
+                    UsernamePasswordAuthenticationToken authentication =
+                            new UsernamePasswordAuthenticationToken(
+                                    "stream-token",
+                                    null,
+                                    AuthorityUtils.NO_AUTHORITIES
+                            );
+                    SecurityContextHolder.getContext().setAuthentication(authentication);
+                }
+            } catch (JwtException e) {
+                // No need to handle exception because protected endpoint will be rejected later by Spring Security.
             }
-
-            UsernamePasswordAuthenticationToken authToken =
-                    new UsernamePasswordAuthenticationToken(
-                            "stream-token-authenticated",
-                            null,
-                            AuthorityUtils.NO_AUTHORITIES
-                    );
-
-            SecurityContextHolder.getContext().setAuthentication(authToken);
         }
-
         filterChain.doFilter(request, response);
     }
 }
