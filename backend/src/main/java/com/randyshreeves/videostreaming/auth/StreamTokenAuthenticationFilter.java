@@ -1,6 +1,5 @@
 package com.randyshreeves.videostreaming.auth;
 
-import com.randyshreeves.videostreaming.movie.StreamTokenService;
 import io.jsonwebtoken.JwtException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;

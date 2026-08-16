@@ -1,9 +1,8 @@
-package com.randyshreeves.videostreaming.movie;
+package com.randyshreeves.videostreaming.auth;
 
 import java.util.Date;
 
 import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;

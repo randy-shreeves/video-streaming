@@ -1,5 +1,6 @@
 package com.randyshreeves.videostreaming.movie;
 
+import com.randyshreeves.videostreaming.auth.StreamTokenService;
 import com.randyshreeves.videostreaming.movie.dto.MovieRequest;
 import com.randyshreeves.videostreaming.movie.dto.MovieResponse;
 
