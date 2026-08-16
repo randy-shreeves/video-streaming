@@ -1,10 +1,10 @@
 import { useParams } from "react-router-dom";
 import { useState, useEffect } from "react";
-import { getMovieStream } from "../api/movieApi";
+import { getStreamToken } from "../api/movieApi";
 import Navbar from "../components/Navbar";
 
 function WatchPage() {
-    const [videoUrl, setVideoUrl] = useState<string | null>(null);
+    const [streamUrl, setStreamUrl] = useState<string | null>(null);
     const [error, setError] = useState<string | null>(null);
     const [loading, setLoading] = useState(true);
     const { id } = useParams();
@@ -15,14 +15,14 @@ function WatchPage() {
     }
 
     useEffect(() => {
-        let objectUrl: string | null = null;
         const controller = new AbortController();
         let aborted = false;
         
-        async function loadVideo() {
+        async function loadStreamUrl() {
             try {
-                objectUrl = await getMovieStream(movieId, controller.signal);
-                setVideoUrl(objectUrl);
+                const token = await getStreamToken(movieId, controller.signal);
+                const url = `http://localhost:8080/movies/${movieId}/stream?token=${encodeURIComponent(token)}`;
+                setStreamUrl(url);
             } catch (error) {
                 if (error instanceof DOMException && error.name === "AbortError") {
                     aborted = true;
@@ -40,13 +40,10 @@ function WatchPage() {
             }
         }
 
-        loadVideo();
+        loadStreamUrl();
 
         return () => {
             controller.abort();
-            if (objectUrl) {
-                URL.revokeObjectURL(objectUrl);
-            }
         };
     }, [movieId]);
 
@@ -65,16 +62,20 @@ function WatchPage() {
                 backLabel="Movie Details"
             />
 
-            {videoUrl && (
-                <video controls style={{
+            <video 
+                controls 
+                style={{
                     width: "100%",
                     maxWidth: "900px",
                     aspectRatio: "16 / 9",
                     objectFit: "contain"
-                }}>
-                    <source src={videoUrl} type="video/mp4" />
-                </video>
-            )}
+                }}
+            >
+                <source 
+                    src={streamUrl ?? undefined} 
+                    type="video/mp4" 
+                />
+            </video>
         </>
     );
 }
