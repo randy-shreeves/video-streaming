@@ -37,13 +37,7 @@ public class MovieController {
     }
 
     @GetMapping("/{id}/stream")
-    public ResponseEntity<Resource> streamMovie(
-            @PathVariable Long id,
-            @RequestParam String token
-    ) throws MalformedURLException {
-        if (!streamTokenService.isTokenValid(token, id)) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-        }
+    public ResponseEntity<Resource> streamMovie(@PathVariable Long id) throws MalformedURLException {
         Resource resource = movieService.getMovieStream(id);
         return ResponseEntity.ok()
                 .contentType(MediaType.parseMediaType("video/mp4"))

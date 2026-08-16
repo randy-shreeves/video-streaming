@@ -1,6 +1,7 @@
 package com.randyshreeves.videostreaming.config;
 
 import com.randyshreeves.videostreaming.auth.JwtAuthenticationFilter;
+import com.randyshreeves.videostreaming.auth.StreamTokenAuthenticationFilter;
 import com.randyshreeves.videostreaming.user.CustomUserDetailsService;
 import io.jsonwebtoken.Jwt;
 import jakarta.servlet.http.HttpServletResponse;
@@ -23,19 +24,23 @@ public class SecurityConfig {
 
     private final CustomUserDetailsService customUserDetailsService;
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
+    private final StreamTokenAuthenticationFilter streamTokenAuthenticationFilter;
 
     public SecurityConfig(
             CustomUserDetailsService customUserDetailsService,
-            JwtAuthenticationFilter jwtAuthenticationFilter
+            JwtAuthenticationFilter jwtAuthenticationFilter,
+            StreamTokenAuthenticationFilter streamTokenAuthenticationFilter
     ) {
         this.customUserDetailsService = customUserDetailsService;
         this.jwtAuthenticationFilter = jwtAuthenticationFilter;
+        this.streamTokenAuthenticationFilter = streamTokenAuthenticationFilter;
     }
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(streamTokenAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
@@ -43,7 +48,7 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.GET, "/movies").authenticated()
                         .requestMatchers(HttpMethod.GET, "/movies/*").authenticated()
                         .requestMatchers(HttpMethod.GET, "/movies/*/poster").authenticated()
-                        .requestMatchers(HttpMethod.GET, "/movies/*/stream").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/movies/*/stream").authenticated()
                         .requestMatchers(HttpMethod.GET, "/movies/*/stream-token").authenticated()
                         .requestMatchers(HttpMethod.POST, "/movies").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.PUT, "/movies/*").hasRole("ADMIN")
