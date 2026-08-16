@@ -43,7 +43,7 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.GET, "/movies").authenticated()
                         .requestMatchers(HttpMethod.GET, "/movies/*").authenticated()
                         .requestMatchers(HttpMethod.GET, "/movies/*/poster").authenticated()
-                        .requestMatchers(HttpMethod.GET, "/movies/*/stream").authenticated()
+                        .requestMatchers(HttpMethod.GET, "/movies/*/stream").permitAll()
                         .requestMatchers(HttpMethod.GET, "/movies/*/stream-token").authenticated()
                         .requestMatchers(HttpMethod.POST, "/movies").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.PUT, "/movies/*").hasRole("ADMIN")
