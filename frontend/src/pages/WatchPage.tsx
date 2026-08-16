@@ -3,6 +3,8 @@ import { useState, useEffect } from "react";
 import { getStreamToken } from "../api/movieApi";
 import Navbar from "../components/Navbar";
 
+const BASE_URL = "http://localhost:8080";
+
 function WatchPage() {
     const [streamUrl, setStreamUrl] = useState<string | null>(null);
     const [error, setError] = useState<string | null>(null);
@@ -21,7 +23,7 @@ function WatchPage() {
         async function loadStreamUrl() {
             try {
                 const token = await getStreamToken(movieId, controller.signal);
-                const url = `http://localhost:8080/movies/${movieId}/stream?token=${encodeURIComponent(token)}`;
+                const url = `${BASE_URL}/movies/${movieId}/stream?token=${encodeURIComponent(token)}`;
                 setStreamUrl(url);
             } catch (error) {
                 if (error instanceof DOMException && error.name === "AbortError") {
