@@ -19,9 +19,11 @@ import java.util.List;
 public class MovieController {
 
     private final MovieService movieService;
+    private final StreamTokenService streamTokenService;
 
-    public MovieController(MovieService movieService) {
+    public MovieController(MovieService movieService, StreamTokenService streamTokenService) {
         this.movieService = movieService;
+        this.streamTokenService = streamTokenService;
     }
 
     @GetMapping
@@ -40,6 +42,12 @@ public class MovieController {
         return ResponseEntity.ok()
                 .contentType(MediaType.parseMediaType("video/mp4"))
                 .body(resource);
+    }
+
+    @GetMapping("/{id}/stream-token")
+    public ResponseEntity<String> getStreamToken(@PathVariable Long id) {
+        String token = streamTokenService.generateToken(id);
+        return ResponseEntity.ok(token);
     }
 
     @GetMapping("/{id}/poster")
