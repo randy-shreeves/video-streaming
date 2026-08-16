@@ -32,16 +32,6 @@ export async function getMoviePoster(id: number, signal?: AbortSignal) {
     return URL.createObjectURL(blob);
 }
 
-export async function getMovieStream(id: number, signal?: AbortSignal) {
-    const response = await apiFetch(`${BASE_URL}/${id}/stream`, { signal })
-    if (!response.ok) {
-        const error = await response.json();
-        throw new Error(error.message);
-    }
-    const blob = await response.blob();
-    return URL.createObjectURL(blob);
-}
-
 export async function getStreamToken(id: number, signal?: AbortSignal): Promise<string> {
     const response = await apiFetch(`${BASE_URL}/${id}/stream-token`, {
         signal
