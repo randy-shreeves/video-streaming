@@ -42,6 +42,17 @@ export async function getMovieStream(id: number, signal?: AbortSignal) {
     return URL.createObjectURL(blob);
 }
 
+export async function getStreamToken(id: number, signal?: AbortSignal): Promise<string> {
+    const response = await apiFetch(`${BASE_URL}/${id}/stream-token`, {
+        signal
+    });
+    if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.message);
+    }
+    return response.text();
+}
+
 export async function createMovie(movieRequest: MovieRequest): Promise<Movie> {
     const response = await apiFetch("/movies", {
         method: "POST",
