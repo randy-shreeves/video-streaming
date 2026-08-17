@@ -140,6 +140,25 @@ public class SecurityIntegrationTest {
     }
 
     @Test
+    void shouldRejectInvalidStreamToken() throws Exception {
+        String jwt = loginAndGetToken(regularUserUsername, regularUserPassword);
+        Movie movie = new Movie(
+                "Test Title",
+                "Test Description",
+                2001,
+                90,
+                "test_movie.mp4",
+                "test_poster.jpg"
+        );
+        movie = movieRepository.save(movie);
+        Long movieId = movie.getId();
+        mockMvc.perform(get("/movies/{id}/stream", movieId)
+                        .param("token", "not-a-valid-stream-token")
+                        .header(HttpHeaders.AUTHORIZATION, "Bearer " + jwt))
+                .andExpect(status().isUnauthorized());
+    }
+
+    @Test
     void shouldForbidNonAdminUserFromDeletingMovie() throws Exception {
         String jwt = loginAndGetToken(regularUserUsername, regularUserPassword);
         mockMvc.perform(delete("/movies/1")
