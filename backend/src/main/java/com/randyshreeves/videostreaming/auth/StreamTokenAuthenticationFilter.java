@@ -31,6 +31,10 @@ public class StreamTokenAuthenticationFilter extends OncePerRequestFilter {
         String requestUri = request.getRequestURI();
         if (requestUri.matches("/movies/\\d+/stream")) {
             String token = request.getParameter("token");
+            if (token == null || token.isBlank()) {
+                filterChain.doFilter(request, response);
+                return;
+            }
             String movieIdString = requestUri.replaceAll(".*/movies/(\\d+)/stream", "$1");
             Long movieId = Long.valueOf(movieIdString);
             try {
