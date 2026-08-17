@@ -32,23 +32,26 @@ public class StreamTokenAuthenticationFilter extends OncePerRequestFilter {
         if (requestUri.matches("/movies/\\d+/stream")) {
             String token = request.getParameter("token");
             if (token == null || token.isBlank()) {
-                filterChain.doFilter(request, response);
+                response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
                 return;
             }
             String movieIdString = requestUri.replaceAll(".*/movies/(\\d+)/stream", "$1");
             Long movieId = Long.valueOf(movieIdString);
             try {
-                if (streamTokenService.isTokenValid(token, movieId)) {
-                    UsernamePasswordAuthenticationToken authentication =
-                            new UsernamePasswordAuthenticationToken(
-                                    "stream-token",
-                                    null,
-                                    AuthorityUtils.NO_AUTHORITIES
-                            );
-                    SecurityContextHolder.getContext().setAuthentication(authentication);
+                if (!streamTokenService.isTokenValid(token, movieId)) {
+                    response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                    return;
                 }
+                UsernamePasswordAuthenticationToken authentication =
+                        new UsernamePasswordAuthenticationToken(
+                        "stream-token",
+                        null,
+                        AuthorityUtils.NO_AUTHORITIES
+                        );
+                SecurityContextHolder.getContext().setAuthentication(authentication);
             } catch (JwtException e) {
-                // No need to handle exception because protected endpoint will be rejected later by Spring Security.
+                response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                return;
             }
         }
         filterChain.doFilter(request, response);
