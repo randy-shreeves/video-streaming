@@ -53,6 +53,9 @@ public class SecurityIntegrationTest {
     @Autowired
     JwtTestHelper jwtTestHelper;
 
+    @Autowired
+    StreamTokenService streamTokenService;
+
     private final String adminUserUsername = "adminUser";
 
     private final String adminUserPassword = "adminPassword";
@@ -113,7 +116,8 @@ public class SecurityIntegrationTest {
         );
         movie = movieRepository.save(movie);
         Long movieId = movie.getId();
-        mockMvc.perform(get("/movies/{id}/stream", movieId)
+        String streamToken = streamTokenService.generateToken(movieId);
+        mockMvc.perform(get("/movies/{id}/stream?token={streamToken}", movieId, streamToken)
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + jwt))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType("video/mp4"));

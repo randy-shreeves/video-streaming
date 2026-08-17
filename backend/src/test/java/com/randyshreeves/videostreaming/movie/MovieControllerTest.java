@@ -3,6 +3,7 @@ package com.randyshreeves.videostreaming.movie;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.randyshreeves.videostreaming.auth.JwtAuthenticationFilter;
 import com.randyshreeves.videostreaming.auth.JwtService;
+import com.randyshreeves.videostreaming.auth.StreamTokenService;
 import com.randyshreeves.videostreaming.exception.MovieNotFoundException;
 import com.randyshreeves.videostreaming.movie.dto.MovieRequest;
 import com.randyshreeves.videostreaming.movie.dto.MovieResponse;
@@ -40,6 +41,9 @@ public class MovieControllerTest {
 
     @MockitoBean
     private JwtService jwtService;
+
+    @MockitoBean
+    private StreamTokenService streamTokenService;
 
     @MockitoBean
     private JwtAuthenticationFilter jwtAuthenticationFilter;
