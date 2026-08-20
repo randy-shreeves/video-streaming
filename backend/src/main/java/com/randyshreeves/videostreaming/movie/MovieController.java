@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.core.io.Resource;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.net.MalformedURLException;
 import java.util.List;
@@ -62,6 +63,12 @@ public class MovieController {
     @PostMapping
     public MovieResponse createMovie(@Valid @RequestBody MovieRequest movieRequest) {
         return movieService.createMovie(movieRequest);
+    }
+
+    @PostMapping("/{id}/poster")
+    public ResponseEntity<Void> uploadPoster(@PathVariable Long id, @RequestParam("poster") MultipartFile poster) {
+        movieService.uploadPoster(id, poster);
+        return ResponseEntity.ok().build();
     }
 
     @PutMapping("/{id}")

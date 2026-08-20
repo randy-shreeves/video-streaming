@@ -5,13 +5,19 @@ import com.randyshreeves.videostreaming.exception.MovieNotFoundException;
 import com.randyshreeves.videostreaming.movie.dto.MovieRequest;
 import com.randyshreeves.videostreaming.movie.dto.MovieResponse;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.net.MalformedURLException;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -64,6 +70,25 @@ public class MovieService {
             throw new MediaFileNotFoundException("Movie poster not found.");
         }
         return resource;
+    }
+
+    public void uploadPoster(Long id, MultipartFile poster) {
+        Movie movie = movieRepository.findById(id).orElseThrow(() -> new MovieNotFoundException(id));
+        if (poster == null || poster.isEmpty()) {
+            throw new IllegalArgumentException("Poster file is required.");
+        }
+        if (!MediaType.IMAGE_JPEG_VALUE.equals(poster.getContentType())) {
+            throw new IllegalArgumentException("Poster must be a JPEG image.");
+        }
+        String posterLocation = "movies/posters/" + id + ".jpg";
+        Path destination = Paths.get(mediaRoot, posterLocation);
+        try (InputStream inputStream = poster.getInputStream()) {
+            Files.copy(inputStream, destination, StandardCopyOption.REPLACE_EXISTING);
+        } catch (IOException e) {
+            throw new RuntimeException("Failed to save movie poster.", e);
+        }
+        movie.setPosterLocation(posterLocation);
+        movieRepository.save(movie);
     }
 
     public MovieResponse updateMovie(Long id, MovieRequest movieRequest) {

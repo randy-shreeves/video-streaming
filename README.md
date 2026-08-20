@@ -42,7 +42,7 @@ The frontend communicates with the backend through a REST API.
 
 Set the following environment variables before starting the backend:
 
-- `MEDIA_ROOT` — directory containing video and poster files
+- `MEDIA_ROOT` — Directory containing video and poster files (must contain a /movies/posters/ directory)
 - `DB_URL` — PostgreSQL database URL
 - `DB_USERNAME` — PostgreSQL username
 - `DB_PASSWORD` — PostgreSQL password
