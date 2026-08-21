@@ -166,6 +166,34 @@ public class MovieServiceIntegrationTest {
         }
     }
 
+    @Test
+    void shouldRejectMoviePosterUploadIfNoFileIsProvided() {
+        MovieRequest movieRequest = createTestMovieRequest();
+        MovieResponse savedMovieResponse = movieService.createMovie(movieRequest);
+        Long movieId = savedMovieResponse.getId();
+        MockMultipartFile poster = new MockMultipartFile(
+                "poster",
+                "test-poster.jpg",
+                MediaType.IMAGE_JPEG_VALUE,
+                new byte[0]
+        );
+        assertThrows(IllegalArgumentException.class, () -> movieService.uploadPoster(movieId, poster));
+    }
+
+    @Test
+    void shouldRejectMoviePosterUploadIfFileIsNotJpeg() {
+        MovieRequest movieRequest = createTestMovieRequest();
+        MovieResponse savedMovieResponse = movieService.createMovie(movieRequest);
+        Long movieId = savedMovieResponse.getId();
+        MockMultipartFile poster = new MockMultipartFile(
+                "poster",
+                "test-poster.png",
+                MediaType.IMAGE_PNG_VALUE,
+                "fake_png_content".getBytes()
+        );
+        assertThrows(IllegalArgumentException.class, () -> movieService.uploadPoster(movieId, poster));
+    }
+
     private MovieRequest createTestMovieRequest() {
         return new MovieRequest(
                 "Test Movie",
