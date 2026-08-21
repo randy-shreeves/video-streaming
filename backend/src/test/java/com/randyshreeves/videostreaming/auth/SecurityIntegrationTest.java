@@ -111,8 +111,8 @@ public class SecurityIntegrationTest {
                 "Test Description",
                 2001,
                 90,
-                "test_movie.mp4",
-                "test_poster.jpg"
+                "/movies/test_movie.mp4",
+                "/movies/posters/test_poster.jpg"
         );
         movie = movieRepository.save(movie);
         Long movieId = movie.getId();

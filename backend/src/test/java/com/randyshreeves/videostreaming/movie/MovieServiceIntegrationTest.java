@@ -162,8 +162,8 @@ public class MovieServiceIntegrationTest {
                 "Test Movie Description",
                 2009,
                 90,
-                "test_movie.mp4",
-                "test_poster.jpg"
+                "/movies/test_movie.mp4",
+                "/movies/posters/test_poster.jpg"
         );
     }
 }
