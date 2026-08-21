@@ -14,6 +14,10 @@ import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.TestPropertySource;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -141,19 +145,25 @@ public class MovieServiceIntegrationTest {
     }
 
     @Test
-    void shouldUploadMoviePosterSuccessfully() {
+    void shouldUploadMoviePosterSuccessfully() throws IOException {
         MovieRequest movieRequest = createTestMovieRequest();
         MovieResponse savedMovieResponse = movieService.createMovie(movieRequest);
         Long movieId = savedMovieResponse.getId();
-        MockMultipartFile poster = new MockMultipartFile(
+        Path posterPath = Paths.get("src/test/resources/media/movies/posters/" + movieId + ".jpg");
+        try {
+            MockMultipartFile poster = new MockMultipartFile(
                 "poster",
                 "test-poster.jpg",
                 MediaType.IMAGE_JPEG_VALUE,
                 "fake_jpeg_content".getBytes()
-        );
-        movieService.uploadPoster(movieId, poster);
-        Movie updatedMovie = movieRepository.findById(movieId).orElseThrow();
-        assertEquals("movies/posters/" + movieId + ".jpg", updatedMovie.getPosterLocation());
+            );
+            movieService.uploadPoster(movieId, poster);
+            Movie updatedMovie = movieRepository.findById(movieId).orElseThrow();
+            assertEquals("movies/posters/" + movieId + ".jpg", updatedMovie.getPosterLocation());
+            assertTrue(Files.exists(posterPath));
+        } finally {
+            Files.deleteIfExists(posterPath);
+        }
     }
 
     private MovieRequest createTestMovieRequest() {
