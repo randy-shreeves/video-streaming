@@ -9,6 +9,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.core.io.Resource;
+import org.springframework.http.MediaType;
+import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.TestPropertySource;
 
@@ -136,6 +138,22 @@ public class MovieServiceIntegrationTest {
         MovieResponse savedMovie = movieService.createMovie(request);
         RuntimeException exception = assertThrows(MediaFileNotFoundException.class, () -> movieService.getMoviePoster(savedMovie.getId()));
         assertEquals("Movie poster not found.", exception.getMessage());
+    }
+
+    @Test
+    void shouldUploadMoviePosterSuccessfully() {
+        MovieRequest movieRequest = createTestMovieRequest();
+        MovieResponse savedMovieResponse = movieService.createMovie(movieRequest);
+        Long movieId = savedMovieResponse.getId();
+        MockMultipartFile poster = new MockMultipartFile(
+                "poster",
+                "test-poster.jpg",
+                MediaType.IMAGE_JPEG_VALUE,
+                "fake_jpeg_content".getBytes()
+        );
+        movieService.uploadPoster(movieId, poster);
+        Movie updatedMovie = movieRepository.findById(movieId).orElseThrow();
+        assertEquals("movies/posters/" + movieId + ".jpg", updatedMovie.getPosterLocation());
     }
 
     private MovieRequest createTestMovieRequest() {
