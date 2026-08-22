@@ -1,9 +1,10 @@
 import { useParams, useNavigate } from "react-router-dom";
-import { useEffect, useState, type SyntheticEvent } from 'react';
+import { useEffect, useState, useRef, type SyntheticEvent } from 'react';
 import type { Movie} from "../types/Movie";
-import { updateMovie, getMovie } from "../api/movieApi";
+import { updateMovie, getMovie, getMoviePoster, uploadPoster } from "../api/movieApi";
 import type { MovieRequest } from "../types/MovieRequest";
 import Navbar from "../components/Navbar";
+import "./css/EditMoviePage.css";
 
 function getMovieFileName(title: string): string {
     return title
@@ -16,15 +17,19 @@ function EditMoviePage() {
     const navigate = useNavigate();
     const { id } = useParams();
     const movieId = Number(id);
+    const posterInputRef = useRef<HTMLInputElement>(null);
+    const [currentPosterUrl, setCurrentPosterUrl] = useState<string | null>(null);
+    const [newPoster, setNewPoster] = useState<File | null>(null);
+    const [newPosterPreview, setNewPosterPreview] = useState<string | null>(null);
     const [submitting, setSubmitting] = useState(false);
+    const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
     const [formData, setFormData] = useState<MovieRequest>({
             title: "",
             description: "",
             releaseYear: 0,
             runtimeMinutes: 0,
-            storageLocation: "",
-            posterLocation: ""
+            storageLocation: ""
         });
 
     if (Number.isNaN(movieId)) {
@@ -33,24 +38,37 @@ function EditMoviePage() {
 
     useEffect(() => {
         const controller = new AbortController();
+        let aborted = false;
+        let objectUrl: string | null = null;
 
         async function loadMovie() {
             try {
                 const movie: Movie = await getMovie(movieId, controller.signal);
+                objectUrl = await getMoviePoster(movie.id);
+                setCurrentPosterUrl(objectUrl);
                 const fileName = getMovieFileName(movie.title);
                 setFormData({
                     title: movie.title,
                     description: movie.description,
                     releaseYear: movie.releaseYear,
                     runtimeMinutes: movie.runtimeMinutes,
-                    storageLocation: `movies/${fileName}.mp4`,
-                    posterLocation: `movies/posters/${fileName}.jpg`
+                    storageLocation: `movies/${fileName}.mp4`
                 });
             } catch (error) {
                 if (error instanceof DOMException && error.name === "AbortError") {
+                    aborted = true;
                     return;
+                } else if(error instanceof Error) {
+                    setError(error.message);
+                } else {
+                    setError("Unable to load movie.");
                 }
                 console.error(error);
+            }
+            finally {
+                if (!aborted) {
+                    setLoading(false);
+                }
             }
         }
 
@@ -58,8 +76,25 @@ function EditMoviePage() {
 
         return () => {
             controller.abort();
+            if(objectUrl) {
+                URL.revokeObjectURL(objectUrl);
+            }
         };
     }, [id]);
+
+    useEffect(() => {
+    let objectUrl: string | null = null;
+        if (!newPoster) {
+            setNewPosterPreview(null);
+            return;
+        }
+        objectUrl = URL.createObjectURL(newPoster);
+        setNewPosterPreview(objectUrl);
+
+        return () => {
+            URL.revokeObjectURL(objectUrl);
+        };             
+    }, [newPoster]);
 
     const handleSubmit = async (event: SyntheticEvent<HTMLFormElement>) => {
         event.preventDefault();
@@ -68,7 +103,9 @@ function EditMoviePage() {
 
         try {
             const movie = await updateMovie(movieId, formData);
-            console.log("Edited movie:", movie);
+            if (newPoster) {
+                await uploadPoster(movie.id, newPoster);
+            }
             navigate("/admin/movies");
         } catch (error) {
             console.error(error);
@@ -85,6 +122,8 @@ function EditMoviePage() {
     return (
         <>
             {error && <p>{error}</p>}
+
+            {loading && <p>Loading...</p>}
 
             <Navbar
                 backPath="/admin/movies"
@@ -163,17 +202,44 @@ function EditMoviePage() {
                 </div>
 
                 <div className="form-field">
-                    <label>Poster Location</label>
-                    <input
-                        type="text"
-                        value={formData.posterLocation}
-                        onChange={(event) =>
-                            setFormData({
-                                ...formData,
-                                posterLocation: event.target.value
-                            })
-                        }
+                    <label>Current Poster</label>
+                    <img
+                        src={currentPosterUrl ?? undefined}
+                        alt={`${formData.title} poster`}
                     />
+                </div>
+
+                <div className="form-field">
+                    <label>Replace Poster</label>
+                    <input
+                        ref={posterInputRef}
+                        type="file"
+                        accept="image/jpeg"
+                        onChange={(event) => {
+                            setNewPoster(event.target.files?.[0] ?? null);
+                        }}
+                    />
+                    
+                    {newPosterPreview && (
+                        <div className="poster-preview">
+                            <img
+                                src={newPosterPreview}
+                                alt="Selected poster preview"
+                            />
+                            <button
+                                type="button"
+                                onClick={() => {
+                                    setNewPoster(null);
+                                    if (posterInputRef.current) {
+                                        posterInputRef.current.value = "";
+                                    }
+                                }}
+                            >
+                                X
+                            </button>
+                        </div>
+                    )}
+
                 </div>
 
                 <button type="submit" disabled={submitting}>
