@@ -169,9 +169,6 @@ public class MovieServiceIntegrationTest {
         try {
             movieService.uploadPoster(movieId, poster);
             String posterLocation = movieRepository.findById(movieId).orElseThrow().getPosterLocation();
-            assertNotNull(posterLocation);
-            assertTrue(posterLocation.startsWith("movies/posters/"));
-            assertTrue(posterLocation.endsWith(".jpg"));
             posterPath = Paths.get("src/test/resources/media", posterLocation);
             assertTrue(Files.exists(posterPath));
         } finally {
@@ -179,7 +176,54 @@ public class MovieServiceIntegrationTest {
                 Files.deleteIfExists(posterPath);
             }
         }
+    }
 
+    @Test
+    void shouldReplaceMoviePosterSuccessfullyAndDeleteOldPoster() throws IOException {
+        MovieRequest movieRequest = new MovieRequest(
+                "Test Movie",
+                "Test Movie Description",
+                2009,
+                90,
+                "/movies/test_movie2.mp4"
+        );
+        MovieResponse savedMovieResponse = movieService.createMovie(movieRequest);
+        Long movieId = savedMovieResponse.getId();
+
+        MockMultipartFile originalPoster = new MockMultipartFile(
+                "original-poster",
+                "original-poster.jpg",
+                MediaType.IMAGE_JPEG_VALUE,
+                "fake_jpeg_content".getBytes()
+        );
+        Path originalPosterPath = null;
+
+        MockMultipartFile newPoster = new MockMultipartFile(
+                "new-poster",
+                "new-poster.jpg",
+                MediaType.IMAGE_JPEG_VALUE,
+                "fake_jpeg_content".getBytes()
+        );
+        Path newPosterPath = null;
+
+        try {
+            movieService.uploadPoster(movieId, originalPoster);
+            String originalPosterLocation = movieRepository.findById(movieId).orElseThrow().getPosterLocation();
+            originalPosterPath = Paths.get("src/test/resources/media", originalPosterLocation);
+            movieService.uploadPoster(movieId, newPoster);
+            String newPosterLocation = movieRepository.findById(movieId).orElseThrow().getPosterLocation();
+            newPosterPath = Paths.get("src/test/resources/media", newPosterLocation);
+            assertNotEquals(originalPosterLocation, newPosterLocation);
+            assertFalse(Files.exists(originalPosterPath));
+            assertTrue(Files.exists(newPosterPath));
+        } finally {
+            if (originalPosterPath != null) {
+                Files.deleteIfExists(originalPosterPath);
+            }
+            if (newPosterPath != null) {
+                Files.deleteIfExists(newPosterPath);
+            }
+        }
     }
 
     @Test

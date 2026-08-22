@@ -75,6 +75,7 @@ public class MovieService {
 
     public void uploadPoster(Long id, MultipartFile poster) {
         Movie movie = movieRepository.findById(id).orElseThrow(() -> new MovieNotFoundException(id));
+        String oldPosterLocation = movie.getPosterLocation();
         if (poster == null || poster.isEmpty()) {
             throw new IllegalArgumentException("Poster file is required.");
         }
@@ -82,7 +83,8 @@ public class MovieService {
             throw new IllegalArgumentException("Poster must be a JPEG image.");
         }
         String filename = UUID.randomUUID() + ".jpg";
-        Path destination = Paths.get(mediaRoot, "movies/posters", filename);
+        String newPosterLocation = "movies/posters/" + filename;
+        Path destination = Paths.get(mediaRoot, newPosterLocation);
         try (InputStream inputStream = poster.getInputStream()) {
             Files.copy(inputStream, destination, StandardCopyOption.REPLACE_EXISTING);
         } catch (IOException e) {
@@ -90,6 +92,14 @@ public class MovieService {
         }
         movie.setPosterLocation("movies/posters/" + filename);
         movieRepository.save(movie);
+        if (oldPosterLocation != null) {
+            Path oldPosterPath = Paths.get(mediaRoot, oldPosterLocation);
+            try {
+                Files.deleteIfExists(oldPosterPath);
+            } catch (IOException e) {
+                throw new RuntimeException("Failed to delete old movie poster", e);
+            }
+        }
     }
 
     public MovieResponse updateMovie(Long id, MovieRequest movieRequest) {
