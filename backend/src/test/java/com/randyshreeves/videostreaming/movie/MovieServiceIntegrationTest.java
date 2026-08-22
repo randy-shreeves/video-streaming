@@ -146,24 +146,37 @@ public class MovieServiceIntegrationTest {
 
     @Test
     void shouldUploadMoviePosterSuccessfully() throws IOException {
-        MovieRequest movieRequest = createTestMovieRequest();
+        MovieRequest movieRequest = new MovieRequest(
+            "Test Movie",
+            "Test Movie Description",
+            2009,
+            90,
+            "/movies/test_movie2.mp4",
+            "/movies/posters/test_poster2.jpg"
+        );
         MovieResponse savedMovieResponse = movieService.createMovie(movieRequest);
         Long movieId = savedMovieResponse.getId();
-        Path posterPath = Paths.get("src/test/resources/media/movies/posters/" + movieId + ".jpg");
+        MockMultipartFile poster = new MockMultipartFile(
+            "poster",
+            "test-poster.jpg",
+            MediaType.IMAGE_JPEG_VALUE,
+            "fake_jpeg_content".getBytes()
+        );
+        Path posterPath = null;
         try {
-            MockMultipartFile poster = new MockMultipartFile(
-                "poster",
-                "test-poster.jpg",
-                MediaType.IMAGE_JPEG_VALUE,
-                "fake_jpeg_content".getBytes()
-            );
             movieService.uploadPoster(movieId, poster);
-            Movie updatedMovie = movieRepository.findById(movieId).orElseThrow();
-            assertEquals("movies/posters/" + movieId + ".jpg", updatedMovie.getPosterLocation());
+            String posterLocation = movieRepository.findById(movieId).orElseThrow().getPosterLocation();
+            assertNotNull(posterLocation);
+            assertTrue(posterLocation.startsWith("movies/posters/"));
+            assertTrue(posterLocation.endsWith(".jpg"));
+            posterPath = Paths.get("src/test/resources/media", posterLocation);
             assertTrue(Files.exists(posterPath));
         } finally {
-            Files.deleteIfExists(posterPath);
+            if (posterPath != null) {
+                Files.deleteIfExists(posterPath);
+            }
         }
+
     }
 
     @Test

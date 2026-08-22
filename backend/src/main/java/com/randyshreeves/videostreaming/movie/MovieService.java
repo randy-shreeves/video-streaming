@@ -20,6 +20,7 @@ import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 @Service
 public class MovieService {
@@ -80,14 +81,14 @@ public class MovieService {
         if (!MediaType.IMAGE_JPEG_VALUE.equals(poster.getContentType())) {
             throw new IllegalArgumentException("Poster must be a JPEG image.");
         }
-        String posterLocation = "movies/posters/" + id + ".jpg";
-        Path destination = Paths.get(mediaRoot, posterLocation);
+        String filename = UUID.randomUUID() + ".jpg";
+        Path destination = Paths.get(mediaRoot, "movies/posters", filename);
         try (InputStream inputStream = poster.getInputStream()) {
             Files.copy(inputStream, destination, StandardCopyOption.REPLACE_EXISTING);
         } catch (IOException e) {
             throw new RuntimeException("Failed to save movie poster.", e);
         }
-        movie.setPosterLocation(posterLocation);
+        movie.setPosterLocation("movies/posters/" + filename);
         movieRepository.save(movie);
     }
 
