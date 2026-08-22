@@ -46,7 +46,6 @@ public class MovieServiceIntegrationTest {
         assertEquals(movieRequest.getReleaseYear(), retrievedMovie.getReleaseYear());
         assertEquals(movieRequest.getRuntimeMinutes(), retrievedMovie.getRuntimeMinutes());
         assertEquals(movieRequest.getStorageLocation(), retrievedMovie.getStorageLocation());
-        assertEquals(movieRequest.getPosterLocation(), retrievedMovie.getPosterLocation());
     }
 
     @Test
@@ -78,12 +77,11 @@ public class MovieServiceIntegrationTest {
         MovieRequest movieRequest = createTestMovieRequest();
         MovieResponse savedMovieResponse = movieService.createMovie(movieRequest);
         MovieRequest updateRequest = new MovieRequest(
-                "Updated Test Movie Title",
-                "Updated Test Movie Description",
-                9999,
-                999,
-                "Updated Test Storage Location",
-                "Updated Test Poster Location"
+            "Updated Test Movie Title",
+            "Updated Test Movie Description",
+            9999,
+            999,
+            "Updated Test Storage Location"
         );
         MovieResponse updatedMovieResponse = movieService.updateMovie(savedMovieResponse.getId(), updateRequest);
         Movie retrievedMovie = movieRepository.findById(updatedMovieResponse.getId()).orElseThrow();
@@ -92,7 +90,6 @@ public class MovieServiceIntegrationTest {
         assertEquals(9999, retrievedMovie.getReleaseYear());
         assertEquals(999, retrievedMovie.getRuntimeMinutes());
         assertEquals("Updated Test Storage Location", retrievedMovie.getStorageLocation());
-        assertEquals("Updated Test Poster Location", retrievedMovie.getPosterLocation());
     }
 
     @Test
@@ -129,8 +126,12 @@ public class MovieServiceIntegrationTest {
     @Test
     void shouldReturnPosterStreamResource() throws Exception {
         MovieRequest request = createTestMovieRequest();
-        MovieResponse savedMovie = movieService.createMovie(request);
-        Resource resource = movieService.getMoviePoster(savedMovie.getId());
+        MovieResponse savedMovieResponse = movieService.createMovie(request);
+        Long movieId = savedMovieResponse.getId();
+        Movie savedMovie = movieRepository.findById(movieId).orElseThrow();
+        savedMovie.setPosterLocation("/movies/posters/test_poster.jpg");
+        movieRepository.save(savedMovie);
+        Resource resource = movieService.getMoviePoster(movieId);
         assertNotNull(resource);
         assertTrue(resource.exists());
     }
@@ -138,8 +139,11 @@ public class MovieServiceIntegrationTest {
     @Test
     void shouldReturnRuntimeExceptionWhenPosterFileNotFound() throws Exception {
         MovieRequest request = createTestMovieRequest();
-        request.setPosterLocation("missing_poster_file.jpg");
-        MovieResponse savedMovie = movieService.createMovie(request);
+        MovieResponse savedMovieResponse = movieService.createMovie(request);
+        Long movieId = savedMovieResponse.getId();
+        Movie savedMovie = movieRepository.findById(movieId).orElseThrow();
+        savedMovie.setPosterLocation("/movies/posters/test_poster_missing.jpg");
+        movieRepository.save(savedMovie);
         RuntimeException exception = assertThrows(MediaFileNotFoundException.class, () -> movieService.getMoviePoster(savedMovie.getId()));
         assertEquals("Movie poster not found.", exception.getMessage());
     }
@@ -151,8 +155,7 @@ public class MovieServiceIntegrationTest {
             "Test Movie Description",
             2009,
             90,
-            "/movies/test_movie2.mp4",
-            "/movies/posters/test_poster2.jpg"
+            "/movies/test_movie2.mp4"
         );
         MovieResponse savedMovieResponse = movieService.createMovie(movieRequest);
         Long movieId = savedMovieResponse.getId();
@@ -209,12 +212,11 @@ public class MovieServiceIntegrationTest {
 
     private MovieRequest createTestMovieRequest() {
         return new MovieRequest(
-                "Test Movie",
-                "Test Movie Description",
-                2009,
-                90,
-                "/movies/test_movie.mp4",
-                "/movies/posters/test_poster.jpg"
+            "Test Movie",
+            "Test Movie Description",
+            2009,
+            90,
+            "/movies/test_movie.mp4"
         );
     }
 }

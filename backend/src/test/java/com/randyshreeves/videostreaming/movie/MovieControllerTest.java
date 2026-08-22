@@ -161,8 +161,7 @@ public class MovieControllerTest {
                       "title": "Test Movie",
                       "description": "Description",
                       "runtimeMinutes": 90,
-                      "storageLocation": "movies/test.mp4",
-                      "posterLocation": "movies/posters/test.jpg"
+                      "storageLocation": "movies/test.mp4"
                     }
                     """;
         mockMvc.perform(post("/movies")
@@ -190,8 +189,7 @@ public class MovieControllerTest {
                       "title": "Test Movie",
                       "description": "Description",
                       "releaseYear": 2009,
-                      "storageLocation": "movies/test.mp4",
-                      "posterLocation": "movies/posters/test.jpg"
+                      "storageLocation": "movies/test.mp4"
                     }
                     """;
         mockMvc.perform(post("/movies")
@@ -285,22 +283,21 @@ public class MovieControllerTest {
 
     private MovieRequest createTestMovieRequest() {
         return new MovieRequest(
-                "Test Movie Title",
-                "Test Movie Description",
-                2009,
-                90,
-                "Test Movie Storage Location",
-                "Test Poster Storage Location"
+            "Test Movie Title",
+            "Test Movie Description",
+            2009,
+            90,
+            "Test Movie Storage Location"
         );
     }
 
     private MovieResponse createTestMovieResponse() {
         return new MovieResponse(
-                1L,
-                "Test Movie Title",
-                "TestMovieDescription",
-                2009,
-                90
+            1L,
+            "Test Movie Title",
+            "TestMovieDescription",
+            2009,
+            90
         );
     }
 }

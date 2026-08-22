@@ -23,22 +23,19 @@ public class MovieRequest {
     @Size(max = 255, message = "Storage location cannot be greater than 255 characters.")
     private String storageLocation;
 
-    private String posterLocation;
-
     public MovieRequest() {}
 
     public MovieRequest(String title,
                         String description,
                         int releaseYear,
                         int runtimeMinutes,
-                        String storageLocation,
-                        String posterLocation) {
+                        String storageLocation
+    ) {
         this.title = title;
         this.description = description;
         this.releaseYear = releaseYear;
         this.runtimeMinutes = runtimeMinutes;
         this.storageLocation = storageLocation;
-        this.posterLocation = posterLocation;
     }
 
     public String getTitle() {return title;}
@@ -61,11 +58,4 @@ public class MovieRequest {
 
     public void setStorageLocation(String storageLocation) {this.storageLocation = storageLocation;}
 
-    public String getPosterLocation() {
-        return posterLocation;
-    }
-
-    public void setPosterLocation(String posterLocation) {
-        this.posterLocation = posterLocation;
-    }
 }

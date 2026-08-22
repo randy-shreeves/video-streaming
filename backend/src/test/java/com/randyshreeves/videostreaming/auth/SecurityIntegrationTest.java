@@ -107,12 +107,11 @@ public class SecurityIntegrationTest {
     void shouldAllowAccessToStreamMovieWhenLoggedInWithValidJWT() throws Exception {
         String jwt = loginAndGetToken(regularUserUsername, regularUserPassword);
         Movie movie = new Movie(
-                "Test Title",
-                "Test Description",
-                2001,
-                90,
-                "/movies/test_movie.mp4",
-                "/movies/posters/test_poster.jpg"
+            "Test Title",
+            "Test Description",
+            2001,
+            90,
+            "/movies/test_movie.mp4"
         );
         movie = movieRepository.save(movie);
         Long movieId = movie.getId();
@@ -143,12 +142,11 @@ public class SecurityIntegrationTest {
     void shouldRejectInvalidStreamToken() throws Exception {
         String jwt = loginAndGetToken(regularUserUsername, regularUserPassword);
         Movie movie = new Movie(
-                "Test Title",
-                "Test Description",
-                2001,
-                90,
-                "test_movie.mp4",
-                "test_poster.jpg"
+            "Test Title",
+            "Test Description",
+            2001,
+            90,
+            "test_movie.mp4"
         );
         movie = movieRepository.save(movie);
         Long movieId = movie.getId();
@@ -170,12 +168,11 @@ public class SecurityIntegrationTest {
     void shouldAllowAdminUserToDeleteMovieSuccessfully() throws Exception {
         String jwt = loginAndGetToken(adminUserUsername, adminUserPassword);
         Movie movie = new Movie(
-                "Test Title",
-                "Test Description",
-                2001,
-                90,
-                "test_movie.mp4",
-                "test_poster.jpg"
+            "Test Title",
+            "Test Description",
+            2001,
+            90,
+            "test_movie.mp4"
         );
         movie = movieRepository.save(movie);
         Long movieId = movie.getId();
@@ -189,22 +186,20 @@ public class SecurityIntegrationTest {
     void shouldAllowAdminUserToUpdateMovieSuccessfully() throws Exception {
         String jwt = loginAndGetToken(adminUserUsername, adminUserPassword);
         Movie movie = new Movie(
-                "Test Title",
-                "Test Description",
-                2001,
-                90,
-                "test_movie.mp4",
-                "test_poster.jpg"
+            "Test Title",
+            "Test Description",
+            2001,
+            90,
+            "test_movie.mp4"
         );
         movie = movieRepository.save(movie);
         Long movieId = movie.getId();
         Movie upadtedMovieRequest = new Movie(
-                "Updated Test Title",
-                "Test Description",
-                2001,
-                90,
-                "test_movie.mp4",
-                "test_poster.jpg"
+            "Updated Test Title",
+            "Test Description",
+            2001,
+            90,
+            "test_movie.mp4"
         );
         mockMvc.perform(put("/movies/{id}", movieId)
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + jwt)

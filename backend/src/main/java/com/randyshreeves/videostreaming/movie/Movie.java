@@ -30,14 +30,13 @@ public class Movie {
                  String description,
                  int releaseYear,
                  int runtimeMinutes,
-                 String storageLocation,
-                 String posterLocation) {
+                 String storageLocation
+    ) {
         this.title = title;
         this.description = description;
         this.releaseYear = releaseYear;
         this.runtimeMinutes = runtimeMinutes;
         this.storageLocation = storageLocation;
-        this.posterLocation = posterLocation;
     }
 
     public Long getId() {return id;}
