@@ -58,6 +58,20 @@ export async function createMovie(movieRequest: MovieRequest): Promise<Movie> {
     return response.json();
 }
 
+export async function uploadPoster(id: number, poster: File) {
+    const formData = new FormData();
+    formData.append("poster", poster);
+    const response = await apiFetch(`/movies/${id}/poster`, {
+        method: "POST",
+        body: formData
+    });
+
+    if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.message);
+    }
+}
+
 export async function updateMovie(id: number, movieRequest: MovieRequest): Promise<Movie> {
     const response = await apiFetch(`/movies/${id}`, {
         method: "PUT",

@@ -4,5 +4,4 @@ export interface MovieRequest {
     releaseYear: number;
     runtimeMinutes: number;
     storageLocation: string;
-    posterLocation: string;
 }

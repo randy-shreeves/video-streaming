@@ -2,12 +2,13 @@ import { useState } from 'react';
 import { useNavigate } from "react-router-dom";
 import type { MovieRequest } from "../types/MovieRequest";
 import "./css/AddMoviePage.css";
-import { createMovie } from "../api/movieApi";
+import { createMovie, uploadPoster } from "../api/movieApi";
 import type { SyntheticEvent } from "react";
 import Navbar from "../components/Navbar";
 
 function AddMoviePage() {
     const navigate = useNavigate();
+    const [poster, setPoster] = useState<File | null>(null);
     const [submitting, setSubmitting] = useState(false);
     const [error, setError] = useState<string | null>(null);
     const [formData, setFormData] = useState<MovieRequest>({
@@ -15,8 +16,7 @@ function AddMoviePage() {
         description: "",
         releaseYear: 0,
         runtimeMinutes: 0,
-        storageLocation: "",
-        posterLocation: ""
+        storageLocation: ""
     });
 
     const handleSubmit = async (event: SyntheticEvent<HTMLFormElement>) => {
@@ -25,7 +25,9 @@ function AddMoviePage() {
         setError(null);
         try {
             const movie = await createMovie(formData);
-            console.log("Created movie:", movie);
+            if (poster) {
+                await uploadPoster(movie.id, poster);
+            }
             navigate("/admin/movies");
         } catch (error) {
             console.error(error);
@@ -120,16 +122,13 @@ function AddMoviePage() {
                 </div>
 
                 <div className="form-field">
-                    <label>Poster Location</label>
+                    <label>Poster</label>
                     <input
-                        type="text"
-                        value={formData.posterLocation}
-                        onChange={(event) =>
-                            setFormData({
-                                ...formData,
-                                posterLocation: event.target.value
-                            })
-                        }
+                        type="file"
+                        accept="image/jpeg"
+                        onChange={(event) => {
+                            setPoster(event.target.files?.[0] ?? null);
+                        }}
                     />
                 </div>
 
