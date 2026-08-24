@@ -153,6 +153,96 @@ public class MovieServiceIntegrationTest {
     }
 
     @Test
+    void shouldUploadVideoFileSuccessfully() throws IOException {
+        MovieRequest movieRequest = new MovieRequest(
+                "Test Movie",
+                "Test Movie Description",
+                2009,
+                90
+        );
+        MovieResponse savedMovieResponse = movieService.createMovie(movieRequest);
+        Long movieId = savedMovieResponse.getId();
+        MockMultipartFile video = new MockMultipartFile(
+                "video",
+                "test-video.mp4",
+                "video/mp4",
+                "fake_mp4_content".getBytes()
+        );
+        Path videoPath = null;
+        try {
+            movieService.uploadVideo(movieId, video);
+            String videoLocation = movieRepository.findById(movieId).orElseThrow().getStorageLocation();
+            videoPath = Paths.get("src/test/resources/media", videoLocation);
+            assertTrue(Files.exists(videoPath));
+        } finally {
+            if (videoPath != null) {
+                Files.deleteIfExists(videoPath);
+            }
+        }
+    }
+
+    @Test
+    void shouldReplaceVideoFileSuccessfullyAndDeleteOldVideoFile() throws IOException {
+        MovieRequest movieRequest = new MovieRequest(
+                "Test Movie",
+                "Test Movie Description",
+                2009,
+                90
+        );
+        MovieResponse savedMovieResponse = movieService.createMovie(movieRequest);
+        Long movieId = savedMovieResponse.getId();
+
+        MockMultipartFile originalVideo = new MockMultipartFile(
+                "original-video",
+                "original-video.mp4",
+                "video/mp4",
+                "fake_mp4_content".getBytes()
+        );
+        Path originalVideoPath = null;
+
+        MockMultipartFile newVideo = new MockMultipartFile(
+                "new-video",
+                "new-video.mp4",
+                "video/mp4",
+                "fake_mp4_content".getBytes()
+        );
+        Path newVideoPath = null;
+
+        try {
+            movieService.uploadVideo(movieId, originalVideo);
+            String originalVideoLocation = movieRepository.findById(movieId).orElseThrow().getStorageLocation();
+            originalVideoPath = Paths.get("src/test/resources/media", originalVideoLocation);
+            movieService.uploadVideo(movieId, newVideo);
+            String newVideoLocation = movieRepository.findById(movieId).orElseThrow().getStorageLocation();
+            newVideoPath = Paths.get("src/test/resources/media", newVideoLocation);
+            assertNotEquals(originalVideoLocation, newVideoLocation);
+            assertFalse(Files.exists(originalVideoPath));
+            assertTrue(Files.exists(newVideoPath));
+        } finally {
+            if (originalVideoPath != null) {
+                Files.deleteIfExists(originalVideoPath);
+            }
+            if (newVideoPath != null) {
+                Files.deleteIfExists(newVideoPath);
+            }
+        }
+    }
+
+    @Test
+    void shouldRejectVideoFileUploadIfFileIsNotMp4() {
+        MovieRequest movieRequest = createTestMovieRequest();
+        MovieResponse savedMovieResponse = movieService.createMovie(movieRequest);
+        Long movieId = savedMovieResponse.getId();
+        MockMultipartFile video = new MockMultipartFile(
+                "video",
+                "test-video.mov",
+               "video/mov",
+                "fake_mov_content".getBytes()
+        );
+        assertThrows(IllegalArgumentException.class, () -> movieService.uploadVideo(movieId, video));
+    }
+
+    @Test
     void shouldUploadMoviePosterSuccessfully() throws IOException {
         MovieRequest movieRequest = new MovieRequest(
             "Test Movie",

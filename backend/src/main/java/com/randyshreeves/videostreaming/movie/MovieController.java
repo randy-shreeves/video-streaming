@@ -65,6 +65,12 @@ public class MovieController {
         return movieService.createMovie(movieRequest);
     }
 
+    @PostMapping("/{id}/video")
+    public ResponseEntity<Void> uploadVideo(@PathVariable Long id, @RequestParam("video") MultipartFile video) {
+        movieService.uploadVideo(id, video);
+        return ResponseEntity.ok().build();
+    }
+
     @PostMapping("/{id}/poster")
     public ResponseEntity<Void> uploadPoster(@PathVariable Long id, @RequestParam("poster") MultipartFile poster) {
         movieService.uploadPoster(id, poster);

@@ -73,6 +73,35 @@ public class MovieService {
         return resource;
     }
 
+    public void uploadVideo(Long id, MultipartFile video) {
+        Movie movie = movieRepository.findById(id).orElseThrow(() -> new MovieNotFoundException(id));
+        String oldVideoLocation = movie.getStorageLocation();
+        if (video == null || video.isEmpty()) {
+            throw new IllegalArgumentException("Video file is required.");
+        }
+        if(!"video/mp4".equals(video.getContentType())) {
+            throw new IllegalArgumentException("Video must be .mp4 format.");
+        }
+        String filename = UUID.randomUUID() + ".mp4";
+        String newStorageLocation = "movies/" + filename;
+        Path destination = Paths.get(mediaRoot, newStorageLocation);
+        try (InputStream inputStream = video.getInputStream()) {
+            Files.copy(inputStream, destination, StandardCopyOption.REPLACE_EXISTING);
+        } catch (IOException e) {
+            throw new RuntimeException("Failed to save video.", e);
+        }
+        movie.setStorageLocation(newStorageLocation);
+        movieRepository.save(movie);
+        if (oldVideoLocation != null) {
+            Path oldVideoPath = Paths.get(mediaRoot, oldVideoLocation);
+            try {
+                Files.deleteIfExists(oldVideoPath);
+            } catch (IOException e) {
+                throw new RuntimeException("Failed to delete old video.", e);
+            }
+        }
+    }
+
     public void uploadPoster(Long id, MultipartFile poster) {
         Movie movie = movieRepository.findById(id).orElseThrow(() -> new MovieNotFoundException(id));
         String oldPosterLocation = movie.getPosterLocation();
