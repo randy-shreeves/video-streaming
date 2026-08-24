@@ -45,7 +45,6 @@ public class MovieServiceIntegrationTest {
         assertEquals(movieRequest.getDescription(), retrievedMovie.getDescription());
         assertEquals(movieRequest.getReleaseYear(), retrievedMovie.getReleaseYear());
         assertEquals(movieRequest.getRuntimeMinutes(), retrievedMovie.getRuntimeMinutes());
-        assertEquals(movieRequest.getStorageLocation(), retrievedMovie.getStorageLocation());
     }
 
     @Test
@@ -80,8 +79,7 @@ public class MovieServiceIntegrationTest {
             "Updated Test Movie Title",
             "Updated Test Movie Description",
             9999,
-            999,
-            "Updated Test Storage Location"
+            999
         );
         MovieResponse updatedMovieResponse = movieService.updateMovie(savedMovieResponse.getId(), updateRequest);
         Movie retrievedMovie = movieRepository.findById(updatedMovieResponse.getId()).orElseThrow();
@@ -89,7 +87,6 @@ public class MovieServiceIntegrationTest {
         assertEquals("Updated Test Movie Description", retrievedMovie.getDescription());
         assertEquals(9999, retrievedMovie.getReleaseYear());
         assertEquals(999, retrievedMovie.getRuntimeMinutes());
-        assertEquals("Updated Test Storage Location", retrievedMovie.getStorageLocation());
     }
 
     @Test
@@ -103,8 +100,12 @@ public class MovieServiceIntegrationTest {
     @Test
     void shouldReturnMovieStreamResource() throws Exception {
         MovieRequest request = createTestMovieRequest();
-        MovieResponse savedMovie = movieService.createMovie(request);
-        Resource resource = movieService.getMovieStream(savedMovie.getId());
+        MovieResponse savedMovieResponse = movieService.createMovie(request);
+        Long movieId = savedMovieResponse.getId();
+        Movie savedMovie = movieRepository.findById(movieId).orElseThrow();
+        savedMovie.setStorageLocation("movies/test_movie.mp4");
+        movieRepository.save(savedMovie);
+        Resource resource = movieService.getMovieStream(movieId);
         assertNotNull(resource);
         assertTrue(resource.exists());
     }
@@ -117,8 +118,11 @@ public class MovieServiceIntegrationTest {
     @Test
     void shouldReturnRuntimeExceptionWhenVideoFileNotFound () throws Exception {
         MovieRequest request = createTestMovieRequest();
-        request.setStorageLocation("missing_movie_file.mp4");
-        MovieResponse savedMovie = movieService.createMovie(request);
+        MovieResponse savedMovieResponse = movieService.createMovie(request);
+        Long movieId = savedMovieResponse.getId();
+        Movie savedMovie = movieRepository.findById(movieId).orElseThrow();
+        savedMovie.setStorageLocation("movies/test_movie_missing.mp4");
+        movieRepository.save(savedMovie);
         RuntimeException exception = assertThrows(RuntimeException.class, () -> movieService.getMovieStream(savedMovie.getId()));
         assertEquals("Video file not found.", exception.getMessage());
     }
@@ -154,8 +158,7 @@ public class MovieServiceIntegrationTest {
             "Test Movie",
             "Test Movie Description",
             2009,
-            90,
-            "/movies/test_movie2.mp4"
+            90
         );
         MovieResponse savedMovieResponse = movieService.createMovie(movieRequest);
         Long movieId = savedMovieResponse.getId();
@@ -184,8 +187,7 @@ public class MovieServiceIntegrationTest {
                 "Test Movie",
                 "Test Movie Description",
                 2009,
-                90,
-                "/movies/test_movie2.mp4"
+                90
         );
         MovieResponse savedMovieResponse = movieService.createMovie(movieRequest);
         Long movieId = savedMovieResponse.getId();
@@ -259,8 +261,7 @@ public class MovieServiceIntegrationTest {
             "Test Movie",
             "Test Movie Description",
             2009,
-            90,
-            "/movies/test_movie.mp4"
+            90
         );
     }
 }

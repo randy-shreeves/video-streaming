@@ -1,0 +1,2 @@
+ALTER TABLE movie
+ALTER COLUMN storage_location DROP NOT NULL;

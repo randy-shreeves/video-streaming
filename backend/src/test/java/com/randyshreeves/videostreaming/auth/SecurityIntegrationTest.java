@@ -110,9 +110,9 @@ public class SecurityIntegrationTest {
             "Test Title",
             "Test Description",
             2001,
-            90,
-            "/movies/test_movie.mp4"
+            90
         );
+        movie.setStorageLocation("movies/test_movie.mp4");
         movie = movieRepository.save(movie);
         Long movieId = movie.getId();
         String streamToken = streamTokenService.generateToken(movieId);
@@ -145,8 +145,7 @@ public class SecurityIntegrationTest {
             "Test Title",
             "Test Description",
             2001,
-            90,
-            "test_movie.mp4"
+            90
         );
         movie = movieRepository.save(movie);
         Long movieId = movie.getId();
@@ -171,8 +170,7 @@ public class SecurityIntegrationTest {
             "Test Title",
             "Test Description",
             2001,
-            90,
-            "test_movie.mp4"
+            90
         );
         movie = movieRepository.save(movie);
         Long movieId = movie.getId();
@@ -189,8 +187,7 @@ public class SecurityIntegrationTest {
             "Test Title",
             "Test Description",
             2001,
-            90,
-            "test_movie.mp4"
+            90
         );
         movie = movieRepository.save(movie);
         Long movieId = movie.getId();
@@ -198,8 +195,7 @@ public class SecurityIntegrationTest {
             "Updated Test Title",
             "Test Description",
             2001,
-            90,
-            "test_movie.mp4"
+            90
         );
         mockMvc.perform(put("/movies/{id}", movieId)
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + jwt)

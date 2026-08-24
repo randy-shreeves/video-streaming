@@ -19,23 +19,17 @@ public class MovieRequest {
     @Positive(message = "Runtime must be greater than 0.")
     private Integer runtimeMinutes;
 
-    @NotBlank(message = "Storage location cannot be blank.")
-    @Size(max = 255, message = "Storage location cannot be greater than 255 characters.")
-    private String storageLocation;
-
     public MovieRequest() {}
 
     public MovieRequest(String title,
                         String description,
                         int releaseYear,
-                        int runtimeMinutes,
-                        String storageLocation
+                        int runtimeMinutes
     ) {
         this.title = title;
         this.description = description;
         this.releaseYear = releaseYear;
         this.runtimeMinutes = runtimeMinutes;
-        this.storageLocation = storageLocation;
     }
 
     public String getTitle() {return title;}
@@ -53,9 +47,5 @@ public class MovieRequest {
     public int getRuntimeMinutes() {return runtimeMinutes;}
 
     public void setRuntimeMinutes(int runtimeMinutes) {this.runtimeMinutes = runtimeMinutes;}
-
-    public String getStorageLocation() {return storageLocation;}
-
-    public void setStorageLocation(String storageLocation) {this.storageLocation = storageLocation;}
 
 }

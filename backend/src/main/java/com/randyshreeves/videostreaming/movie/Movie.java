@@ -19,7 +19,6 @@ public class Movie {
 
     private int runtimeMinutes;
 
-    @Column(nullable = false)
     private String storageLocation;
 
     private String posterLocation;
@@ -29,14 +28,12 @@ public class Movie {
     public Movie(String title,
                  String description,
                  int releaseYear,
-                 int runtimeMinutes,
-                 String storageLocation
+                 int runtimeMinutes
     ) {
         this.title = title;
         this.description = description;
         this.releaseYear = releaseYear;
         this.runtimeMinutes = runtimeMinutes;
-        this.storageLocation = storageLocation;
     }
 
     public Long getId() {return id;}

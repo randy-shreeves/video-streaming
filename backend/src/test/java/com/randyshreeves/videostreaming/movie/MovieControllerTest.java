@@ -160,8 +160,7 @@ public class MovieControllerTest {
                     {
                       "title": "Test Movie",
                       "description": "Description",
-                      "runtimeMinutes": 90,
-                      "storageLocation": "movies/test.mp4"
+                      "runtimeMinutes": 90
                     }
                     """;
         mockMvc.perform(post("/movies")
@@ -208,28 +207,6 @@ public class MovieControllerTest {
                 .content(objectMapper.writeValueAsString(movieRequest)))
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.message").value("Runtime must be greater than 0."));
-    }
-
-    @Test
-    void shouldReturnBadRequestWhenStorageLocationIsBlank() throws Exception {
-        MovieRequest movieRequest = createTestMovieRequest();
-        movieRequest.setStorageLocation("");
-        mockMvc.perform(post("/movies")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(movieRequest)))
-                .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.message").value("Storage location cannot be blank."));
-    }
-
-    @Test
-    void shouldReturnBadRequestWhenStorageLocationIsTooLong() throws Exception {
-        MovieRequest movieRequest = createTestMovieRequest();
-        movieRequest.setStorageLocation("A".repeat(256));
-        mockMvc.perform(post("/movies")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(movieRequest)))
-                .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.message").value("Storage location cannot be greater than 255 characters."));
     }
 
     @Test
@@ -286,8 +263,7 @@ public class MovieControllerTest {
             "Test Movie Title",
             "Test Movie Description",
             2009,
-            90,
-            "Test Movie Storage Location"
+            90
         );
     }
 
