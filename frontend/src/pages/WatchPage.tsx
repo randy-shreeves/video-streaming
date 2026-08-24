@@ -3,7 +3,7 @@ import { useState, useEffect } from "react";
 import { getStreamToken } from "../api/movieApi";
 import Navbar from "../components/Navbar";
 
-const BASE_URL = "http://localhost:8080";
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
 function WatchPage() {
     const [streamUrl, setStreamUrl] = useState<string | null>(null);
@@ -23,7 +23,7 @@ function WatchPage() {
         async function loadStreamUrl() {
             try {
                 const token = await getStreamToken(movieId, controller.signal);
-                const url = `${BASE_URL}/movies/${movieId}/stream?token=${encodeURIComponent(token)}`;
+                const url = `${API_BASE_URL}/movies/${movieId}/stream?token=${encodeURIComponent(token)}`;
                 setStreamUrl(url);
             } catch (error) {
                 if (error instanceof DOMException && error.name === "AbortError") {
