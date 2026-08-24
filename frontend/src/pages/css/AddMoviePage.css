@@ -27,3 +27,25 @@
     align-self: flex-start;
     padding: 0.5rem 1rem;
 }
+
+.form-field img {
+    width: 200px;
+    height: 300px;
+    object-fit: cover;
+}
+
+.poster-preview {
+    position: relative;
+    display: inline-block;
+    width: 200px;
+    height: 300px;
+}
+
+.poster-preview button {
+    position: absolute;
+    top: 6px;
+    right: 6px;
+    background-color: rgba(220, 0, 0, 0.9);
+    color: white;
+    cursor: pointer;
+}

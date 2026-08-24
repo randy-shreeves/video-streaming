@@ -3,5 +3,4 @@ export interface MovieRequest {
     description: string;
     releaseYear: number;
     runtimeMinutes: number;
-    storageLocation: string;
 }

@@ -6,13 +6,6 @@ import type { MovieRequest } from "../types/MovieRequest";
 import Navbar from "../components/Navbar";
 import "./css/EditMoviePage.css";
 
-function getMovieFileName(title: string): string {
-    return title
-        .toLowerCase()
-        .trim()
-        .replace(/\s+/g, "_");
-}
-
 function EditMoviePage() {
     const navigate = useNavigate();
     const { id } = useParams();
@@ -28,8 +21,7 @@ function EditMoviePage() {
             title: "",
             description: "",
             releaseYear: 0,
-            runtimeMinutes: 0,
-            storageLocation: ""
+            runtimeMinutes: 0
         });
 
     if (Number.isNaN(movieId)) {
@@ -46,13 +38,11 @@ function EditMoviePage() {
                 const movie: Movie = await getMovie(movieId, controller.signal);
                 objectUrl = await getMoviePoster(movie.id);
                 setCurrentPosterUrl(objectUrl);
-                const fileName = getMovieFileName(movie.title);
                 setFormData({
                     title: movie.title,
                     description: movie.description,
                     releaseYear: movie.releaseYear,
-                    runtimeMinutes: movie.runtimeMinutes,
-                    storageLocation: `movies/${fileName}.mp4`
+                    runtimeMinutes: movie.runtimeMinutes
                 });
             } catch (error) {
                 if (error instanceof DOMException && error.name === "AbortError") {
@@ -182,20 +172,6 @@ function EditMoviePage() {
                             setFormData({
                                 ...formData,
                                 runtimeMinutes: Number(event.target.value)
-                            })
-                        }
-                    />
-                </div>
-
-                <div className="form-field">
-                    <label>Storage Location</label>
-                    <input
-                        type="text"
-                        value={formData.storageLocation}
-                        onChange={(event) =>
-                            setFormData({
-                                ...formData,
-                                storageLocation: event.target.value
                             })
                         }
                     />

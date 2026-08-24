@@ -51,6 +51,7 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.GET, "/movies/*/stream").authenticated()
                         .requestMatchers(HttpMethod.GET, "/movies/*/stream-token").authenticated()
                         .requestMatchers(HttpMethod.POST, "/movies/*/poster").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.POST, "/movies/*/video").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.POST, "/movies").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.PUT, "/movies/*").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.DELETE, "/movies/*").hasRole("ADMIN")

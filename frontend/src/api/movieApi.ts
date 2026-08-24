@@ -72,6 +72,20 @@ export async function uploadPoster(id: number, poster: File) {
     }
 }
 
+export async function uploadVideo(id: number, video: File) {
+    const formData = new FormData();
+    formData.append("video", video);
+    const response = await apiFetch(`/movies/${id}/video`, {
+        method: "POST",
+        body: formData
+    });
+
+    if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.message);
+    }
+}
+
 export async function updateMovie(id: number, movieRequest: MovieRequest): Promise<Movie> {
     const response = await apiFetch(`/movies/${id}`, {
         method: "PUT",

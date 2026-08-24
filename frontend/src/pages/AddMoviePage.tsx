@@ -1,23 +1,40 @@
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useNavigate } from "react-router-dom";
 import type { MovieRequest } from "../types/MovieRequest";
 import "./css/AddMoviePage.css";
-import { createMovie, uploadPoster } from "../api/movieApi";
+import { createMovie, uploadPoster, uploadVideo } from "../api/movieApi";
 import type { SyntheticEvent } from "react";
 import Navbar from "../components/Navbar";
 
 function AddMoviePage() {
     const navigate = useNavigate();
+    const posterInputRef = useRef<HTMLInputElement>(null);
     const [poster, setPoster] = useState<File | null>(null);
+    const [posterPreview, setPosterPreview] = useState<string | null>(null);
+    const videoInputRef = useRef<HTMLInputElement>(null);
+    const [video, setVideo] = useState<File | null>(null);
     const [submitting, setSubmitting] = useState(false);
     const [error, setError] = useState<string | null>(null);
     const [formData, setFormData] = useState<MovieRequest>({
         title: "",
         description: "",
         releaseYear: 0,
-        runtimeMinutes: 0,
-        storageLocation: ""
+        runtimeMinutes: 0
     });
+
+    useEffect(() => {
+        let objectUrl: string | null = null;
+            if (!poster) {
+                setPosterPreview(null);
+                return;
+            }
+            objectUrl = URL.createObjectURL(poster);
+            setPosterPreview(objectUrl);
+    
+            return () => {
+                URL.revokeObjectURL(objectUrl);
+            };             
+        }, [poster]);
 
     const handleSubmit = async (event: SyntheticEvent<HTMLFormElement>) => {
         event.preventDefault();
@@ -27,6 +44,9 @@ function AddMoviePage() {
             const movie = await createMovie(formData);
             if (poster) {
                 await uploadPoster(movie.id, poster);
+            }
+            if (video) {
+                await uploadVideo(movie.id, video);
             }
             navigate("/admin/movies");
         } catch (error) {
@@ -108,28 +128,47 @@ function AddMoviePage() {
                 </div>
 
                 <div className="form-field">
-                    <label>Storage Location</label>
+                    <label>Video</label>
                     <input
-                        type="text"
-                        value={formData.storageLocation}
-                        onChange={(event) =>
-                            setFormData({
-                                ...formData,
-                                storageLocation: event.target.value
-                            })
-                        }
+                        ref={videoInputRef}
+                        type="file"
+                        accept="video/mp4"
+                        onChange={(event) => {
+                            setVideo(event.target.files?.[0] ?? null);
+                        }}
                     />
                 </div>
 
                 <div className="form-field">
                     <label>Poster</label>
                     <input
+                        ref={posterInputRef}
                         type="file"
                         accept="image/jpeg"
                         onChange={(event) => {
                             setPoster(event.target.files?.[0] ?? null);
                         }}
                     />
+
+                    {posterPreview && (
+                        <div className="poster-preview">
+                            <img
+                                src={posterPreview}
+                                alt="Selected poster preview"
+                            />
+                            <button
+                                type="button"
+                                onClick={() => {
+                                    setPoster(null);
+                                    if (posterInputRef.current) {
+                                        posterInputRef.current.value = "";
+                                    }
+                                }}
+                            >
+                                X
+                            </button>
+                        </div>
+                    )}
                 </div>
 
                 <button type="submit" disabled={submitting}>
