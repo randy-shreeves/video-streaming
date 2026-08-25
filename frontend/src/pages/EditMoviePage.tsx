@@ -1,7 +1,7 @@
 import { useParams, useNavigate } from "react-router-dom";
 import { useEffect, useState, useRef, type SyntheticEvent } from 'react';
 import type { Movie} from "../types/Movie";
-import { updateMovie, getMovie, getMoviePoster, uploadPoster } from "../api/movieApi";
+import { updateMovie, getMovie, getMoviePoster, uploadPoster, uploadVideo } from "../api/movieApi";
 import type { MovieRequest } from "../types/MovieRequest";
 import Navbar from "../components/Navbar";
 import "./css/EditMoviePage.css";
@@ -14,6 +14,9 @@ function EditMoviePage() {
     const [currentPosterUrl, setCurrentPosterUrl] = useState<string | null>(null);
     const [newPoster, setNewPoster] = useState<File | null>(null);
     const [newPosterPreview, setNewPosterPreview] = useState<string | null>(null);
+    const videoInputRef = useRef<HTMLInputElement>(null);
+    const [video, setVideo] = useState<File | null>(null);
+    const [videoUploaded, setVideoUploaded] = useState(false);
     const [submitting, setSubmitting] = useState(false);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
@@ -36,6 +39,7 @@ function EditMoviePage() {
         async function loadMovie() {
             try {
                 const movie: Movie = await getMovie(movieId, controller.signal);
+                setVideoUploaded(movie.videoUploaded);
                 objectUrl = await getMoviePoster(movie.id);
                 setCurrentPosterUrl(objectUrl);
                 setFormData({
@@ -95,6 +99,9 @@ function EditMoviePage() {
             const movie = await updateMovie(movieId, formData);
             if (newPoster) {
                 await uploadPoster(movie.id, newPoster);
+            }
+            if (video) {
+                await uploadVideo(movie.id, video);
             }
             navigate("/admin/movies");
         } catch (error) {
@@ -175,6 +182,34 @@ function EditMoviePage() {
                             })
                         }
                     />
+                </div>
+
+                <div className="form-field">
+                    <label>{videoUploaded ? "Video file already exists. Replace Video" : "No video file exists. Upload Video"}</label>
+                    <input
+                        ref={videoInputRef}
+                        type="file"
+                        accept="video/mp4"
+                        onChange={(event) => {
+                            setVideo(event.target.files?.[0] ?? null);
+                        }}
+                    />
+                    {video && (
+                        <div className="video-selection">
+                            {video.name}
+                            <button
+                                type="button"
+                                onClick={() => {
+                                    setVideo(null);
+                                    if (videoInputRef.current) {
+                                        videoInputRef.current.value = "";
+                                    }
+                                }}
+                            >
+                                X
+                            </button>
+                        </div>
+                    )}
                 </div>
 
                 <div className="form-field">
