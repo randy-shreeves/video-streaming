@@ -90,11 +90,50 @@ public class MovieServiceIntegrationTest {
     }
 
     @Test
-    void shouldDeleteMovieSuccessfully() {
-        MovieRequest movieRequest = createTestMovieRequest();
+    void shouldDeleteMovieSuccessfully() throws IOException {
+        MovieRequest movieRequest = new MovieRequest(
+                "Test Movie",
+                "Test Movie Description",
+                2009,
+                90
+        );
         MovieResponse savedMovieResponse = movieService.createMovie(movieRequest);
-        movieService.deleteMovie(savedMovieResponse.getId());
-        assertTrue(movieRepository.findById(savedMovieResponse.getId()).isEmpty());
+        Long movieId = savedMovieResponse.getId();
+        MockMultipartFile video = new MockMultipartFile(
+                "video",
+                "test-video.mp4",
+                "video/mp4",
+                "fake_mp4_content".getBytes()
+        );
+        MockMultipartFile poster = new MockMultipartFile(
+                "poster",
+                "test-poster.jpg",
+                MediaType.IMAGE_JPEG_VALUE,
+                "fake_jpeg_content".getBytes()
+        );
+        Path videoPath = null;
+        Path posterPath = null;
+        try {
+            movieService.uploadVideo(movieId, video);
+            movieService.uploadPoster(movieId, poster);
+            String videoLocation = movieRepository.findById(movieId).orElseThrow().getStorageLocation();
+            String posterLocation = movieRepository.findById(movieId).orElseThrow().getPosterLocation();
+            videoPath = Paths.get("src/test/resources/media", videoLocation);
+            posterPath = Paths.get("src/test/resources/media", posterLocation);
+            movieService.deleteMovie(savedMovieResponse.getId());
+            assertTrue(movieRepository.findById(savedMovieResponse.getId()).isEmpty());
+            assertFalse(Files.exists(videoPath));
+            assertFalse(Files.exists(posterPath));
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to add movie and/or poster file.", e);
+        } finally {
+            if (videoPath != null) {
+                Files.deleteIfExists(videoPath);
+            }
+            if (posterPath != null) {
+                Files.deleteIfExists(posterPath);
+            }
+        }
     }
 
     @Test

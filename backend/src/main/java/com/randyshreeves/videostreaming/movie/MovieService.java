@@ -143,6 +143,24 @@ public class MovieService {
 
     public void deleteMovie(Long id) {
         Movie movie = movieRepository.findById(id).orElseThrow(() -> new MovieNotFoundException(id));
+        String videoFileLocation = movie.getStorageLocation();
+        String posterFileLocation = movie.getPosterLocation();
+        if (videoFileLocation != null) {
+            Path videoFilePath = Paths.get(mediaRoot, videoFileLocation);
+            try {
+                Files.deleteIfExists(videoFilePath);
+            } catch (IOException e) {
+                throw new RuntimeException("Failed to delete video file.", e);
+            }
+        }
+        if (posterFileLocation != null) {
+            Path posterFilePath = Paths.get(mediaRoot, posterFileLocation);
+            try {
+                Files.deleteIfExists(posterFilePath);
+            } catch (IOException e) {
+                throw new RuntimeException("Failed to delete poster file.", e);
+            }
+        }
         movieRepository.delete(movie);
     }
 
