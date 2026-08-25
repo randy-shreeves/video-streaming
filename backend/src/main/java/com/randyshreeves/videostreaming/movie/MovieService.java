@@ -170,7 +170,8 @@ public class MovieService {
                 movie.getTitle(),
                 movie.getDescription(),
                 movie.getReleaseYear(),
-                movie.getRuntimeMinutes()
+                movie.getRuntimeMinutes(),
+                movie.getStorageLocation() != null
         );
     }
 

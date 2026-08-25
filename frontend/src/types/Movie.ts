@@ -4,4 +4,5 @@ export interface Movie {
     description: string;
     releaseYear: number;
     runtimeMinutes: number;
+    videoUploaded: boolean;
 }

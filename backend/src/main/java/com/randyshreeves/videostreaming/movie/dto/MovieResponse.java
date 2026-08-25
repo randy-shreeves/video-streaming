@@ -7,13 +7,15 @@ public class MovieResponse {
     private String description;
     private int releaseYear;
     private int runtimeMinutes;
+    private boolean videoUploaded;
 
-    public MovieResponse(Long id, String title, String description, int releaseYear, int runtimeMinutes) {
+    public MovieResponse(Long id, String title, String description, int releaseYear, int runtimeMinutes, boolean videoUploaded) {
         this.id = id;
         this.title = title;
         this.description = description;
         this.releaseYear = releaseYear;
         this.runtimeMinutes = runtimeMinutes;
+        this.videoUploaded = videoUploaded;
     }
 
     public Long getId() {return id;}
@@ -25,4 +27,6 @@ public class MovieResponse {
     public int getReleaseYear() {return releaseYear;}
 
     public int getRuntimeMinutes() {return runtimeMinutes;}
+
+    public boolean isVideoUploaded() {return videoUploaded;}
 }

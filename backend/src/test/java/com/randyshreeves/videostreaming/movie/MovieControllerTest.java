@@ -56,7 +56,8 @@ public class MovieControllerTest {
                 "Another Test Movie",
                 "TestMovieDescription",
                 2009,
-                90
+                90,
+                true
         );
         List<MovieResponse> movieResponseList = new ArrayList<>();
         movieResponseList.add(movieResponse1);
@@ -273,7 +274,8 @@ public class MovieControllerTest {
             "Test Movie Title",
             "TestMovieDescription",
             2009,
-            90
+            90,
+                true
         );
     }
 }
