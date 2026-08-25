@@ -49,3 +49,15 @@
     color: white;
     cursor: pointer;
 }
+
+.video-selection {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.video-selection button {
+    background-color: rgba(220, 0, 0, 0.9);
+    color: white;
+    cursor: pointer;
+}

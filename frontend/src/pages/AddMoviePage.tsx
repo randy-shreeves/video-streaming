@@ -137,6 +137,22 @@ function AddMoviePage() {
                             setVideo(event.target.files?.[0] ?? null);
                         }}
                     />
+                    {video && (
+                        <div className="video-selection">
+                            {video.name}
+                            <button
+                                type="button"
+                                onClick={() => {
+                                    setVideo(null);
+                                    if (videoInputRef.current) {
+                                        videoInputRef.current.value = "";
+                                    }
+                                }}
+                            >
+                                X
+                            </button>
+                        </div>
+                    )}
                 </div>
 
                 <div className="form-field">
