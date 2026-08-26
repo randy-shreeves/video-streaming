@@ -1,5 +1,6 @@
 package com.randyshreeves.videostreaming.movie;
 
+import com.randyshreeves.videostreaming.exception.InvalidMediaFileException;
 import com.randyshreeves.videostreaming.exception.MediaFileNotFoundException;
 import com.randyshreeves.videostreaming.exception.MovieNotFoundException;
 import com.randyshreeves.videostreaming.movie.dto.MovieRequest;
@@ -268,7 +269,7 @@ public class MovieServiceIntegrationTest {
     }
 
     @Test
-    void shouldRejectVideoFileUploadIfFileIsNotMp4() {
+    void shouldReturnInvalidMediaFileExceptionIfVideoFileIsNotMp4() {
         MovieRequest movieRequest = createTestMovieRequest();
         MovieResponse savedMovieResponse = movieService.createMovie(movieRequest);
         Long movieId = savedMovieResponse.getId();
@@ -278,7 +279,7 @@ public class MovieServiceIntegrationTest {
                "video/mov",
                 "fake_mov_content".getBytes()
         );
-        assertThrows(IllegalArgumentException.class, () -> movieService.uploadVideo(movieId, video));
+        assertThrows(InvalidMediaFileException.class, () -> movieService.uploadVideo(movieId, video));
     }
 
     @Test
@@ -358,7 +359,7 @@ public class MovieServiceIntegrationTest {
     }
 
     @Test
-    void shouldRejectMoviePosterUploadIfNoFileIsProvided() {
+    void shouldReturnInvalidMediaFileExceptionIfNoFileIsProvided() {
         MovieRequest movieRequest = createTestMovieRequest();
         MovieResponse savedMovieResponse = movieService.createMovie(movieRequest);
         Long movieId = savedMovieResponse.getId();
@@ -368,11 +369,11 @@ public class MovieServiceIntegrationTest {
                 MediaType.IMAGE_JPEG_VALUE,
                 new byte[0]
         );
-        assertThrows(IllegalArgumentException.class, () -> movieService.uploadPoster(movieId, poster));
+        assertThrows(InvalidMediaFileException.class, () -> movieService.uploadPoster(movieId, poster));
     }
 
     @Test
-    void shouldRejectMoviePosterUploadIfFileIsNotJpeg() {
+    void shouldReturnInvalidMediaFileExceptionIfFileIsNotJpeg() {
         MovieRequest movieRequest = createTestMovieRequest();
         MovieResponse savedMovieResponse = movieService.createMovie(movieRequest);
         Long movieId = savedMovieResponse.getId();
@@ -382,7 +383,7 @@ public class MovieServiceIntegrationTest {
                 MediaType.IMAGE_PNG_VALUE,
                 "fake_png_content".getBytes()
         );
-        assertThrows(IllegalArgumentException.class, () -> movieService.uploadPoster(movieId, poster));
+        assertThrows(InvalidMediaFileException.class, () -> movieService.uploadPoster(movieId, poster));
     }
 
     private MovieRequest createTestMovieRequest() {

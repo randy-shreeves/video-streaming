@@ -1,5 +1,6 @@
 package com.randyshreeves.videostreaming.movie;
 
+import com.randyshreeves.videostreaming.exception.InvalidMediaFileException;
 import com.randyshreeves.videostreaming.exception.MediaFileNotFoundException;
 import com.randyshreeves.videostreaming.exception.MovieNotFoundException;
 import com.randyshreeves.videostreaming.movie.dto.MovieRequest;
@@ -77,10 +78,10 @@ public class MovieService {
         Movie movie = movieRepository.findById(id).orElseThrow(() -> new MovieNotFoundException(id));
         String oldVideoLocation = movie.getStorageLocation();
         if (video == null || video.isEmpty()) {
-            throw new IllegalArgumentException("Video file is required.");
+            throw new InvalidMediaFileException("Video file is required.");
         }
         if(!"video/mp4".equals(video.getContentType())) {
-            throw new IllegalArgumentException("Video must be .mp4 format.");
+            throw new InvalidMediaFileException("Video must be .mp4 format.");
         }
         String filename = UUID.randomUUID() + ".mp4";
         String newStorageLocation = "movies/" + filename;
@@ -106,10 +107,10 @@ public class MovieService {
         Movie movie = movieRepository.findById(id).orElseThrow(() -> new MovieNotFoundException(id));
         String oldPosterLocation = movie.getPosterLocation();
         if (poster == null || poster.isEmpty()) {
-            throw new IllegalArgumentException("Poster file is required.");
+            throw new InvalidMediaFileException("Poster file is required.");
         }
         if (!MediaType.IMAGE_JPEG_VALUE.equals(poster.getContentType())) {
-            throw new IllegalArgumentException("Poster must be a JPEG image.");
+            throw new InvalidMediaFileException("Poster must be a JPEG image.");
         }
         String filename = UUID.randomUUID() + ".jpg";
         String newPosterLocation = "movies/posters/" + filename;
