@@ -1,8 +1,8 @@
-import { apiFetch } from "./apiClient";
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 import type { LoginResponse } from "../types/LoginResponse";
 
 export async function login(username: string, password: string): Promise<LoginResponse> {
-    const response = await apiFetch("/auth/login", {
+    const response = await fetch(API_BASE_URL + "/auth/login", {
         method: "POST",
         headers: {
             "Content-Type": "application/json"
@@ -26,7 +26,7 @@ export async function register(username: string, password: string, reenteredPass
         throw new Error("Passwords do not match.");
     }
 
-    const response = await apiFetch("/auth/register", {
+    const response = await fetch(API_BASE_URL + "/auth/register", {
         method: "POST",
         headers: {
             "Content-Type": "application/json"
