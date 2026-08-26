@@ -15,3 +15,9 @@ export function getUserRole(token: string): string {
     const payload = getJwtPayload(token);
     return payload.role;
 }
+
+export function isTokenExpired(token: string): boolean {
+    const payload = getJwtPayload(token);
+    const expirationTime = payload.exp * 1000;
+    return Date.now() >= expirationTime;
+}

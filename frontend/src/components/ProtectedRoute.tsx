@@ -1,5 +1,5 @@
 import { Navigate } from "react-router-dom";
-import { getUserRole } from "../utils/jwt.ts";
+import { getUserRole, isTokenExpired } from "../utils/jwt.ts";
 
 interface ProtectedRouteProps {
     children: React.ReactNode;
@@ -10,6 +10,11 @@ function ProtectedRoute({ children, requiredRole }: ProtectedRouteProps) {
     const token = localStorage.getItem("token");
 
     if (!token) {
+        return <Navigate to="/" replace />;
+    }
+
+    if (isTokenExpired(token)) {
+        localStorage.removeItem("token");
         return <Navigate to="/" replace />;
     }
 
