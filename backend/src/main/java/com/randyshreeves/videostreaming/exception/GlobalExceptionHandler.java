@@ -45,4 +45,16 @@ public class GlobalExceptionHandler {
     public ErrorResponse handleAuthentication(AuthenticationException ex) {
         return new ErrorResponse("Invalid username or password.");
     }
+
+    @ExceptionHandler(InvalidMediaFileException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ErrorResponse handleInvalidMediaFile(InvalidMediaFileException ex) {
+        return new ErrorResponse(ex.getMessage());
+    }
+
+    @ExceptionHandler(MediaStorageException.class)
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    public ErrorResponse handleMediaStorageFailure(MediaStorageException ex) {
+        return new ErrorResponse(ex.getMessage());
+    }
 }

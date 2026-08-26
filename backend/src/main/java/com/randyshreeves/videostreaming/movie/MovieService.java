@@ -2,6 +2,7 @@ package com.randyshreeves.videostreaming.movie;
 
 import com.randyshreeves.videostreaming.exception.InvalidMediaFileException;
 import com.randyshreeves.videostreaming.exception.MediaFileNotFoundException;
+import com.randyshreeves.videostreaming.exception.MediaStorageException;
 import com.randyshreeves.videostreaming.exception.MovieNotFoundException;
 import com.randyshreeves.videostreaming.movie.dto.MovieRequest;
 import com.randyshreeves.videostreaming.movie.dto.MovieResponse;
@@ -89,7 +90,7 @@ public class MovieService {
         try (InputStream inputStream = video.getInputStream()) {
             Files.copy(inputStream, destination, StandardCopyOption.REPLACE_EXISTING);
         } catch (IOException e) {
-            throw new RuntimeException("Failed to save video.", e);
+            throw new MediaStorageException("Failed to save video.");
         }
         movie.setStorageLocation(newStorageLocation);
         movieRepository.save(movie);
@@ -98,7 +99,7 @@ public class MovieService {
             try {
                 Files.deleteIfExists(oldVideoPath);
             } catch (IOException e) {
-                throw new RuntimeException("Failed to delete old video.", e);
+                throw new MediaStorageException("Failed to delete old video.");
             }
         }
     }
@@ -118,7 +119,7 @@ public class MovieService {
         try (InputStream inputStream = poster.getInputStream()) {
             Files.copy(inputStream, destination, StandardCopyOption.REPLACE_EXISTING);
         } catch (IOException e) {
-            throw new RuntimeException("Failed to save movie poster.", e);
+            throw new MediaStorageException("Failed to save movie poster.");
         }
         movie.setPosterLocation("movies/posters/" + filename);
         movieRepository.save(movie);
@@ -127,7 +128,7 @@ public class MovieService {
             try {
                 Files.deleteIfExists(oldPosterPath);
             } catch (IOException e) {
-                throw new RuntimeException("Failed to delete old movie poster", e);
+                throw new MediaStorageException("Failed to delete old movie poster");
             }
         }
     }
@@ -151,7 +152,7 @@ public class MovieService {
             try {
                 Files.deleteIfExists(videoFilePath);
             } catch (IOException e) {
-                throw new RuntimeException("Failed to delete video file.", e);
+                throw new MediaStorageException("Failed to delete video file.");
             }
         }
         if (posterFileLocation != null) {
@@ -159,7 +160,7 @@ public class MovieService {
             try {
                 Files.deleteIfExists(posterFilePath);
             } catch (IOException e) {
-                throw new RuntimeException("Failed to delete poster file.", e);
+                throw new MediaStorageException("Failed to delete poster file.");
             }
         }
         movieRepository.delete(movie);
