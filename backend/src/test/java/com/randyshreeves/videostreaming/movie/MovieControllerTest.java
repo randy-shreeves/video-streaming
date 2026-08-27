@@ -57,6 +57,7 @@ public class MovieControllerTest {
                 "TestMovieDescription",
                 2009,
                 90,
+                true,
                 true
         );
         List<MovieResponse> movieResponseList = new ArrayList<>();
@@ -275,7 +276,8 @@ public class MovieControllerTest {
             "TestMovieDescription",
             2009,
             90,
-                true
+            true,
+            true
         );
     }
 }

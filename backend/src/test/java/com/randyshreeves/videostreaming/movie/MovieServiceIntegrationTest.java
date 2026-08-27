@@ -386,6 +386,57 @@ public class MovieServiceIntegrationTest {
         assertThrows(InvalidMediaFileException.class, () -> movieService.uploadPoster(movieId, poster));
     }
 
+    @Test
+    void shouldPublishMovieIfVideoAndPosterExist() {
+        MovieRequest movieRequest = new MovieRequest(
+                "Test Movie",
+                "Test Movie Description",
+                2009,
+                90
+        );
+        MovieResponse savedMovieResponse = movieService.createMovie(movieRequest);
+        Long movieId = savedMovieResponse.getId();
+        Movie savedMovie = movieRepository.findById(movieId).orElseThrow();
+        savedMovie.setStorageLocation("/movies/video_file.mp4");
+        savedMovie.setPosterLocation("/movies/posters/poster_file.jpg");
+        movieRepository.save(savedMovie);
+        MovieResponse movieResponse = movieService.publishMovie(movieId);
+        assertTrue(movieResponse.isPublished());
+    }
+
+    @Test
+    void shouldUnpublishMovie() {
+        MovieRequest movieRequest = new MovieRequest(
+                "Test Movie",
+                "Test Movie Description",
+                2009,
+                90
+        );
+        MovieResponse savedMovieResponse = movieService.createMovie(movieRequest);
+        Long movieId = savedMovieResponse.getId();
+        Movie savedMovie = movieRepository.findById(movieId).orElseThrow();
+        savedMovie.setStorageLocation("/movies/video_file.mp4");
+        savedMovie.setPosterLocation("/movies/posters/poster_file.jpg");
+        movieRepository.save(savedMovie);
+        MovieResponse publishedMovieResponse = movieService.publishMovie(movieId);
+        assertTrue(publishedMovieResponse.isPublished());
+        MovieResponse unpublishedMovieResponse = movieService.unpublishMovie(movieId);
+        assertFalse(unpublishedMovieResponse.isPublished());
+    }
+
+    @Test
+    void shouldNotPublishMovieIfVideoOrPosterIsNull() {
+        MovieRequest movieRequest = new MovieRequest(
+                "Test Movie",
+                "Test Movie Description",
+                2009,
+                90
+        );
+        MovieResponse savedMovieResponse = movieService.createMovie(movieRequest);
+        Long movieId = savedMovieResponse.getId();
+        assertThrows(IllegalStateException.class, () -> movieService.publishMovie(movieId));
+    }
+
     private MovieRequest createTestMovieRequest() {
         return new MovieRequest(
             "Test Movie",
