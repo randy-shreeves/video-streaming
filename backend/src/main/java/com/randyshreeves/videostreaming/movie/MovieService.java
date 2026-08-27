@@ -143,6 +143,23 @@ public class MovieService {
         return toMovieResponse(savedMovie);
     }
 
+    public MovieResponse publishMovie(Long id) {
+        Movie movie = movieRepository.findById(id).orElseThrow(() -> new MovieNotFoundException(id));
+        if (movie.getStorageLocation() == null || movie.getPosterLocation() == null) {
+            throw new IllegalStateException("A movie must have video file and poster file before it can be published.");
+        }
+        movie.setPublished(true);
+        Movie savedMovie = movieRepository.save(movie);
+        return toMovieResponse(savedMovie);
+    }
+
+    public MovieResponse unpublishMovie(Long id) {
+        Movie movie = movieRepository.findById(id).orElseThrow(() -> new MovieNotFoundException(id));
+        movie.setPublished(false);
+        Movie savedMovie = movieRepository.save(movie);
+        return toMovieResponse(savedMovie);
+    }
+
     public void deleteMovie(Long id) {
         Movie movie = movieRepository.findById(id).orElseThrow(() -> new MovieNotFoundException(id));
         String videoFileLocation = movie.getStorageLocation();
@@ -173,7 +190,8 @@ public class MovieService {
                 movie.getDescription(),
                 movie.getReleaseYear(),
                 movie.getRuntimeMinutes(),
-                movie.getStorageLocation() != null
+                movie.getStorageLocation() != null,
+                movie.isPublished()
         );
     }
 

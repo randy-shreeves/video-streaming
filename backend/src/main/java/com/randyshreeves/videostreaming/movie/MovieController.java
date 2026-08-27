@@ -77,6 +77,16 @@ public class MovieController {
         return ResponseEntity.ok().build();
     }
 
+    @PostMapping("/{id}/publish")
+    public MovieResponse publishMovie(@PathVariable Long id) {
+        return movieService.publishMovie(id);
+    }
+
+    @PostMapping("/{id}/unpublish")
+    public MovieResponse unpublishMovie(@PathVariable Long id) {
+        return movieService.unpublishMovie(id);
+    }
+
     @PutMapping("/{id}")
     public MovieResponse updateMovie(@PathVariable Long id, @Valid @RequestBody MovieRequest movieRequest) {
         return movieService.updateMovie(id, movieRequest);
