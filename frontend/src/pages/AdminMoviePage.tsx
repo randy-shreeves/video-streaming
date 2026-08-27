@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { deleteMovie, getMovies } from "../api/movieApi";
+import { deleteMovie, getMovies, publishMovie, unpublishMovie } from "../api/movieApi";
 import type { Movie } from "../types/Movie";
 import AdminMovieCard from "../components/AdminMovieCard";
 import Navbar from "../components/Navbar";
@@ -11,6 +11,7 @@ function AdminMoviePage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [deletingMovieId, setDeletingMovieId] = useState<number | null>(null);
+  const [updatingPublicationStatusForMovieId, setUpdatingPublicationStatusForMovieId] = useState<number | null>(null);
   
   useEffect(() => {
     const controller = new AbortController();
@@ -57,6 +58,28 @@ function AdminMoviePage() {
       }
   }
 
+  async function handlePublicationChange(movie: Movie) {
+    const confirmed = window.confirm(`Are you sure you want to change publication status of this movie: ${movie.title} (${movie.releaseYear})?`);
+    if (!confirmed) {
+      return;
+    }
+
+    try {
+      setUpdatingPublicationStatusForMovieId(movie.id);
+      if (movie.published) {
+        await unpublishMovie(movie.id);
+      } else {
+        await publishMovie(movie.id);
+      }
+      const movieList = await getMovies();
+      setMovies(movieList);
+    } catch (error) {
+      setError("Unable to change movie publication status.");
+    } finally {
+      setUpdatingPublicationStatusForMovieId(null);
+    }
+  }
+
   if (loading) {
     return (
         <>
@@ -95,7 +118,9 @@ function AdminMoviePage() {
                     key={movie.id}
                     movie={movie}
                     onDelete={handleDelete}
+                    onPublicationChange={handlePublicationChange}
                     deleting={deletingMovieId === movie.id}
+                    updatingPublicationStatus={updatingPublicationStatusForMovieId === movie.id}
                 />
                 ))}
             </div>

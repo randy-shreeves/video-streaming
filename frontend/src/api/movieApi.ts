@@ -113,3 +113,25 @@ export async function deleteMovie(id: number): Promise<void> {
         throw new Error(error.message);
     }
 }
+
+export async function publishMovie(id: number): Promise<void> {
+    const response = await apiFetch(`${BASE_URL}/${id}/publish`, {
+        method: "POST"
+    });
+
+    if(!response.ok) {
+        const error = await response.json();
+        throw new Error(error.message);
+    }
+}
+
+export async function unpublishMovie(id: number): Promise<void> {
+    const response = await apiFetch(`${BASE_URL}/${id}/unpublish`, {
+        method: "POST"
+    });
+
+    if(!response.ok) {
+        const error = await response.json();
+        throw new Error(error.message);
+    }
+}

@@ -8,9 +8,11 @@ type MovieCardProps = {
     movie: Movie;
     onDelete: (movie: Movie) => void;
     deleting: boolean;
+    onPublicationChange: (movie: Movie) => void;
+    updatingPublicationStatus: boolean;
 };
 
-function AdminMovieCard({ movie, onDelete, deleting }: MovieCardProps) {
+function AdminMovieCard({ movie, onDelete, deleting, onPublicationChange, updatingPublicationStatus}: MovieCardProps) {
     const [posterUrl, setPosterUrl] = useState<string | null>(null);
     const navigate = useNavigate();
 
@@ -54,6 +56,18 @@ function AdminMovieCard({ movie, onDelete, deleting }: MovieCardProps) {
                 disabled={deleting}
             >
                     {deleting ? "Deleting..." : "Delete"}
+            </button>
+            <button
+                onClick={() => onPublicationChange(movie)}
+                disabled={updatingPublicationStatus}
+            >
+                {updatingPublicationStatus
+                    ? movie.published
+                        ? "Unpublishing..."
+                        : "Publishing..."
+                    : movie.published
+                        ? "Unpublish"
+                        : "Publish"}
             </button>
         </div>
 
