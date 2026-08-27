@@ -23,6 +23,9 @@ public class Movie {
 
     private String posterLocation;
 
+    @Column(nullable = false)
+    private boolean published;
+
     public Movie(){}
 
     public Movie(String title,
@@ -34,6 +37,7 @@ public class Movie {
         this.description = description;
         this.releaseYear = releaseYear;
         this.runtimeMinutes = runtimeMinutes;
+        this.published = false;
     }
 
     public Long getId() {return id;}
@@ -64,5 +68,11 @@ public class Movie {
 
     public void setPosterLocation (String posterLocation) {
         this.posterLocation = posterLocation;
+    }
+
+    public boolean isPublished() {return published;}
+
+    public void setPublished(boolean published) {
+        this.published = published;
     }
 }
