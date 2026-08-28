@@ -63,6 +63,14 @@ public class MovieService {
         return toMovieResponse(movie);
     }
 
+    public MovieResponse getPublishedMovie(Long id) {
+        Movie movie = movieRepository.findById(id).orElseThrow(() -> new MovieNotFoundException(id));
+        if (!movie.isPublished()) {
+            throw new MovieNotFoundException(id);
+        }
+        return toMovieResponse(movie);
+    }
+
     public Resource getMovieStream(Long id) throws MalformedURLException {
         Movie movie = movieRepository.findById(id).orElseThrow(() -> new MovieNotFoundException(id));
         Path path = Paths.get(mediaRoot, movie.getStorageLocation());

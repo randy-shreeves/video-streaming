@@ -39,8 +39,8 @@ public class MovieController {
     }
 
     @GetMapping("/{id}/details")
-    public MovieResponse getMovie(@PathVariable Long id) {
-        return movieService.getMovie(id);
+    public MovieResponse getPublishedMovie(@PathVariable Long id) {
+        return movieService.getPublishedMovie(id);
     }
 
     @GetMapping("/{id}/stream")

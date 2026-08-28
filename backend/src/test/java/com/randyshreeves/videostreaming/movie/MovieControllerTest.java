@@ -78,12 +78,12 @@ public class MovieControllerTest {
     void shouldReturnOneMovieSuccessfully() throws Exception {
         MovieResponse movieResponse = createTestMovieResponse();
         Long movieId = movieResponse.getId();
-        when(movieService.getMovie(movieId)).thenReturn(movieResponse);
+        when(movieService.getPublishedMovie(movieId)).thenReturn(movieResponse);
         mockMvc.perform(get("/movies/{id}/details", movieId))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id").value(1L))
                 .andExpect(jsonPath("$.title").value("Test Movie Title"));
-        verify(movieService).getMovie(movieId);
+        verify(movieService).getPublishedMovie(movieId);
     }
 
     @Test
@@ -213,7 +213,7 @@ public class MovieControllerTest {
 
     @Test
     void shouldReturnNotFoundExceptionWhenMovieDoesNotExist() throws Exception {
-        when(movieService.getMovie(999L)).thenThrow(new MovieNotFoundException(999L));
+        when(movieService.getPublishedMovie(999L)).thenThrow(new MovieNotFoundException(999L));
         mockMvc.perform(get("/movies/999/details"))
                 .andExpect(status().isNotFound())
                 .andExpect(jsonPath("$.message").value("Movie not found."));
