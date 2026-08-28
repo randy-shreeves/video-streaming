@@ -14,7 +14,7 @@ export async function getAllMovies(signal?: AbortSignal): Promise<Movie[]> {
 }
 
 export async function getPublishedMovies(signal?: AbortSignal): Promise<Movie[]> {
-    const response = await apiFetch(BASE_URL, { signal });
+    const response = await apiFetch(`${BASE_URL}`, { signal });
     if (!response.ok) {
         throw new Error("Failed to fetch movies.");
     }
@@ -72,7 +72,7 @@ export async function getStreamToken(id: number, signal?: AbortSignal): Promise<
 }
 
 export async function createMovie(movieRequest: MovieRequest): Promise<Movie> {
-    const response = await apiFetch("/movies", {
+    const response = await apiFetch(`${BASE_URL}`, {
         method: "POST",
         headers: {"Content-Type": "application/json"},
         body: JSON.stringify(movieRequest)
@@ -89,7 +89,7 @@ export async function createMovie(movieRequest: MovieRequest): Promise<Movie> {
 export async function uploadPoster(id: number, poster: File) {
     const formData = new FormData();
     formData.append("poster", poster);
-    const response = await apiFetch(`/movies/${id}/poster`, {
+    const response = await apiFetch(`${BASE_URL}/${id}/poster`, {
         method: "POST",
         body: formData
     });
@@ -103,7 +103,7 @@ export async function uploadPoster(id: number, poster: File) {
 export async function uploadVideo(id: number, video: File) {
     const formData = new FormData();
     formData.append("video", video);
-    const response = await apiFetch(`/movies/${id}/video`, {
+    const response = await apiFetch(`${BASE_URL}/${id}/video`, {
         method: "POST",
         body: formData
     });
@@ -115,7 +115,7 @@ export async function uploadVideo(id: number, video: File) {
 }
 
 export async function updateMovie(id: number, movieRequest: MovieRequest): Promise<Movie> {
-    const response = await apiFetch(`/movies/${id}`, {
+    const response = await apiFetch(`${BASE_URL}/${id}`, {
         method: "PUT",
         headers: {
             "Content-Type": "application/json"
@@ -132,7 +132,7 @@ export async function updateMovie(id: number, movieRequest: MovieRequest): Promi
 }
 
 export async function deleteMovie(id: number): Promise<void> {
-    const response = await apiFetch(`/movies/${id}`, {
+    const response = await apiFetch(`${BASE_URL}/${id}`, {
         method: "DELETE"
     });
 
