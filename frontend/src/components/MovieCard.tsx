@@ -1,7 +1,7 @@
 import type { Movie } from "../types/Movie";
 import { Link } from "react-router-dom";
 import "./css/MovieCard.css";
-import { getMoviePoster } from "../api/movieApi";
+import { getPublishedMoviePoster } from "../api/movieApi";
 import { useEffect, useState } from "react";
 
 type MovieCardProps = {
@@ -17,7 +17,7 @@ function MovieCard({ movie }: MovieCardProps) {
 
         async function loadMoviePoster() {
             try {
-                objectUrl = await getMoviePoster(movie.id, controller.signal);
+                objectUrl = await getPublishedMoviePoster(movie.id, controller.signal);
                 setPosterUrl(objectUrl);
             } catch (error) {
                 if (error instanceof DOMException && error.name === "AbortError") {

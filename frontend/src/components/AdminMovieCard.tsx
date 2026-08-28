@@ -1,6 +1,6 @@
 import type { Movie } from "../types/Movie";
 import "./css/MovieCard.css";
-import { getMoviePoster } from "../api/movieApi";
+import { getPublishedMoviePoster } from "../api/movieApi";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
@@ -22,7 +22,7 @@ function AdminMovieCard({ movie, onDelete, deleting, onPublicationChange, updati
 
         async function loadMoviePoster() {
             try {
-                objectUrl = await getMoviePoster(movie.id, controller.signal);
+                objectUrl = await getPublishedMoviePoster(movie.id, controller.signal);
                 setPosterUrl(objectUrl);
             } catch (error) {
                 if (error instanceof DOMException && error.name === "AbortError") {

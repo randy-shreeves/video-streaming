@@ -1,6 +1,6 @@
 import { Link, useParams } from "react-router-dom";
 import { useEffect, useState } from 'react';
-import { getPublishedMovie, getMoviePoster } from "../api/movieApi";
+import { getPublishedMovie, getPublishedMoviePoster } from "../api/movieApi";
 import type { Movie } from "../types/Movie";
 import Navbar from "../components/Navbar";
 
@@ -24,7 +24,7 @@ function MovieDetailPage() {
         async function loadMovie() {
             try {
                 const movie: Movie = await getPublishedMovie(Number(id), controller.signal);
-                objectUrl = await getMoviePoster(movie.id);
+                objectUrl = await getPublishedMoviePoster(movie.id);
                 setMovie(movie);
                 setPosterUrl(objectUrl);
             } catch (error) {

@@ -16,6 +16,7 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.TestPropertySource;
 
 import java.io.IOException;
+import java.net.MalformedURLException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -204,16 +205,25 @@ public class MovieServiceIntegrationTest {
     }
 
     @Test
-    void shouldReturnPosterStreamResource() throws Exception {
+    void shouldReturnPublishedPosterStreamResource() throws Exception {
         MovieRequest request = createTestMovieRequest();
         MovieResponse savedMovieResponse = movieService.createMovie(request);
         Long movieId = savedMovieResponse.getId();
         Movie savedMovie = movieRepository.findById(movieId).orElseThrow();
         savedMovie.setPosterLocation("/movies/posters/test_poster.jpg");
+        savedMovie.setPublished(true);
         movieRepository.save(savedMovie);
-        Resource resource = movieService.getMoviePoster(movieId);
+        Resource resource = movieService.getPublishedMoviePoster(movieId);
         assertNotNull(resource);
         assertTrue(resource.exists());
+    }
+
+    @Test
+    void shouldRejectRequestForPublishedMoviePosterIfMovieIsNotPublished() throws MalformedURLException {
+        MovieRequest request = createTestMovieRequest();
+        MovieResponse savedMovieResponse = movieService.createMovie(request);
+        Long movieId = savedMovieResponse.getId();
+        assertThrows(MovieNotFoundException.class, () -> movieService.getPublishedMoviePoster(movieId));
     }
 
     @Test
@@ -223,8 +233,9 @@ public class MovieServiceIntegrationTest {
         Long movieId = savedMovieResponse.getId();
         Movie savedMovie = movieRepository.findById(movieId).orElseThrow();
         savedMovie.setPosterLocation("/movies/posters/test_poster_missing.jpg");
+        savedMovie.setPublished(true);
         movieRepository.save(savedMovie);
-        RuntimeException exception = assertThrows(MediaFileNotFoundException.class, () -> movieService.getMoviePoster(savedMovie.getId()));
+        RuntimeException exception = assertThrows(MediaFileNotFoundException.class, () -> movieService.getPublishedMoviePoster(savedMovie.getId()));
         assertEquals("Movie poster not found.", exception.getMessage());
     }
 

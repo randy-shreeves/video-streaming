@@ -42,7 +42,7 @@ export async function getPublishedMovie(id: number, signal?: AbortSignal): Promi
     return movie;
 }
 
-export async function getMoviePoster(id: number, signal?: AbortSignal) {
+export async function getPublishedMoviePoster(id: number, signal?: AbortSignal) {
     const response = await apiFetch(`${BASE_URL}/${id}/poster`, { signal });
     if (!response.ok) {
         throw new Error("Failed to load poster.");

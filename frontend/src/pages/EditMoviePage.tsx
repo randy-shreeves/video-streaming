@@ -1,7 +1,7 @@
 import { useParams, useNavigate } from "react-router-dom";
 import { useEffect, useState, useRef, type SyntheticEvent } from 'react';
 import type { Movie} from "../types/Movie";
-import { updateMovie, getMovie, getMoviePoster, uploadPoster, uploadVideo } from "../api/movieApi";
+import { updateMovie, getMovie, getPublishedMoviePoster, uploadPoster, uploadVideo } from "../api/movieApi";
 import type { MovieRequest } from "../types/MovieRequest";
 import Navbar from "../components/Navbar";
 import "./css/EditMoviePage.css";
@@ -40,7 +40,7 @@ function EditMoviePage() {
             try {
                 const movie: Movie = await getMovie(movieId, controller.signal);
                 setVideoUploaded(movie.videoUploaded);
-                objectUrl = await getMoviePoster(movie.id);
+                objectUrl = await getPublishedMoviePoster(movie.id);
                 setCurrentPosterUrl(objectUrl);
                 setFormData({
                     title: movie.title,

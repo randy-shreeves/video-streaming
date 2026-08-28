@@ -63,8 +63,8 @@ public class MovieController {
     }
 
     @GetMapping("/{id}/poster")
-    public ResponseEntity<Resource> getMoviePoster(@PathVariable Long id) throws MalformedURLException {
-        Resource resource = movieService.getMoviePoster(id);
+    public ResponseEntity<Resource> getPublishedMoviePoster(@PathVariable Long id) throws MalformedURLException {
+        Resource resource = movieService.getPublishedMoviePoster(id);
         return ResponseEntity.ok()
                 .contentType(MediaType.IMAGE_JPEG)
                 .body(resource);
