@@ -32,6 +32,16 @@ export async function getMovie(id: number, signal?: AbortSignal): Promise<Movie>
     return movie;
 }
 
+export async function getPublishedMovie(id: number, signal?: AbortSignal): Promise<Movie> {
+    const response = await apiFetch(`${BASE_URL}/${id}/details`, { signal });
+    if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.message);
+    }
+    const movie: Movie = await response.json();
+    return movie;
+}
+
 export async function getMoviePoster(id: number, signal?: AbortSignal) {
     const response = await apiFetch(`${BASE_URL}/${id}/poster`, { signal });
     if (!response.ok) {
