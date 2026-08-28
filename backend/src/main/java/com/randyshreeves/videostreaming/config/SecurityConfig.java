@@ -46,6 +46,7 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                         .requestMatchers(HttpMethod.POST, "/auth/*").permitAll()
                         .requestMatchers(HttpMethod.GET, "/movies").authenticated()
+                        .requestMatchers(HttpMethod.GET, "/movies/admin").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.GET, "/movies/*").authenticated()
                         .requestMatchers(HttpMethod.GET, "/movies/*/poster").authenticated()
                         .requestMatchers(HttpMethod.GET, "/movies/*/stream").authenticated()

@@ -29,6 +29,11 @@ public class MovieController {
     }
 
     @GetMapping
+    public List<MovieResponse> getAllPublishedMovies() {
+        return movieService.getAllPublishedMovies();
+    }
+
+    @GetMapping("/admin")
     public List<MovieResponse> getAllMovies() {
         return movieService.getAllMovies();
     }

@@ -42,6 +42,14 @@ public class MovieService {
         return toMovieResponse(savedMovie);
     }
 
+    public List<MovieResponse> getAllPublishedMovies() {
+        List<MovieResponse> movieResponseList = new ArrayList<>();
+        for (Movie movie : movieRepository.findByPublishedTrueOrderByIdAsc()) {
+            movieResponseList.add(toMovieResponse(movie));
+        }
+        return movieResponseList;
+    }
+
     public List<MovieResponse> getAllMovies() {
         List<MovieResponse> movieResponseList = new ArrayList<>();
         for (Movie movie : movieRepository.findAllByOrderByIdAsc()) {

@@ -62,10 +62,14 @@ public class MovieServiceIntegrationTest {
     }
 
     @Test
-        void shouldReturnAllMoviesSuccessfully() {
+        void shouldReturnAllPublishedMoviesSuccessfully() {
         MovieRequest movieRequest = createTestMovieRequest();
-        movieService.createMovie(movieRequest);
-        List<MovieResponse> movieResponseList = movieService.getAllMovies();
+        MovieResponse savedMoviedResponse = movieService.createMovie(movieRequest);
+        Long movieId = savedMoviedResponse.getId();
+        Movie savedMovie = movieRepository.findById(movieId).orElseThrow();
+        savedMovie.setPublished(true);
+        movieRepository.save(savedMovie);
+        List<MovieResponse> movieResponseList = movieService.getAllPublishedMovies();
         assertFalse(movieResponseList.isEmpty());
         MovieResponse movieResponse = movieResponseList.get(0);
         assertEquals(movieResponse.getTitle(), movieRequest.getTitle());
