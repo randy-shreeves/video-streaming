@@ -94,6 +94,16 @@ public class MovieService {
         return resource;
     }
 
+    public Resource getMoviePoster(Long id) throws MalformedURLException {
+        Movie movie = movieRepository.findById(id).orElseThrow(() -> new MovieNotFoundException(id));
+        Path path = Paths.get(mediaRoot, movie.getPosterLocation());
+        Resource resource = new UrlResource(path.toUri());
+        if (!resource.exists()) {
+            throw new MediaFileNotFoundException("Movie poster not found.");
+        }
+        return resource;
+    }
+
     public void uploadVideo(Long id, MultipartFile video) {
         Movie movie = movieRepository.findById(id).orElseThrow(() -> new MovieNotFoundException(id));
         String oldVideoLocation = movie.getStorageLocation();

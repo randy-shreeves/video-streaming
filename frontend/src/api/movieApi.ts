@@ -51,6 +51,15 @@ export async function getPublishedMoviePoster(id: number, signal?: AbortSignal) 
     return URL.createObjectURL(blob);
 }
 
+export async function getMoviePoster(id: number, signal?: AbortSignal) {
+    const response = await apiFetch(`${BASE_URL}/admin/${id}/poster`, { signal });
+    if (!response.ok) {
+        throw new Error("Failed to load poster.");
+    }
+    const blob = await response.blob();
+    return URL.createObjectURL(blob);
+}
+
 export async function getStreamToken(id: number, signal?: AbortSignal): Promise<string> {
     const response = await apiFetch(`${BASE_URL}/${id}/stream-token`, {
         signal

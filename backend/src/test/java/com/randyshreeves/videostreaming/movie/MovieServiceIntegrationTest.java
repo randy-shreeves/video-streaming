@@ -205,7 +205,7 @@ public class MovieServiceIntegrationTest {
     }
 
     @Test
-    void shouldReturnPublishedPosterStreamResource() throws Exception {
+    void shouldReturnPublishedPosterResource() throws Exception {
         MovieRequest request = createTestMovieRequest();
         MovieResponse savedMovieResponse = movieService.createMovie(request);
         Long movieId = savedMovieResponse.getId();
@@ -214,6 +214,19 @@ public class MovieServiceIntegrationTest {
         savedMovie.setPublished(true);
         movieRepository.save(savedMovie);
         Resource resource = movieService.getPublishedMoviePoster(movieId);
+        assertNotNull(resource);
+        assertTrue(resource.exists());
+    }
+
+    @Test
+    void shouldReturnPosterResource() throws Exception {
+        MovieRequest request = createTestMovieRequest();
+        MovieResponse savedMovieResponse = movieService.createMovie(request);
+        Long movieId = savedMovieResponse.getId();
+        Movie savedMovie = movieRepository.findById(movieId).orElseThrow();
+        savedMovie.setPosterLocation("/movies/posters/test_poster.jpg");
+        movieRepository.save(savedMovie);
+        Resource resource = movieService.getMoviePoster(movieId);
         assertNotNull(resource);
         assertTrue(resource.exists());
     }

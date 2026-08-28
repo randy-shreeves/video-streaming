@@ -298,6 +298,17 @@ public class MovieControllerTest {
         verify(movieService).getPublishedMoviePoster(movieId);
     }
 
+    @Test
+    void shouldReturnMoviePosterSuccessfully() throws Exception {
+        Long movieId = 1L;
+        Resource resource = new ByteArrayResource("test".getBytes());
+        when(movieService.getMoviePoster(movieId)).thenReturn(resource);
+        mockMvc.perform(get("/movies/admin/{id}/poster", movieId))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.IMAGE_JPEG));
+        verify(movieService).getMoviePoster(movieId);
+    }
+
     private MovieRequest createTestMovieRequest() {
         return new MovieRequest(
             "Test Movie Title",
