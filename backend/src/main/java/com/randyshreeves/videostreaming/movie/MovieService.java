@@ -1,5 +1,6 @@
 package com.randyshreeves.videostreaming.movie;
 
+import com.randyshreeves.videostreaming.auth.StreamTokenService;
 import com.randyshreeves.videostreaming.exception.InvalidMediaFileException;
 import com.randyshreeves.videostreaming.exception.MediaFileNotFoundException;
 import com.randyshreeves.videostreaming.exception.MediaStorageException;
@@ -28,12 +29,14 @@ import java.util.UUID;
 public class MovieService {
 
     private final MovieRepository movieRepository;
+    private final StreamTokenService streamTokenService;
 
     @Value("${media.root}")
     private String mediaRoot;
 
-    public MovieService(MovieRepository movieRepository) {
+    public MovieService(MovieRepository movieRepository, StreamTokenService streamTokenService) {
         this.movieRepository = movieRepository;
+        this.streamTokenService = streamTokenService;
     }
 
     public MovieResponse createMovie(MovieRequest movieRequest) {
@@ -73,12 +76,23 @@ public class MovieService {
 
     public Resource getMovieStream(Long id) throws MalformedURLException {
         Movie movie = movieRepository.findById(id).orElseThrow(() -> new MovieNotFoundException(id));
+        if (!movie.isPublished()) {
+            throw new MovieNotFoundException(id);
+        }
         Path path = Paths.get(mediaRoot, movie.getStorageLocation());
         Resource resource = new UrlResource(path.toUri());
         if (!resource.exists()) {
             throw new MediaFileNotFoundException("Video file not found.");
         }
         return resource;
+    }
+
+    public String getStreamToken(Long id) {
+        Movie movie = movieRepository.findById(id).orElseThrow(() -> new MovieNotFoundException(id));
+        if (!movie.isPublished()) {
+            throw new MovieNotFoundException(id);
+        }
+        return streamTokenService.generateToken(id);
     }
 
     public Resource getPublishedMoviePoster(Long id) throws MalformedURLException {

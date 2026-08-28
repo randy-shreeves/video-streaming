@@ -2,6 +2,7 @@ package com.randyshreeves.videostreaming.movie;
 
 import com.randyshreeves.videostreaming.exception.InvalidMediaFileException;
 import com.randyshreeves.videostreaming.exception.MediaFileNotFoundException;
+import com.randyshreeves.videostreaming.exception.MediaStorageException;
 import com.randyshreeves.videostreaming.exception.MovieNotFoundException;
 import com.randyshreeves.videostreaming.movie.dto.MovieRequest;
 import com.randyshreeves.videostreaming.movie.dto.MovieResponse;
@@ -163,7 +164,7 @@ public class MovieServiceIntegrationTest {
             assertFalse(Files.exists(videoPath));
             assertFalse(Files.exists(posterPath));
         } catch (Exception e) {
-            throw new RuntimeException("Failed to add movie and/or poster file.", e);
+            throw new MediaStorageException("Failed to add movie and/or poster file.");
         } finally {
             if (videoPath != null) {
                 Files.deleteIfExists(videoPath);
@@ -175,16 +176,25 @@ public class MovieServiceIntegrationTest {
     }
 
     @Test
-    void shouldReturnMovieStreamResource() throws Exception {
+    void shouldReturnPublishedMovieStreamResource() throws Exception {
         MovieRequest request = createTestMovieRequest();
         MovieResponse savedMovieResponse = movieService.createMovie(request);
         Long movieId = savedMovieResponse.getId();
         Movie savedMovie = movieRepository.findById(movieId).orElseThrow();
         savedMovie.setStorageLocation("movies/test_movie.mp4");
+        savedMovie.setPublished(true);
         movieRepository.save(savedMovie);
         Resource resource = movieService.getMovieStream(movieId);
         assertNotNull(resource);
         assertTrue(resource.exists());
+    }
+
+    @Test
+    void shouldReturnMovieNotFoundExceptionIfAttemptToAccessStreamOfUnpublishedMovie() throws MalformedURLException {
+        MovieRequest request = createTestMovieRequest();
+        MovieResponse savedMovieResponse = movieService.createMovie(request);
+        Long movieId = savedMovieResponse.getId();
+        assertThrows(MovieNotFoundException.class, () -> movieService.getMovieStream(movieId));
     }
 
     @Test
@@ -193,14 +203,15 @@ public class MovieServiceIntegrationTest {
     }
 
     @Test
-    void shouldReturnRuntimeExceptionWhenVideoFileNotFound () throws Exception {
+    void shouldReturnMediaFileNotFoundExceptionWhenVideoFileNotFound () throws Exception {
         MovieRequest request = createTestMovieRequest();
         MovieResponse savedMovieResponse = movieService.createMovie(request);
         Long movieId = savedMovieResponse.getId();
         Movie savedMovie = movieRepository.findById(movieId).orElseThrow();
         savedMovie.setStorageLocation("movies/test_movie_missing.mp4");
+        savedMovie.setPublished(true);
         movieRepository.save(savedMovie);
-        RuntimeException exception = assertThrows(RuntimeException.class, () -> movieService.getMovieStream(savedMovie.getId()));
+        MediaFileNotFoundException exception = assertThrows(MediaFileNotFoundException.class, () -> movieService.getMovieStream(savedMovie.getId()));
         assertEquals("Video file not found.", exception.getMessage());
     }
 

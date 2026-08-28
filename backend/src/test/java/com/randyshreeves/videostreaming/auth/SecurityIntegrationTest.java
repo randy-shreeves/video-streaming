@@ -113,6 +113,7 @@ public class SecurityIntegrationTest {
             90
         );
         movie.setStorageLocation("movies/test_movie.mp4");
+        movie.setPublished(true);
         movie = movieRepository.save(movie);
         Long movieId = movie.getId();
         String streamToken = streamTokenService.generateToken(movieId);

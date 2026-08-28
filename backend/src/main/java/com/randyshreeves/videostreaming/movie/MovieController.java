@@ -58,7 +58,7 @@ public class MovieController {
 
     @GetMapping("/{id}/stream-token")
     public ResponseEntity<String> getStreamToken(@PathVariable Long id) {
-        String token = streamTokenService.generateToken(id);
+        String token = movieService.getStreamToken(id);
         return ResponseEntity.ok(token);
     }
 
