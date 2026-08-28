@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { deleteMovie, getMovies, publishMovie, unpublishMovie } from "../api/movieApi";
+import { deleteMovie, getAllMovies, publishMovie, unpublishMovie } from "../api/movieApi";
 import type { Movie } from "../types/Movie";
 import AdminMovieCard from "../components/AdminMovieCard";
 import Navbar from "../components/Navbar";
@@ -18,7 +18,7 @@ function AdminMoviePage() {
     
     async function loadMovies() {
       try {
-        const movieList = await getMovies(controller.signal);
+        const movieList = await getAllMovies(controller.signal);
         setMovies(movieList);
       } catch (error) {
         if (error instanceof DOMException && error.name === "AbortError") {
@@ -48,7 +48,7 @@ function AdminMoviePage() {
       try {
         setDeletingMovieId(movie.id);
         await deleteMovie(movie.id);
-        const movieList = await getMovies();
+        const movieList = await getAllMovies();
         setMovies(movieList);
       } catch (error) {
         console.error(error);
@@ -71,7 +71,7 @@ function AdminMoviePage() {
       } else {
         await publishMovie(movie.id);
       }
-      const movieList = await getMovies();
+      const movieList = await getAllMovies();
       setMovies(movieList);
     } catch (error) {
       setError("Unable to change movie publication status.");

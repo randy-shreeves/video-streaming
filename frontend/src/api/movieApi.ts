@@ -4,7 +4,16 @@ import { apiFetch } from "./apiClient";
 
 const BASE_URL = "/movies";
 
-export async function getMovies(signal?: AbortSignal): Promise<Movie[]> {
+export async function getAllMovies(signal?: AbortSignal): Promise<Movie[]> {
+    const response = await apiFetch(`${BASE_URL}/admin`, { signal });
+    if (!response.ok) {
+        throw new Error("Failed to fetch movies.");
+    }
+    const movies: Movie[] = await response.json();
+    return movies;
+}
+
+export async function getPublishedMovies(signal?: AbortSignal): Promise<Movie[]> {
     const response = await apiFetch(BASE_URL, { signal });
     if (!response.ok) {
         throw new Error("Failed to fetch movies.");

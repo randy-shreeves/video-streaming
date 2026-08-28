@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { getMovies } from "../api/movieApi";
+import { getPublishedMovies } from "../api/movieApi";
 import type { Movie } from "../types/Movie";
 import MovieCard from "../components/MovieCard";
 import "./css/MovieListPage.css";
@@ -15,7 +15,7 @@ function MovieListPage() {
     
     async function loadMovies() {
       try {
-        const movieList = await getMovies(controller.signal);
+        const movieList = await getPublishedMovies(controller.signal);
         setMovies(movieList);
       } catch (error) {
         if (error instanceof DOMException && error.name === "AbortError") {
