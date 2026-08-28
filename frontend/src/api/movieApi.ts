@@ -23,7 +23,7 @@ export async function getPublishedMovies(signal?: AbortSignal): Promise<Movie[]>
 }
 
 export async function getMovie(id: number, signal?: AbortSignal): Promise<Movie> {
-    const response = await apiFetch(`${BASE_URL}/${id}/details`, { signal });
+    const response = await apiFetch(`${BASE_URL}/admin/${id}/details`, { signal });
     if (!response.ok) {
         const error = await response.json();
         throw new Error(error.message);

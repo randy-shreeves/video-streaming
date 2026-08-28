@@ -62,10 +62,10 @@ public class MovieServiceIntegrationTest {
     }
 
     @Test
-        void shouldReturnAllPublishedMoviesSuccessfully() {
+    void shouldReturnAllPublishedMoviesSuccessfully() {
         MovieRequest movieRequest = createTestMovieRequest();
-        MovieResponse savedMoviedResponse = movieService.createMovie(movieRequest);
-        Long movieId = savedMoviedResponse.getId();
+        MovieResponse savedMovieResponse = movieService.createMovie(movieRequest);
+        Long movieId = savedMovieResponse.getId();
         Movie savedMovie = movieRepository.findById(movieId).orElseThrow();
         savedMovie.setPublished(true);
         movieRepository.save(savedMovie);
@@ -74,6 +74,38 @@ public class MovieServiceIntegrationTest {
         MovieResponse movieResponse = movieResponseList.get(0);
         assertEquals(movieResponse.getTitle(), movieRequest.getTitle());
         assertEquals(1, movieResponseList.size());
+    }
+
+    @Test
+    void shouldReturnAllMoviesSuccessfully() {
+        MovieRequest movieRequest = createTestMovieRequest();
+        movieService.createMovie(movieRequest);
+        List<MovieResponse> movieResponseList = movieService.getAllMovies();
+        assertFalse(movieResponseList.isEmpty());
+        MovieResponse movieResponse = movieResponseList.get(0);
+        assertEquals(movieResponse.getTitle(), movieRequest.getTitle());
+        assertEquals(1, movieResponseList.size());
+    }
+
+    @Test
+    void shouldReturnPublishedMovieSuccessfully() {
+        MovieRequest movieRequest = createTestMovieRequest();
+        MovieResponse savedMovieResponse = movieService.createMovie(movieRequest);
+        Long movieId = savedMovieResponse.getId();
+        Movie savedMovie = movieRepository.findById(movieId).orElseThrow();
+        savedMovie.setPublished(true);
+        movieRepository.save(savedMovie);
+        MovieResponse movieResponse = movieService.getPublishedMovie(movieId);
+        assertEquals(movieResponse.getTitle(), movieRequest.getTitle());
+    }
+
+    @Test
+    void shouldReturnMovieSuccessfully() {
+        MovieRequest movieRequest = createTestMovieRequest();
+        MovieResponse savedMovieResponse = movieService.createMovie(movieRequest);
+        Long movieId = savedMovieResponse.getId();
+        MovieResponse movieResponse = movieService.getMovie(movieId);
+        assertEquals(movieResponse.getTitle(), movieRequest.getTitle());
     }
 
     @Test
@@ -185,7 +217,7 @@ public class MovieServiceIntegrationTest {
     }
 
     @Test
-    void shouldReturnRuntimeExceptionWhenPosterFileNotFound() throws Exception {
+    void shouldReturnMediaFileNotFoundExceptionWhenPosterFileNotFound() throws Exception {
         MovieRequest request = createTestMovieRequest();
         MovieResponse savedMovieResponse = movieService.createMovie(request);
         Long movieId = savedMovieResponse.getId();

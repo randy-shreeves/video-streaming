@@ -49,7 +49,7 @@ public class MovieControllerTest {
     private JwtAuthenticationFilter jwtAuthenticationFilter;
 
     @Test
-    void shouldReturnAllMoviesSuccessfully() throws Exception {
+    void shouldReturnAllPublishedMoviesSuccessfully() throws Exception {
         MovieResponse movieResponse1 = createTestMovieResponse();
         MovieResponse movieResponse2 = new MovieResponse(
                 2L,
@@ -75,7 +75,33 @@ public class MovieControllerTest {
     }
 
     @Test
-    void shouldReturnOneMovieSuccessfully() throws Exception {
+    void shouldReturnAllMoviesSuccessfully() throws Exception {
+        MovieResponse movieResponse1 = createTestMovieResponse();
+        MovieResponse movieResponse2 = new MovieResponse(
+                2L,
+                "Another Test Movie",
+                "TestMovieDescription",
+                2009,
+                90,
+                true,
+                true
+        );
+        List<MovieResponse> movieResponseList = new ArrayList<>();
+        movieResponseList.add(movieResponse1);
+        movieResponseList.add(movieResponse2);
+        when(movieService.getAllMovies()).thenReturn(movieResponseList);
+        mockMvc.perform(get("/movies/admin"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.length()").value(2))
+                .andExpect(jsonPath("$[0].id").value(1))
+                .andExpect(jsonPath("$[0].title").value("Test Movie Title"))
+                .andExpect(jsonPath("$[1].id").value(2))
+                .andExpect(jsonPath("$[1].title").value("Another Test Movie"));
+        verify(movieService).getAllMovies();
+    }
+
+    @Test
+    void shouldReturnOnePublishedMovieSuccessfully() throws Exception {
         MovieResponse movieResponse = createTestMovieResponse();
         Long movieId = movieResponse.getId();
         when(movieService.getPublishedMovie(movieId)).thenReturn(movieResponse);
@@ -84,6 +110,18 @@ public class MovieControllerTest {
                 .andExpect(jsonPath("$.id").value(1L))
                 .andExpect(jsonPath("$.title").value("Test Movie Title"));
         verify(movieService).getPublishedMovie(movieId);
+    }
+
+    @Test
+    void shouldReturnOneMovieSuccessfully() throws Exception {
+        MovieResponse movieResponse = createTestMovieResponse();
+        Long movieId = movieResponse.getId();
+        when(movieService.getMovie(movieId)).thenReturn(movieResponse);
+        mockMvc.perform(get("/movies/admin/{id}/details", movieId))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id").value(1L))
+                .andExpect(jsonPath("$.title").value("Test Movie Title"));
+        verify(movieService).getMovie(movieId);
     }
 
     @Test

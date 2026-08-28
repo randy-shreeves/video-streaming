@@ -56,6 +56,7 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.PUT, "/movies/*").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.DELETE, "/movies/*").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.GET, "/movies/admin").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.GET, "/movies/admin/*/details").hasRole("ADMIN")
                         .anyRequest().authenticated()
                 )
                 .exceptionHandling(exception -> exception

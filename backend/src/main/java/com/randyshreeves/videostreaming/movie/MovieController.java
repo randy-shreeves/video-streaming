@@ -43,6 +43,11 @@ public class MovieController {
         return movieService.getPublishedMovie(id);
     }
 
+    @GetMapping("/admin/{id}/details")
+    public MovieResponse getMovie(@PathVariable Long id) {
+        return movieService.getMovie(id);
+    }
+
     @GetMapping("/{id}/stream")
     public ResponseEntity<Resource> streamMovie(@PathVariable Long id) throws MalformedURLException {
         Resource resource = movieService.getMovieStream(id);
