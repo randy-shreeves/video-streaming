@@ -45,9 +45,15 @@ public class MovieService {
         return toMovieResponse(savedMovie);
     }
 
-    public List<MovieResponse> getAllPublishedMovies() {
+    public List<MovieResponse> getAllPublishedMovies(String search) {
+        List<Movie> movies;
+        if (search == null || search.isBlank()) {
+            movies = movieRepository.findByPublishedTrueOrderByIdAsc();
+        } else {
+            movies = movieRepository.findByPublishedTrueAndTitleContainingIgnoreCaseOrderByIdAsc(search);
+        }
         List<MovieResponse> movieResponseList = new ArrayList<>();
-        for (Movie movie : movieRepository.findByPublishedTrueOrderByIdAsc()) {
+        for (Movie movie : movies) {
             movieResponseList.add(toMovieResponse(movie));
         }
         return movieResponseList;

@@ -71,11 +71,40 @@ public class MovieServiceIntegrationTest {
         Movie savedMovie = movieRepository.findById(movieId).orElseThrow();
         savedMovie.setPublished(true);
         movieRepository.save(savedMovie);
-        List<MovieResponse> movieResponseList = movieService.getAllPublishedMovies();
+        List<MovieResponse> movieResponseList = movieService.getAllPublishedMovies(null);
         assertFalse(movieResponseList.isEmpty());
         MovieResponse movieResponse = movieResponseList.get(0);
         assertEquals(movieResponse.getTitle(), movieRequest.getTitle());
         assertEquals(1, movieResponseList.size());
+    }
+
+    @Test
+    void shouldReturnPublishedMoviesWithTitleThatContainsSearchQuery() {
+        MovieRequest movieRequest = createTestMovieRequest();
+        MovieResponse savedMovieResponse = movieService.createMovie(movieRequest);
+        Long movieId = savedMovieResponse.getId();
+        String savedMovieTitle = savedMovieResponse.getTitle();
+        Movie savedMovie = movieRepository.findById(movieId).orElseThrow();
+        savedMovie.setStorageLocation("movies/test_movie.mp4");
+        savedMovie.setPublished(true);
+        movieRepository.save(savedMovie);
+        String searchQuery = "test";
+        String matchingMovieTitle = movieService.getAllPublishedMovies(searchQuery).get(0).getTitle();
+        assertEquals(savedMovieTitle, matchingMovieTitle);
+    }
+
+    @Test
+    void shouldNotReturnPublishedMoviesThatDontContainSearchQuery() {
+        MovieRequest movieRequest = createTestMovieRequest();
+        MovieResponse savedMovieResponse = movieService.createMovie(movieRequest);
+        Long movieId = savedMovieResponse.getId();
+        Movie savedMovie = movieRepository.findById(movieId).orElseThrow();
+        savedMovie.setStorageLocation("movies/test_movie.mp4");
+        savedMovie.setPublished(true);
+        movieRepository.save(savedMovie);
+        String searchQuery = "does not match";
+        List<MovieResponse> movieResponseList = movieService.getAllPublishedMovies(searchQuery);
+        assertTrue(movieResponseList.isEmpty());
     }
 
     @Test
