@@ -13,8 +13,9 @@ export async function getAllMovies(signal?: AbortSignal): Promise<Movie[]> {
     return movies;
 }
 
-export async function getPublishedMovies(signal?: AbortSignal): Promise<Movie[]> {
-    const response = await apiFetch(`${BASE_URL}`, { signal });
+export async function getPublishedMovies(search?: string, signal?: AbortSignal): Promise<Movie[]> {
+    const query = search?.trim() ? `?search=${encodeURIComponent(search.trim())}` : "";
+    const response = await apiFetch(`${BASE_URL}${query}`, { signal });
     if (!response.ok) {
         throw new Error("Failed to fetch movies.");
     }
