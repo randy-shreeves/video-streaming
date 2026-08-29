@@ -59,9 +59,15 @@ public class MovieService {
         return movieResponseList;
     }
 
-    public List<MovieResponse> getAllMovies() {
+    public List<MovieResponse> getAllMovies(String search) {
+        List<Movie> movies;
+        if (search == null || search.isBlank()) {
+            movies = movieRepository.findAllByOrderByIdAsc();
+        } else {
+            movies = movieRepository.findByTitleContainingIgnoreCaseOrderByIdAsc(search);
+        }
         List<MovieResponse> movieResponseList = new ArrayList<>();
-        for (Movie movie : movieRepository.findAllByOrderByIdAsc()) {
+        for (Movie movie : movies) {
             movieResponseList.add(toMovieResponse(movie));
         }
         return movieResponseList;

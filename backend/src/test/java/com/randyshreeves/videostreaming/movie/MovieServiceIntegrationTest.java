@@ -94,7 +94,7 @@ public class MovieServiceIntegrationTest {
     }
 
     @Test
-    void shouldNotReturnPublishedMoviesThatDontContainSearchQuery() {
+    void shouldNotReturnPublishedMoviesWithTitleThatDoesntContainSearchQuery() {
         MovieRequest movieRequest = createTestMovieRequest();
         MovieResponse savedMovieResponse = movieService.createMovie(movieRequest);
         Long movieId = savedMovieResponse.getId();
@@ -111,7 +111,7 @@ public class MovieServiceIntegrationTest {
     void shouldReturnAllMoviesSuccessfully() {
         MovieRequest movieRequest = createTestMovieRequest();
         movieService.createMovie(movieRequest);
-        List<MovieResponse> movieResponseList = movieService.getAllMovies();
+        List<MovieResponse> movieResponseList = movieService.getAllMovies(null);
         assertFalse(movieResponseList.isEmpty());
         MovieResponse movieResponse = movieResponseList.get(0);
         assertEquals(movieResponse.getTitle(), movieRequest.getTitle());

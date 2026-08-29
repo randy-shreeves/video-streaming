@@ -89,7 +89,7 @@ public class MovieControllerTest {
         List<MovieResponse> movieResponseList = new ArrayList<>();
         movieResponseList.add(movieResponse1);
         movieResponseList.add(movieResponse2);
-        when(movieService.getAllMovies()).thenReturn(movieResponseList);
+        when(movieService.getAllMovies(null)).thenReturn(movieResponseList);
         mockMvc.perform(get("/movies/admin"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.length()").value(2))
@@ -97,7 +97,7 @@ public class MovieControllerTest {
                 .andExpect(jsonPath("$[0].title").value("Test Movie Title"))
                 .andExpect(jsonPath("$[1].id").value(2))
                 .andExpect(jsonPath("$[1].title").value("Another Test Movie"));
-        verify(movieService).getAllMovies();
+        verify(movieService).getAllMovies(null);
     }
 
     @Test

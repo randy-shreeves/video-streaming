@@ -34,8 +34,8 @@ public class MovieController {
     }
 
     @GetMapping("/admin")
-    public List<MovieResponse> getAllMovies() {
-        return movieService.getAllMovies();
+    public List<MovieResponse> getAllMovies(@RequestParam(required = false) String search) {
+        return movieService.getAllMovies(search);
     }
 
     @GetMapping("/{id}/details")

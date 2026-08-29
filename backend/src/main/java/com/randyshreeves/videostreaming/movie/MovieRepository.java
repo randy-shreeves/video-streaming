@@ -8,4 +8,5 @@ public interface MovieRepository extends JpaRepository<Movie, Long> {
     List<Movie> findAllByOrderByIdAsc();
     List<Movie> findByPublishedTrueOrderByIdAsc();
     List<Movie> findByPublishedTrueAndTitleContainingIgnoreCaseOrderByIdAsc(String title);
+    List<Movie> findByTitleContainingIgnoreCaseOrderByIdAsc(String title);
 }
