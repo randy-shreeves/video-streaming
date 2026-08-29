@@ -21,11 +21,9 @@ import java.util.List;
 public class MovieController {
 
     private final MovieService movieService;
-    private final StreamTokenService streamTokenService;
 
-    public MovieController(MovieService movieService, StreamTokenService streamTokenService) {
+    public MovieController(MovieService movieService) {
         this.movieService = movieService;
-        this.streamTokenService = streamTokenService;
     }
 
     @GetMapping
