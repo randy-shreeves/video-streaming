@@ -13,6 +13,8 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.Resource;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
@@ -63,15 +65,16 @@ public class MovieControllerTest {
         List<MovieResponse> movieResponseList = new ArrayList<>();
         movieResponseList.add(movieResponse1);
         movieResponseList.add(movieResponse2);
-        when(movieService.getAllPublishedMovies(null)).thenReturn(movieResponseList);
+        Page<MovieResponse> movieResponsePage = new PageImpl<>(movieResponseList);
+        when(movieService.getAllPublishedMovies(null, 0, 12)).thenReturn(movieResponsePage);
         mockMvc.perform(get("/movies"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.length()").value(2))
-                .andExpect(jsonPath("$[0].id").value(1))
-                .andExpect(jsonPath("$[0].title").value("Test Movie Title"))
-                .andExpect(jsonPath("$[1].id").value(2))
-                .andExpect(jsonPath("$[1].title").value("Another Test Movie"));
-        verify(movieService).getAllPublishedMovies(null);
+                .andExpect(jsonPath("$.content.length()").value(2))
+                .andExpect(jsonPath("$.content[0].id").value(1))
+                .andExpect(jsonPath("$.content[0].title").value("Test Movie Title"))
+                .andExpect(jsonPath("$.content[1].id").value(2))
+                .andExpect(jsonPath("$.content[1].title").value("Another Test Movie"));
+        verify(movieService).getAllPublishedMovies(null, 0, 12);
     }
 
     @Test
@@ -89,15 +92,16 @@ public class MovieControllerTest {
         List<MovieResponse> movieResponseList = new ArrayList<>();
         movieResponseList.add(movieResponse1);
         movieResponseList.add(movieResponse2);
-        when(movieService.getAllMovies(null)).thenReturn(movieResponseList);
+        Page<MovieResponse> movieResponsePage = new PageImpl<>(movieResponseList);
+        when(movieService.getAllMovies(null, 0, 12)).thenReturn(movieResponsePage);
         mockMvc.perform(get("/movies/admin"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.length()").value(2))
-                .andExpect(jsonPath("$[0].id").value(1))
-                .andExpect(jsonPath("$[0].title").value("Test Movie Title"))
-                .andExpect(jsonPath("$[1].id").value(2))
-                .andExpect(jsonPath("$[1].title").value("Another Test Movie"));
-        verify(movieService).getAllMovies(null);
+                .andExpect(jsonPath("$.content.length()").value(2))
+                .andExpect(jsonPath("$.content[0].id").value(1))
+                .andExpect(jsonPath("$.content[0].title").value("Test Movie Title"))
+                .andExpect(jsonPath("$.content[1].id").value(2))
+                .andExpect(jsonPath("$.content[1].title").value("Another Test Movie"));
+        verify(movieService).getAllMovies(null, 0, 12);
     }
 
     @Test

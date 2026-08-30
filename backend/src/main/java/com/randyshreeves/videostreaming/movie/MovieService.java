@@ -8,6 +8,10 @@ import com.randyshreeves.videostreaming.exception.MovieNotFoundException;
 import com.randyshreeves.videostreaming.movie.dto.MovieRequest;
 import com.randyshreeves.videostreaming.movie.dto.MovieResponse;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.core.io.Resource;
@@ -45,32 +49,26 @@ public class MovieService {
         return toMovieResponse(savedMovie);
     }
 
-    public List<MovieResponse> getAllPublishedMovies(String search) {
-        List<Movie> movies;
+    public Page<MovieResponse> getAllPublishedMovies(String search, int page, int size) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by("id").ascending());
+        Page<Movie> moviePage;
         if (search == null || search.isBlank()) {
-            movies = movieRepository.findByPublishedTrueOrderByIdAsc();
+            moviePage = movieRepository.findByPublishedTrue(pageable);
         } else {
-            movies = movieRepository.findByPublishedTrueAndTitleContainingIgnoreCaseOrderByIdAsc(search);
+            moviePage = movieRepository.findByPublishedTrueAndTitleContainingIgnoreCase(search, pageable);
         }
-        List<MovieResponse> movieResponseList = new ArrayList<>();
-        for (Movie movie : movies) {
-            movieResponseList.add(toMovieResponse(movie));
-        }
-        return movieResponseList;
+        return moviePage.map(this::toMovieResponse);
     }
 
-    public List<MovieResponse> getAllMovies(String search) {
-        List<Movie> movies;
+    public Page<MovieResponse> getAllMovies(String search, int page, int size) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by("id").ascending());
+        Page<Movie> moviePage;
         if (search == null || search.isBlank()) {
-            movies = movieRepository.findAllByOrderByIdAsc();
+            moviePage = movieRepository.findAll(pageable);
         } else {
-            movies = movieRepository.findByTitleContainingIgnoreCaseOrderByIdAsc(search);
+            moviePage = movieRepository.findByTitleContainingIgnoreCase(search, pageable);
         }
-        List<MovieResponse> movieResponseList = new ArrayList<>();
-        for (Movie movie : movies) {
-            movieResponseList.add(toMovieResponse(movie));
-        }
-        return movieResponseList;
+        return moviePage.map(this::toMovieResponse);
     }
 
     public MovieResponse getMovie(Long id) {

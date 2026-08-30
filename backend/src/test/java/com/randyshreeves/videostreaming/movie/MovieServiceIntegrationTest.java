@@ -11,6 +11,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.core.io.Resource;
+import org.springframework.data.domain.Page;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.context.ActiveProfiles;
@@ -21,7 +22,6 @@ import java.net.MalformedURLException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.junit.jupiter.api.AssertionsKt.assertNotNull;
@@ -71,11 +71,11 @@ public class MovieServiceIntegrationTest {
         Movie savedMovie = movieRepository.findById(movieId).orElseThrow();
         savedMovie.setPublished(true);
         movieRepository.save(savedMovie);
-        List<MovieResponse> movieResponseList = movieService.getAllPublishedMovies(null);
-        assertFalse(movieResponseList.isEmpty());
-        MovieResponse movieResponse = movieResponseList.get(0);
+        Page<MovieResponse> movieResponsePage = movieService.getAllPublishedMovies(null, 0, 12);
+        assertFalse(movieResponsePage.isEmpty());
+        MovieResponse movieResponse = movieResponsePage.getContent().get(0);
         assertEquals(movieResponse.getTitle(), movieRequest.getTitle());
-        assertEquals(1, movieResponseList.size());
+        assertEquals(1, movieResponsePage.getTotalElements());
     }
 
     @Test
@@ -89,7 +89,7 @@ public class MovieServiceIntegrationTest {
         savedMovie.setPublished(true);
         movieRepository.save(savedMovie);
         String searchQuery = "test";
-        String matchingMovieTitle = movieService.getAllPublishedMovies(searchQuery).get(0).getTitle();
+        String matchingMovieTitle = movieService.getAllPublishedMovies(searchQuery, 0, 12).getContent().get(0).getTitle();
         assertEquals(savedMovieTitle, matchingMovieTitle);
     }
 
@@ -103,19 +103,19 @@ public class MovieServiceIntegrationTest {
         savedMovie.setPublished(true);
         movieRepository.save(savedMovie);
         String searchQuery = "does not match";
-        List<MovieResponse> movieResponseList = movieService.getAllPublishedMovies(searchQuery);
-        assertTrue(movieResponseList.isEmpty());
+        Page<MovieResponse> movieResponsePage = movieService.getAllPublishedMovies(searchQuery, 0, 12);
+        assertTrue(movieResponsePage.isEmpty());
     }
 
     @Test
     void shouldReturnAllMoviesSuccessfully() {
         MovieRequest movieRequest = createTestMovieRequest();
         movieService.createMovie(movieRequest);
-        List<MovieResponse> movieResponseList = movieService.getAllMovies(null);
-        assertFalse(movieResponseList.isEmpty());
-        MovieResponse movieResponse = movieResponseList.get(0);
+        Page<MovieResponse> movieResponsePage = movieService.getAllMovies(null, 0, 12);
+        assertFalse(movieResponsePage.isEmpty());
+        MovieResponse movieResponse = movieResponsePage.getContent().get(0);
         assertEquals(movieResponse.getTitle(), movieRequest.getTitle());
-        assertEquals(1, movieResponseList.size());
+        assertEquals(1, movieResponsePage.getTotalElements());
     }
 
     @Test

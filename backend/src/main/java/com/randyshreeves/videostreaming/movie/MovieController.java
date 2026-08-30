@@ -6,6 +6,7 @@ import com.randyshreeves.videostreaming.movie.dto.MovieResponse;
 
 import jakarta.validation.Valid;
 
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.core.io.Resource;
@@ -27,13 +28,21 @@ public class MovieController {
     }
 
     @GetMapping
-    public List<MovieResponse> getAllPublishedMovies(@RequestParam(required = false) String search) {
-        return movieService.getAllPublishedMovies(search);
+    public Page<MovieResponse> getAllPublishedMovies(
+            @RequestParam(required = false) String search,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "12") int size
+    ) {
+        return movieService.getAllPublishedMovies(search, page, size);
     }
 
     @GetMapping("/admin")
-    public List<MovieResponse> getAllMovies(@RequestParam(required = false) String search) {
-        return movieService.getAllMovies(search);
+    public Page<MovieResponse> getAllMovies(
+            @RequestParam(required = false) String search,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "12") int size
+    ) {
+        return movieService.getAllMovies(search, page, size);
     }
 
     @GetMapping("/{id}/details")
