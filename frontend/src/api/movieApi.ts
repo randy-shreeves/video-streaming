@@ -4,8 +4,9 @@ import { apiFetch } from "./apiClient";
 
 const BASE_URL = "/movies";
 
-export async function getAllMovies(signal?: AbortSignal): Promise<Movie[]> {
-    const response = await apiFetch(`${BASE_URL}/admin`, { signal });
+export async function getAllMovies(search?: string, signal?: AbortSignal): Promise<Movie[]> {
+    const query = search?.trim() ? `?search=${encodeURIComponent(search.trim())}` : "";
+    const response = await apiFetch(`${BASE_URL}/admin${query}`, { signal });
     if (!response.ok) {
         throw new Error("Failed to fetch movies.");
     }

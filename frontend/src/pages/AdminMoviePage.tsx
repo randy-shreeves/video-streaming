@@ -12,13 +12,16 @@ function AdminMoviePage() {
   const [error, setError] = useState<string | null>(null);
   const [deletingMovieId, setDeletingMovieId] = useState<number | null>(null);
   const [updatingPublicationStatusForMovieId, setUpdatingPublicationStatusForMovieId] = useState<number | null>(null);
+  const [searchInput, setSearchInput] = useState("");
+  const [activeSearch, setActiveSearch] = useState("");
   
   useEffect(() => {
     const controller = new AbortController();
+    setLoading(true);
     
     async function loadMovies() {
       try {
-        const movieList = await getAllMovies(controller.signal);
+        const movieList = await getAllMovies(activeSearch, controller.signal);
         setMovies(movieList);
       } catch (error) {
         if (error instanceof DOMException && error.name === "AbortError") {
@@ -37,7 +40,7 @@ function AdminMoviePage() {
     return () => {
       controller.abort();
     };
-  }, []);
+  }, [activeSearch]);
 
   async function handleDelete(movie: Movie) {
       const confirmed = window.confirm(`Are you sure you want to delete the movie: ${movie.title} (${movie.releaseYear})?`);
@@ -80,6 +83,16 @@ function AdminMoviePage() {
     }
   }
 
+  const handleSearch = async (event: React.SyntheticEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    setActiveSearch(searchInput);
+    }
+  
+  const clearSearch = () => {
+    setSearchInput("");
+    setActiveSearch("");
+  }
+
   if (loading) {
     return (
         <>
@@ -106,11 +119,21 @@ function AdminMoviePage() {
               backLabel="Movie Catalog"
             />
             <h1>Media Management</h1>
+
+            <form className="movie-search" onSubmit={handleSearch}>
+              <input
+                type="search"
+                placeholder="Search movies by title"
+                value={searchInput}
+                onChange={(event) => setSearchInput(event.target.value)}
+              />
+              <button type="submit">Search</button>
+              <button type="button" onClick={clearSearch}>Clear</button>
+            </form>
+            
             <button onClick={() => navigate("/admin/movies/new")}>
                 Add New Movie
             </button>
-
-            
 
             <div className="movie-grid">
                 {movies.map(movie => (
