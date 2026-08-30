@@ -1,27 +1,48 @@
 import type { Movie } from "../types/Movie";
+import type { MoviePage } from "../types/MoviePage";
 import type { MovieRequest } from "../types/MovieRequest";
 import { apiFetch } from "./apiClient";
 
 const BASE_URL = "/movies";
 
-export async function getAllMovies(search?: string, signal?: AbortSignal): Promise<Movie[]> {
-    const query = search?.trim() ? `?search=${encodeURIComponent(search.trim())}` : "";
-    const response = await apiFetch(`${BASE_URL}/admin${query}`, { signal });
-    if (!response.ok) {
-        throw new Error("Failed to fetch movies.");
+export async function getAllMovies(
+    search?: string,
+    page = 0,
+    size = 12,
+    signal?: AbortSignal
+): Promise<MoviePage> {
+    const params = new URLSearchParams();
+    if (search?.trim()) {
+        params.set("search", search.trim());
     }
-    const movies: Movie[] = await response.json();
-    return movies;
+    params.set("page", page.toString());
+    params.set("size", size.toString());
+    const response = await apiFetch(`${BASE_URL}/admin?${params.toString()}`, {signal})
+    if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.message);
+    }
+    return response.json();
 }
 
-export async function getPublishedMovies(search?: string, signal?: AbortSignal): Promise<Movie[]> {
-    const query = search?.trim() ? `?search=${encodeURIComponent(search.trim())}` : "";
-    const response = await apiFetch(`${BASE_URL}${query}`, { signal });
-    if (!response.ok) {
-        throw new Error("Failed to fetch movies.");
+export async function getPublishedMovies(
+    search?: string,
+    page = 0,
+    size = 12, 
+    signal?: AbortSignal
+): Promise<MoviePage> {
+    const params = new URLSearchParams();
+    if (search?.trim()) {
+        params.set("search", search.trim());
     }
-    const movies: Movie[] = await response.json();
-    return movies;
+    params.set("page", page.toString());
+    params.set("size", size.toString());
+    const response = await apiFetch(`${BASE_URL}?${params.toString()}`, {signal})
+    if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.message);
+    }
+    return response.json();
 }
 
 export async function getMovie(id: number, signal?: AbortSignal): Promise<Movie> {

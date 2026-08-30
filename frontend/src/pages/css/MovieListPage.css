@@ -19,3 +19,7 @@
 .movie-search button {
     width: auto;
 }
+
+.pagination button {
+    margin: 5px;
+}

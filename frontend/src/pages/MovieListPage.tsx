@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { getPublishedMovies } from "../api/movieApi";
 import type { Movie } from "../types/Movie";
+import type { MoviePage } from "../types/MoviePage";
 import MovieCard from "../components/MovieCard";
 import "./css/MovieListPage.css";
 import Navbar from "../components/Navbar";
@@ -11,15 +12,19 @@ function MovieListPage() {
   const [error, setError] = useState<string | null>(null);
   const [searchInput, setSearchInput] = useState("");
   const [activeSearch, setActiveSearch] = useState("");
+  const [currentPage, setCurrentPage] = useState(0);
+  const [totalPages, setTotalPages] = useState(0);
 
   const handleSearch = async (event: React.SyntheticEvent<HTMLFormElement>) => {
       event.preventDefault();
+      setCurrentPage(0);
       setActiveSearch(searchInput);
     }
   
   const clearSearch = () => {
     setSearchInput("");
     setActiveSearch("");
+    setCurrentPage(0);
   }
 
   useEffect(() => {
@@ -28,8 +33,9 @@ function MovieListPage() {
     
     async function loadMovies() {
       try {
-        const movieList = await getPublishedMovies(activeSearch, controller.signal);
-        setMovies(movieList);
+        const moviePage: MoviePage = await getPublishedMovies(activeSearch, currentPage, 12, controller.signal);
+        setMovies(moviePage.content);
+        setTotalPages(moviePage.totalPages);
       } catch (error) {
         if (error instanceof DOMException && error.name === "AbortError") {
             return;
@@ -47,7 +53,7 @@ function MovieListPage() {
     return () => {
       controller.abort();
     };
-  }, [activeSearch]);
+  }, [activeSearch, currentPage]);
 
   if (loading) {
     return (
@@ -91,6 +97,26 @@ function MovieListPage() {
             movie={movie}
           />
         ))}
+      </div>
+
+      <div className="pagination">
+        <button
+            onClick={() => setCurrentPage(currentPage - 1)}
+            disabled={currentPage === 0}
+        >
+            Previous
+        </button>
+
+        <span>
+            Page {currentPage + 1} of {totalPages}
+        </span>
+
+        <button
+            onClick={() => setCurrentPage(currentPage + 1)}
+            disabled={currentPage >= totalPages - 1}
+        >
+            Next
+        </button>
       </div>
     </>
   );
