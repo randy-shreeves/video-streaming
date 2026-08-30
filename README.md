@@ -14,6 +14,18 @@ A full-stack video streaming application built with Spring Boot and React. Authe
 - PostgreSQL database with Flyway migrations
 - Unit and integration testing
 
+
+## Screenshots
+
+### Movie Catalog
+![Movie Catalog](screenshots/movie-catalog.png)
+
+### Video Player
+![Video Player](screenshots/video-player.png)
+
+### Administrator Controls
+![Video Player](screenshots/admin-page.png)
+
 ## Tech Stack
 
 **Frontend**
