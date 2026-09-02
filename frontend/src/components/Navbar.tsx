@@ -38,12 +38,17 @@ function Navbar({ backPath, backLabel }: NavbarProps) {
                                     Admin
                                 </button>
                             )}
-                            
-                            <LogoutButton />
+
+                            <button onClick={() => navigate("/movies")}>
+                                All Movies
+                            </button>
 
                             <button onClick={() => navigate("/watchlist")}>
                                 Watchlist
-                            </button>
+                            </button>                    
+
+                            <LogoutButton />
+                            
                         </div>
                     )}
                 </div>
