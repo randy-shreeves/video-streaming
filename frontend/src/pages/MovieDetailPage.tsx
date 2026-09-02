@@ -3,17 +3,33 @@ import { useEffect, useState } from 'react';
 import { getPublishedMovie, getPublishedMoviePoster } from "../api/movieApi";
 import type { Movie } from "../types/Movie";
 import Navbar from "../components/Navbar";
+import { addToWatchlist } from "../api/watchlistApi";
 
 function MovieDetailPage() {
     const [movie, setMovie] = useState<Movie | null>(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
     const [posterUrl, setPosterUrl] = useState<string | null>(null);
+    const [watchlistMessage, setWatchlistMessage] = useState<string | null>(null);
     const { id } = useParams();
     const movieId = Number(id);
 
     if (Number.isNaN(movieId)) {
         return <p>Movie not found.</p>;
+    }
+
+    async function handleAddToWatchlist() {
+        try {
+            setWatchlistMessage(null);
+            await addToWatchlist(movieId);
+            setWatchlistMessage("Movie added to your watchlist.");
+        } catch (error) {
+            if (error instanceof Error) {
+                setWatchlistMessage(error.message);
+            } else {
+                setWatchlistMessage("Failed to add movie to watchlist.")
+            }
+        }
     }
 
     useEffect(() => {
@@ -91,6 +107,15 @@ function MovieDetailPage() {
                 {Math.floor(movie.runtimeMinutes / 60)}h{" "}
                 {movie.runtimeMinutes % 60}m
             </p>
+
+            <button onClick={handleAddToWatchlist}>
+                Add to Watchlist
+            </button>
+
+            {watchlistMessage && (
+                <p>{watchlistMessage}</p>
+            )}
+
         </>
     );
 }
