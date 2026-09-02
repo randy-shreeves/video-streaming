@@ -1,6 +1,5 @@
 package com.randyshreeves.videostreaming.movie;
 
-import com.randyshreeves.videostreaming.auth.StreamTokenService;
 import com.randyshreeves.videostreaming.movie.dto.MovieRequest;
 import com.randyshreeves.videostreaming.movie.dto.MovieResponse;
 
@@ -15,7 +14,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.net.MalformedURLException;
-import java.util.List;
 
 @RestController
 @RequestMapping("/movies")

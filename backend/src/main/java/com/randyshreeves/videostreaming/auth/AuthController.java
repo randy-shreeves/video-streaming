@@ -4,7 +4,6 @@ import com.randyshreeves.videostreaming.auth.dto.LoginRequest;
 import com.randyshreeves.videostreaming.auth.dto.LoginResponse;
 import com.randyshreeves.videostreaming.auth.dto.NewUserRegistrationRequest;
 import com.randyshreeves.videostreaming.user.UserService;
-import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;

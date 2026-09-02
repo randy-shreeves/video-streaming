@@ -3,7 +3,6 @@ package com.randyshreeves.videostreaming.config;
 import com.randyshreeves.videostreaming.auth.JwtAuthenticationFilter;
 import com.randyshreeves.videostreaming.auth.StreamTokenAuthenticationFilter;
 import com.randyshreeves.videostreaming.user.CustomUserDetailsService;
-import io.jsonwebtoken.Jwt;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

@@ -6,7 +6,6 @@ import com.randyshreeves.videostreaming.movie.dto.MovieResponse;
 import com.randyshreeves.videostreaming.user.Role;
 import com.randyshreeves.videostreaming.user.User;
 import com.randyshreeves.videostreaming.user.UserRepository;
-import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 import org.springframework.beans.factory.annotation.Autowired;
