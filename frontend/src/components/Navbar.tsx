@@ -38,7 +38,12 @@ function Navbar({ backPath, backLabel }: NavbarProps) {
                                     Admin
                                 </button>
                             )}
+                            
                             <LogoutButton />
+
+                            <button onClick={() => navigate("/watchlist")}>
+                                Watchlist
+                            </button>
                         </div>
                     )}
                 </div>
