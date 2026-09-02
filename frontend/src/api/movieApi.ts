@@ -65,7 +65,7 @@ export async function getPublishedMovie(id: number, signal?: AbortSignal): Promi
     return movie;
 }
 
-export async function getPublishedMoviePoster(id: number, signal?: AbortSignal) {
+export async function getPublishedMoviePoster(id: number, signal?: AbortSignal): Promise<string> {
     const response = await apiFetch(`${BASE_URL}/${id}/poster`, { signal });
     if (!response.ok) {
         throw new Error("Failed to load poster.");
@@ -74,7 +74,7 @@ export async function getPublishedMoviePoster(id: number, signal?: AbortSignal) 
     return URL.createObjectURL(blob);
 }
 
-export async function getMoviePoster(id: number, signal?: AbortSignal) {
+export async function getMoviePoster(id: number, signal?: AbortSignal): Promise<string> {
     const response = await apiFetch(`${BASE_URL}/admin/${id}/poster`, { signal });
     if (!response.ok) {
         throw new Error("Failed to load poster.");
@@ -109,7 +109,7 @@ export async function createMovie(movieRequest: MovieRequest): Promise<Movie> {
     return response.json();
 }
 
-export async function uploadPoster(id: number, poster: File) {
+export async function uploadPoster(id: number, poster: File): Promise<void> {
     const formData = new FormData();
     formData.append("poster", poster);
     const response = await apiFetch(`${BASE_URL}/${id}/poster`, {
@@ -123,7 +123,7 @@ export async function uploadPoster(id: number, poster: File) {
     }
 }
 
-export async function uploadVideo(id: number, video: File) {
+export async function uploadVideo(id: number, video: File): Promise<void> {
     const formData = new FormData();
     formData.append("video", video);
     const response = await apiFetch(`${BASE_URL}/${id}/video`, {

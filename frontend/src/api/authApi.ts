@@ -21,7 +21,7 @@ export async function login(username: string, password: string): Promise<LoginRe
     return response.json();
 }
 
-export async function register(username: string, password: string, reenteredPassword: string) {
+export async function register(username: string, password: string, reenteredPassword: string): Promise<void> {
     if (password !== reenteredPassword) {
         throw new Error("Passwords do not match.");
     }
