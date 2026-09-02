@@ -59,7 +59,7 @@ public class WatchlistServiceTest {
         when(watchlistRepository
                 .findByUserIdAndMoviePublishedTrueOrderByIdAsc(userId, pageable))
                 .thenReturn(watchlistPage);
-        Page<MovieResponse> result = watchlistService.getWatchlist(userId, pageable);
+        Page<MovieResponse> result = watchlistService.getWatchlist(userId, 0, 12);
         assertEquals(2, result.getTotalElements());
         assertEquals(2, result.getContent().size());
         assertEquals(movie1.getId(), result.getContent().get(0).getId());

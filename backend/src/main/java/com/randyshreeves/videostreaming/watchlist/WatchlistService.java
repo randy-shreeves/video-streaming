@@ -7,6 +7,7 @@ import com.randyshreeves.videostreaming.movie.dto.MovieResponse;
 import com.randyshreeves.videostreaming.user.User;
 import com.randyshreeves.videostreaming.user.UserRepository;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
@@ -28,7 +29,8 @@ public class WatchlistService {
         this.movieRepository = movieRepository;
     }
 
-    public Page<MovieResponse> getWatchlist(Long userId, Pageable pageable) {
+    public Page<MovieResponse> getWatchlist(Long userId, int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
         Page<Watchlist> watchlistPage = watchlistRepository.findByUserIdAndMoviePublishedTrueOrderByIdAsc(userId, pageable);
         return watchlistPage.map(watchlist -> toMovieResponse(watchlist.getMovie()));
     }
