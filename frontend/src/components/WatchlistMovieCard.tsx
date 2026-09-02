@@ -1,7 +1,8 @@
 import type { Movie } from "../types/Movie";
 import "./css/MovieCard.css";
-import { getMoviePoster } from "../api/movieApi";
+import { getPublishedMoviePoster } from "../api/movieApi";
 import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 
 type MovieCardProps = {
     movie: Movie;
@@ -18,7 +19,7 @@ function WatchlistMovieCard({ movie, onRemoval, removing }: MovieCardProps) {
 
         async function loadMoviePoster() {
             try {
-                objectUrl = await getMoviePoster(movie.id, controller.signal);
+                objectUrl = await getPublishedMoviePoster(movie.id, controller.signal);
                 setPosterUrl(objectUrl);
             } catch (error) {
                 if (error instanceof DOMException && error.name === "AbortError") {
@@ -41,12 +42,13 @@ function WatchlistMovieCard({ movie, onRemoval, removing }: MovieCardProps) {
     return (
         <div className="movie-card">
 
-            <img
-                className="movie-poster"
-                src={posterUrl ?? undefined}
-                alt={`${movie.title} poster`}
-            />
-
+            <Link to={`/movies/${movie.id}`}>
+                <img
+                    className="movie-poster"
+                    src={posterUrl ?? undefined}
+                    alt={`${movie.title} poster`}
+                />
+            </Link>
             <p>{movie.title} ({movie.releaseYear})</p>
 
             <button 
