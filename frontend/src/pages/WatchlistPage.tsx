@@ -62,7 +62,11 @@ function WatchlistPage() {
 
   return (
     <>
-      <Navbar />
+      <Navbar
+        backPath="/movies"
+        backLabel="Movie Catalog" 
+      />
+      
       <h1>Watchlist</h1>
 
       <div className="movie-grid">
