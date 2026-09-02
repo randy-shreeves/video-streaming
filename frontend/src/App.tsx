@@ -8,6 +8,7 @@ import WatchPage from "./pages/WatchPage";
 import AdminMoviePage from "./pages/AdminMoviePage";
 import AddMoviePage from "./pages/AddMoviePage";
 import EditMoviePage from "./pages/EditMoviePage";
+import WatchlistPage from "./pages/WatchlistPage";
 
 function App() {
   return (
@@ -69,6 +70,15 @@ function App() {
             <EditMoviePage />
           </ProtectedRoute>
         }
+      />
+
+      <Route
+        path="/watchlist"
+        element={
+          <ProtectedRoute>
+            <WatchlistPage />
+          </ProtectedRoute>
+        } 
       />
       
     </Routes>
