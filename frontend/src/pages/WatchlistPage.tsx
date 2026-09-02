@@ -2,14 +2,16 @@ import { useEffect, useState } from 'react';
 import { getWatchlist } from "../api/watchlistApi";
 import type { Movie } from "../types/Movie";
 import type { MoviePage } from "../types/MoviePage";
-import MovieCard from "../components/MovieCard";
+import WatchlistMovieCard from "../components/WatchlistMovieCard";
 import "./css/MovieListPage.css";
 import Navbar from "../components/Navbar";
+import { removeFromWatchlist } from '../api/watchlistApi';
 
 function WatchlistPage() {
   const [movies, setMovies] = useState<Movie[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [removingMovieId, setRemovingMovieId] = useState<number | null>(null);
   const [currentPage, setCurrentPage] = useState(0);
   const [totalPages, setTotalPages] = useState(0);
 
@@ -21,7 +23,11 @@ function WatchlistPage() {
       try {
         const moviePage: MoviePage = await getWatchlist(currentPage, 12, controller.signal);
         setMovies(moviePage.content);
-        setTotalPages(moviePage.totalPages);
+        if (moviePage.totalPages === 0) {
+          setTotalPages(1);
+        } else {
+          setTotalPages(moviePage.totalPages);
+        }
       } catch (error) {
         if (error instanceof DOMException && error.name === "AbortError") {
             return;
@@ -40,6 +46,26 @@ function WatchlistPage() {
       controller.abort();
     };
   }, [currentPage]);
+
+  async function handleRemoval(movie: Movie) {
+    try {
+      setRemovingMovieId(movie.id);
+      setError(null);
+      await removeFromWatchlist(movie.id);
+      const moviePage: MoviePage = await getWatchlist(currentPage, 12);
+      setMovies(moviePage.content);
+      if (moviePage.totalPages === 0) {
+        setTotalPages(1);
+      } else {
+        setTotalPages(moviePage.totalPages);
+      }
+    } catch (error) {
+      console.error(error);
+      setError("Unable to remove movie.");
+    } finally {
+      setRemovingMovieId(null);
+    }
+  }
 
   if (loading) {
     return (
@@ -66,14 +92,16 @@ function WatchlistPage() {
         backPath="/movies"
         backLabel="Movie Catalog" 
       />
-      
+
       <h1>Watchlist</h1>
 
       <div className="movie-grid">
         {movies.map(movie => (
-          <MovieCard
+          <WatchlistMovieCard
             key={movie.id}
             movie={movie}
+            onRemoval={handleRemoval}
+            removing={removingMovieId === movie.id}
           />
         ))}
       </div>
@@ -87,7 +115,7 @@ function WatchlistPage() {
         </button>
 
         <span>
-            Page {currentPage + 1} of {totalPages}
+          Page {currentPage + 1} of {totalPages}
         </span>
 
         <button
