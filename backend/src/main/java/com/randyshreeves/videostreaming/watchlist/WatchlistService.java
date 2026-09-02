@@ -1,5 +1,6 @@
 package com.randyshreeves.videostreaming.watchlist;
 
+import com.randyshreeves.videostreaming.exception.MovieAlreadyInWatchlistException;
 import com.randyshreeves.videostreaming.exception.MovieNotFoundException;
 import com.randyshreeves.videostreaming.movie.Movie;
 import com.randyshreeves.videostreaming.movie.MovieRepository;
@@ -42,7 +43,7 @@ public class WatchlistService {
             throw new MovieNotFoundException(movieId);
         }
         if (watchlistRepository.existsByUserIdAndMovieId(userId, movieId)) {
-            throw new IllegalStateException("Movie is already in the watchlist.");
+            throw new MovieAlreadyInWatchlistException("Movie is already in watchlist.");
         }
 
         Watchlist watchlist = new Watchlist();

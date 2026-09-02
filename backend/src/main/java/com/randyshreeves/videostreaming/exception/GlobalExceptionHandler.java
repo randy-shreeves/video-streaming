@@ -57,4 +57,10 @@ public class GlobalExceptionHandler {
     public ErrorResponse handleMediaStorageFailure(MediaStorageException ex) {
         return new ErrorResponse(ex.getMessage());
     }
+
+    @ExceptionHandler(MovieAlreadyInWatchlistException.class)
+    @ResponseStatus(HttpStatus.CONFLICT)
+    public ErrorResponse handleMovieAlreadyInWatchlist(MovieAlreadyInWatchlistException ex) {
+        return new ErrorResponse(ex.getMessage());
+    }
 }
