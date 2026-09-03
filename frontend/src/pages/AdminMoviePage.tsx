@@ -39,7 +39,11 @@ function AdminMoviePage() {
       try {
         const moviePage: MoviePage = await getAllMovies(activeSearch, currentPage, 12, controller.signal);
         setMovies(moviePage.content);
-        setTotalPages(moviePage.totalPages);
+        if (moviePage.totalPages === 0) {
+          setTotalPages(1);
+        } else {
+          setTotalPages(moviePage.totalPages);
+        }
       } catch (error) {
         if (error instanceof DOMException && error.name === "AbortError") {
             return;
