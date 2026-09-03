@@ -77,3 +77,6 @@ npm install
 npm run dev
 ```
 Frontend runs on http://localhost:5173.
+
+## Test Media
+Videos used for development and testing were sourced from [Pexels](https://www.pexels.com/). The video files are not included in this repository.
