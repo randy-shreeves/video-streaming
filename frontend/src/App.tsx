@@ -4,7 +4,7 @@ import LoginPage from "./pages/LoginPage";
 import RegistrationPage from "./pages/RegistrationPage";
 import MovieListPage from "./pages/MovieListPage";
 import MovieDetailPage from "./pages/MovieDetailPage";
-import WatchPage from "./pages/WatchPage";
+import MovieWatchPage from "./pages/MovieWatchPage";
 import AdminMoviePage from "./pages/AdminMoviePage";
 import AddMoviePage from "./pages/AddMoviePage";
 import EditMoviePage from "./pages/EditMoviePage";
@@ -40,7 +40,7 @@ function App() {
         path="/movies/:id/watch" 
         element={
           <ProtectedRoute>
-            <WatchPage />
+            <MovieWatchPage />
           </ProtectedRoute>
         } 
       />
